@@ -14,6 +14,8 @@
 		730A00312B04C2D300D57D05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 730A002F2B04C2D300D57D05 /* Main.storyboard */; };
 		730A00332B04C2D400D57D05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 730A00322B04C2D400D57D05 /* Assets.xcassets */; };
 		730A00362B04C2D400D57D05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 730A00342B04C2D400D57D05 /* LaunchScreen.storyboard */; };
+		734206FA2B04D8190030BA37 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206F92B04D8190030BA37 /* LoginViewController.swift */; };
+		734206FC2B04D99D0030BA37 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +27,8 @@
 		730A00322B04C2D400D57D05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		730A00352B04C2D400D57D05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		730A00372B04C2D400D57D05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		734206F92B04D8190030BA37 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		A70542C8FB22292566ABD1D2 /* Pods-Alco.Guide.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Alco.Guide.release.xcconfig"; path = "Target Support Files/Pods-Alco.Guide/Pods-Alco.Guide.release.xcconfig"; sourceTree = "<group>"; };
 		B2F788178EF46E0F799535FE /* Pods-Alco.Guide.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Alco.Guide.debug.xcconfig"; path = "Target Support Files/Pods-Alco.Guide/Pods-Alco.Guide.debug.xcconfig"; sourceTree = "<group>"; };
 		E10E05AABDE6AE1232AFB8F5 /* Pods_Alco_Guide.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Alco_Guide.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -74,6 +78,8 @@
 				730A00292B04C2D300D57D05 /* AppDelegate.swift */,
 				730A002B2B04C2D300D57D05 /* SceneDelegate.swift */,
 				730A002D2B04C2D300D57D05 /* ViewController.swift */,
+				734206F92B04D8190030BA37 /* LoginViewController.swift */,
+				734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */,
 				730A002F2B04C2D300D57D05 /* Main.storyboard */,
 				730A00322B04C2D400D57D05 /* Assets.xcassets */,
 				730A00342B04C2D400D57D05 /* LaunchScreen.storyboard */,
@@ -207,9 +213,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				734206FA2B04D8190030BA37 /* LoginViewController.swift in Sources */,
 				730A002E2B04C2D300D57D05 /* ViewController.swift in Sources */,
 				730A002A2B04C2D300D57D05 /* AppDelegate.swift in Sources */,
 				730A002C2B04C2D300D57D05 /* SceneDelegate.swift in Sources */,
+				734206FC2B04D99D0030BA37 /* UIColor+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
