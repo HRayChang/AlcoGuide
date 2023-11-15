@@ -12,36 +12,36 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         
         let cocktailViewController = CocktailViewController()
-        let cocktailController = UINavigationController(rootViewController: cocktailViewController)
+//        let cocktailController = UINavigationController(rootViewController: cocktailViewController)
         
-        cocktailController.tabBarItem.image = UIImage(systemName: "heart")
-        cocktailController.tabBarItem.title = "Heart"
+        cocktailViewController.tabBarItem.image = UIImage(systemName: "heart")
+        cocktailViewController.tabBarItem.title = "Heart"
         
         let scheduleViewController = ScheduleViewController()
-        let scheduleController = UINavigationController(rootViewController: scheduleViewController)
+//        let scheduleController = UINavigationController(rootViewController: scheduleViewController)
         
-        scheduleController.tabBarItem.image = UIImage(systemName: "heart")
-        scheduleController.tabBarItem.title = "Heart"
+        scheduleViewController.tabBarItem.image = UIImage(systemName: "heart")
+        scheduleViewController.tabBarItem.title = "Heart"
         
         let chatViewController = ChatViewController()
-        let chatController = UINavigationController(rootViewController: chatViewController)
+//        let chatController = UINavigationController(rootViewController: chatViewController)
         
-        chatController.tabBarItem.image = UIImage(systemName: "heart")
-        chatController.tabBarItem.title = "Heart"
+        chatViewController.tabBarItem.image = UIImage(systemName: "heart")
+        chatViewController.tabBarItem.title = "Heart"
         
         let mapHomeViewController = MapHomeViewController()
-        let mapHomeController = UINavigationController(rootViewController: mapHomeViewController)
+//        let mapHomeController = UINavigationController(rootViewController: mapHomeViewController)
         
-        mapHomeController.tabBarItem.image = UIImage(systemName: "heart")
-        mapHomeController.tabBarItem.title = "Heart"
+        mapHomeViewController.tabBarItem.image = UIImage(systemName: "heart")
+        mapHomeViewController.tabBarItem.title = "Heart"
         
         let personalViewController = PersonalViewController()
-        let personalController = UINavigationController(rootViewController: personalViewController)
+//        let personalController = UINavigationController(rootViewController: personalViewController)
         
-        personalController.tabBarItem.image = UIImage(systemName: "heart")
-        personalController.tabBarItem.title = "Heart"
+        personalViewController.tabBarItem.image = UIImage(systemName: "heart")
+        personalViewController.tabBarItem.title = "Heart"
         
-        viewControllers = [chatController, scheduleController, mapHomeController, cocktailController, personalController]
+        viewControllers = [chatViewController, scheduleViewController, mapHomeViewController, cocktailViewController, personalViewController]
         
         let appearance = UITabBarItem.appearance()
 
