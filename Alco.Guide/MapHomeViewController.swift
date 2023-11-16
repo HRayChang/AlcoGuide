@@ -7,9 +7,8 @@
 
 import UIKit
 import MapKit
-import CoreLocation
 
-class MapHomeViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
     var mapView = MKMapView()
     let buttonLineView = UIView()
@@ -20,14 +19,13 @@ class MapHomeViewController: UIViewController, CLLocationManagerDelegate, MKMapV
     let addScheduleView = UIView()
     let selectLocationView = UIView()
     
-    var locationManager = CLLocationManager()
+    let locationManager = LocationManager.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.black
         
-        setupMap()
         setupAssembleButton()
         setupMapView()
         setupButtonLineView()
@@ -37,93 +35,20 @@ class MapHomeViewController: UIViewController, CLLocationManagerDelegate, MKMapV
         setupAddScheduleView()
         setupSelectLocationView()
         setupConstraints()
+        
+        renderCurrentLocation()
     }
     
-    func setupMap() {
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
-        mapView.delegate = self
-        mapView.showsUserLocation = true
-        mapView.userTrackingMode = .follow
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.first {
-            locationManager.stopUpdatingLocation()
-            
-            render(location)
+    func renderCurrentLocation() {
+        if let location = locationManager.currentLocation {
+            let coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude,
+                                                    longitude: location.coordinate.longitude)
+            let span = MKCoordinateSpan(latitudeDelta: 0.006, longitudeDelta: 0.006)
+            let region = MKCoordinateRegion(center: coordinate, span: span)
+            mapView.setRegion(region, animated: true)
         }
-        //
-        //        let userLocation: CLLocation = locations[0]
-        //
-        //        //CLGeocoder地理編碼 經緯度轉換地址位置
-        //        CLGeocoder().reverseGeocodeLocation(userLocation) { (placemark, error) in
-        //
-        //            if error != nil {
-        //
-        //                print(error)
-        //
-        //            } else {
-        //
-        //                //the geocoder actually returns CLPlacemark objects, which contain both the coordinate and the original information that you provided.
-        //                if let placemark = placemark?[0] {
-        //
-        //                    //print(placemark)
-        //                    var address = ""
-        //
-        //                    if placemark.subThoroughfare != nil {
-        //
-        //                        address += placemark.subThoroughfare! + " "
-        //
-        //                    }
-        //
-        //                    if placemark.thoroughfare != nil {
-        //
-        //                        address += placemark.thoroughfare! + "\n"
-        //
-        //                    }
-        //
-        //                    if placemark.subLocality != nil {
-        //
-        //                        address += placemark.subLocality! + "\n"
-        //
-        //                    }
-        //
-        //                    if placemark.subAdministrativeArea != nil {
-        //
-        //                        address += placemark.subAdministrativeArea! + "\n"
-        //
-        //                    }
-        //
-        //                    if placemark.postalCode != nil {
-        //
-        //                        address += placemark.postalCode! + "\n"
-        //
-        //                    }
-        //
-        //                    if placemark.country != nil {
-        //
-        //                        address += placemark.country!
-        //
-        //                    }
-        //                }
-        //
-        //            }
-        //
-        //        }
     }
     
-    func render(_ location: CLLocation) {
-        let coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-        
-        let span = MKCoordinateSpan(latitudeDelta: 0.006, longitudeDelta: 0.006)
-        
-        let region = MKCoordinateRegion(center: coordinate, span: span)
-        
-        mapView.setRegion(region, animated: true)
-    }
     
     // MARK: - Setup UI
     func setupMapView() {
@@ -191,6 +116,74 @@ class MapHomeViewController: UIViewController, CLLocationManagerDelegate, MKMapV
         selectLocationView.layer.borderWidth = 5
         selectLocationView.layer.cornerRadius = 30
         selectLocationView.isHidden = true
+        
+        let scheduleLabel = UILabel()
+        let scheduleIDLabel = UILabel()
+        let searchConvenienceStoreButton = UIButton()
+        let searchBarButton = UIButton()
+        let searchBothButton = UIButton()
+        
+        scheduleLabel.text = "1234"
+        scheduleLabel.textColor = UIColor.white
+        
+        scheduleIDLabel.text = "543421"
+        scheduleIDLabel.textColor = UIColor.white
+        
+        searchConvenienceStoreButton.backgroundColor = UIColor.black
+        searchConvenienceStoreButton.layer.borderColor = UIColor.steelPink.cgColor
+        searchConvenienceStoreButton.layer.borderWidth = 5
+        searchConvenienceStoreButton.layer.cornerRadius = 20
+        searchConvenienceStoreButton.setTitle("超商", for: .normal)
+        searchConvenienceStoreButton.setTitleColor(UIColor.white, for: .normal)
+        searchConvenienceStoreButton.addTarget(self, action: #selector(searchConvenienceStoreButtonTapped), for: .touchUpInside)
+        
+        searchBarButton.backgroundColor = UIColor.black
+        searchBarButton.layer.borderColor = UIColor.steelPink.cgColor
+        searchBarButton.layer.borderWidth = 5
+        searchBarButton.layer.cornerRadius = 20
+        searchBarButton.setTitle("酒吧", for: .normal)
+        searchBarButton.setTitleColor(UIColor.white, for: .normal)
+        searchBarButton.addTarget(self, action: #selector(searchBarButtonTapped), for: .touchUpInside)
+        
+        searchBothButton.backgroundColor = UIColor.black
+        searchBothButton.layer.borderColor = UIColor.steelPink.cgColor
+        searchBothButton.layer.borderWidth = 5
+        searchBothButton.layer.cornerRadius = 20
+        searchBothButton.setTitle("Both", for: .normal)
+        searchBothButton.setTitleColor(UIColor.white, for: .normal)
+        searchBothButton.addTarget(self, action: #selector(searchBothButtonTapped), for: .touchUpInside)
+        
+        scheduleLabel.translatesAutoresizingMaskIntoConstraints = false
+        scheduleIDLabel.translatesAutoresizingMaskIntoConstraints = false
+        searchConvenienceStoreButton.translatesAutoresizingMaskIntoConstraints = false
+        searchBarButton.translatesAutoresizingMaskIntoConstraints = false
+        searchBothButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        selectLocationView.addSubview(scheduleLabel)
+        selectLocationView.addSubview(scheduleIDLabel)
+        selectLocationView.addSubview(searchConvenienceStoreButton)
+        selectLocationView.addSubview(searchBarButton)
+        selectLocationView.addSubview(searchBothButton)
+        
+        NSLayoutConstraint.activate([
+            scheduleLabel.centerXAnchor.constraint(equalTo: selectLocationView.centerXAnchor),
+            
+            searchConvenienceStoreButton.trailingAnchor.constraint(equalTo: searchBarButton.leadingAnchor, constant: -10),
+            searchConvenienceStoreButton.centerYAnchor.constraint(equalTo: selectLocationView.centerYAnchor),
+            searchConvenienceStoreButton.widthAnchor.constraint(equalToConstant: 80),
+            searchConvenienceStoreButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            searchBarButton.centerXAnchor.constraint(equalTo: selectLocationView.centerXAnchor),
+            searchBarButton.centerYAnchor.constraint(equalTo: selectLocationView.centerYAnchor),
+            searchBarButton.widthAnchor.constraint(equalToConstant: 80),
+            searchBarButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            searchBothButton.leadingAnchor.constraint(equalTo: searchBarButton.trailingAnchor, constant: 10),
+            searchBothButton.centerYAnchor.constraint(equalTo: selectLocationView.centerYAnchor),
+            searchBothButton.widthAnchor.constraint(equalToConstant: 80),
+            searchBothButton.heightAnchor.constraint(equalToConstant: 50),
+            
+        ])
     }
     
     func setupAddScheduleView() {
@@ -425,6 +418,7 @@ class MapHomeViewController: UIViewController, CLLocationManagerDelegate, MKMapV
     
     @objc func newScheduleViewButtonTapped() {
         newScheduleView.isHidden = true
+        selectLocationView.isHidden = false
         print("Button tapped!")
     }
     
@@ -433,5 +427,72 @@ class MapHomeViewController: UIViewController, CLLocationManagerDelegate, MKMapV
         print("Button tapped!")
     }
     
+    @objc func searchBarButtonTapped() {
+        selectLocationView.isHidden = true
+        
+        MapManager.shared.searchForPlaces(query: "酒吧", mapView: mapView) { result in
+            switch result {
+            case .success(let annotations):
+                self.mapView.removeAnnotations(self.mapView.annotations)
+                self.mapView.addAnnotations(annotations)
+            case .failure(let error):
+                print("Error searching for nearby places: \(error.localizedDescription)")
+            }
+        }
+    }
     
+    @objc func searchConvenienceStoreButtonTapped() {
+        selectLocationView.isHidden = true
+        
+        MapManager.shared.searchForPlaces(query: "超商", mapView: mapView) { result in
+            switch result {
+            case .success(let annotations):
+                self.mapView.removeAnnotations(self.mapView.annotations)
+                self.mapView.addAnnotations(annotations)
+            case .failure(let error):
+                print("Error searching for nearby places: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    @objc func searchBothButtonTapped() {
+        selectLocationView.isHidden = true
+
+        let dispatchGroup = DispatchGroup()
+
+        var barAnnotations: [MKPointAnnotation] = []
+        var convenienceStoreAnnotations: [MKPointAnnotation] = []
+
+        dispatchGroup.enter()
+        MapManager.shared.searchForPlaces(query: "酒吧", mapView: mapView) { result in
+            defer {
+                dispatchGroup.leave()
+            }
+            switch result {
+            case .success(let annotations):
+                barAnnotations = annotations
+            case .failure(let error):
+                print("Error searching for bars: \(error.localizedDescription)")
+            }
+        }
+
+        dispatchGroup.enter()
+        MapManager.shared.searchForPlaces(query: "超商", mapView: mapView) { result in
+            defer {
+                dispatchGroup.leave()
+            }
+            switch result {
+            case .success(let annotations):
+                convenienceStoreAnnotations = annotations
+            case .failure(let error):
+                print("Error searching for convenience stores: \(error.localizedDescription)")
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            let allAnnotations = barAnnotations + convenienceStoreAnnotations
+            self.mapView.removeAnnotations(self.mapView.annotations)
+            self.mapView.addAnnotations(allAnnotations)
+        }
+    }
 }
