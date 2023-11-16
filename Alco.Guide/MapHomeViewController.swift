@@ -7,8 +7,9 @@
 
 import UIKit
 import MapKit
+import CoreLocation
 
-class MapHomeViewController: UIViewController, MKMapViewDelegate {
+class MapHomeViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     
     var mapView = MKMapView()
     let buttonLineView = UIView()
@@ -19,13 +20,14 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     let addScheduleView = UIView()
     let selectLocationView = UIView()
     
-    let locationManager = LocationManager.shared
+    var locationManager = CLLocationManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.black
         
+        setupMap()
         setupAssembleButton()
         setupMapView()
         setupButtonLineView()
@@ -37,14 +39,90 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         setupConstraints()
     }
     
-    func renderCurrentLocation() {
-        if let location = locationManager.currentLocation {
-            let coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude, 
-                                                    longitude: location.coordinate.longitude)
-            let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-            let region = MKCoordinateRegion(center: coordinate, span: span)
-            mapView.setRegion(region, animated: true)
+    func setupMap() {
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+        mapView.delegate = self
+        mapView.showsUserLocation = true
+        mapView.userTrackingMode = .follow
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.first {
+            locationManager.stopUpdatingLocation()
+            
+            render(location)
         }
+        //
+        //        let userLocation: CLLocation = locations[0]
+        //
+        //        //CLGeocoder地理編碼 經緯度轉換地址位置
+        //        CLGeocoder().reverseGeocodeLocation(userLocation) { (placemark, error) in
+        //
+        //            if error != nil {
+        //
+        //                print(error)
+        //
+        //            } else {
+        //
+        //                //the geocoder actually returns CLPlacemark objects, which contain both the coordinate and the original information that you provided.
+        //                if let placemark = placemark?[0] {
+        //
+        //                    //print(placemark)
+        //                    var address = ""
+        //
+        //                    if placemark.subThoroughfare != nil {
+        //
+        //                        address += placemark.subThoroughfare! + " "
+        //
+        //                    }
+        //
+        //                    if placemark.thoroughfare != nil {
+        //
+        //                        address += placemark.thoroughfare! + "\n"
+        //
+        //                    }
+        //
+        //                    if placemark.subLocality != nil {
+        //
+        //                        address += placemark.subLocality! + "\n"
+        //
+        //                    }
+        //
+        //                    if placemark.subAdministrativeArea != nil {
+        //
+        //                        address += placemark.subAdministrativeArea! + "\n"
+        //
+        //                    }
+        //
+        //                    if placemark.postalCode != nil {
+        //
+        //                        address += placemark.postalCode! + "\n"
+        //
+        //                    }
+        //
+        //                    if placemark.country != nil {
+        //
+        //                        address += placemark.country!
+        //
+        //                    }
+        //                }
+        //
+        //            }
+        //
+        //        }
+    }
+    
+    func render(_ location: CLLocation) {
+        let coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        
+        let span = MKCoordinateSpan(latitudeDelta: 0.006, longitudeDelta: 0.006)
+        
+        let region = MKCoordinateRegion(center: coordinate, span: span)
+        
+        mapView.setRegion(region, animated: true)
     }
     
     // MARK: - Setup UI
@@ -220,7 +298,8 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         NSLayoutConstraint.activate([
             newScheduleButton.leadingAnchor.constraint(equalTo: selectScheduleView.leadingAnchor, constant: 50),
             newScheduleButton.trailingAnchor.constraint(equalTo: selectScheduleView.trailingAnchor, constant: -50),
-            newScheduleButton.centerYAnchor.constraint(equalTo: selectScheduleView.centerYAnchor, constant: -70), // 這邊之後修改成可計算的
+            // 這邊之後修改成可計算的
+            newScheduleButton.centerYAnchor.constraint(equalTo: selectScheduleView.centerYAnchor, constant: -70),
             newScheduleButton.heightAnchor.constraint(equalTo: selectScheduleView.heightAnchor, multiplier: 1/7),
             
             addScheduleButton.leadingAnchor.constraint(equalTo: selectScheduleView.leadingAnchor, constant: 50),
@@ -230,7 +309,8 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             
             myScheduleButton.leadingAnchor.constraint(equalTo: selectScheduleView.leadingAnchor, constant: 50),
             myScheduleButton.trailingAnchor.constraint(equalTo: selectScheduleView.trailingAnchor, constant: -50),
-            myScheduleButton.centerYAnchor.constraint(equalTo: selectScheduleView.centerYAnchor, constant: 70), // 這邊之後修改成可計算的
+            // 這邊之後修改成可計算的
+            myScheduleButton.centerYAnchor.constraint(equalTo: selectScheduleView.centerYAnchor, constant: 70),
             myScheduleButton.heightAnchor.constraint(equalTo: selectScheduleView.heightAnchor, multiplier: 1/7)
         ])
     }
@@ -347,11 +427,11 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         newScheduleView.isHidden = true
         print("Button tapped!")
     }
-
+    
     @objc func addScheduleViewButtonTapped() {
         addScheduleView.isHidden = true
         print("Button tapped!")
     }
-
+    
     
 }

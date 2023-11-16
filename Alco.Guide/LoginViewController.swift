@@ -40,14 +40,7 @@ class LoginViewController: UIViewController {
     @objc func loginButtonTapped() {
         let tabBarController = TabBarController()
         
-//        let viewControllerToShow: UIViewController
-//        
-//        // 在这里决定要显示哪个视图控制器
-//        // 例如，显示 FirstViewController
-//        viewControllerToShow = MapHomeViewController()
-//        
-//        // 设置 TabBarController 的 selectedViewController
-//        tabBarController.selectedViewController = viewControllerToShow
+        tabBarController.selectedIndex = 2
         
         navigationController?.pushViewController(tabBarController, animated: true)
     }
