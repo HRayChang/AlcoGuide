@@ -36,19 +36,18 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         setupSelectLocationView()
         setupConstraints()
         
-        renderCurrentLocation()
+        //        renderCurrentLocation()
     }
     
-    func renderCurrentLocation() {
-        if let location = locationManager.currentLocation {
-            let coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude,
-                                                    longitude: location.coordinate.longitude)
-            let span = MKCoordinateSpan(latitudeDelta: 0.006, longitudeDelta: 0.006)
-            let region = MKCoordinateRegion(center: coordinate, span: span)
-            mapView.setRegion(region, animated: true)
-        }
-    }
-    
+    //    func renderCurrentLocation() {
+    //        if let location = locationManager.currentLocation {
+    //            let coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude,
+    //                                                    longitude: location.coordinate.longitude)
+    //            let span = MKCoordinateSpan(latitudeDelta: 0.006, longitudeDelta: 0.006)
+    //            let region = MKCoordinateRegion(center: coordinate, span: span)
+    //            mapView.setRegion(region, animated: true)
+    //        }
+    //    }
     
     // MARK: - Setup UI
     func setupMapView() {
@@ -60,6 +59,13 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         if #available(iOS 13.0, *) {
             mapView.overrideUserInterfaceStyle = .dark
         }
+        
+        mapView.selectableMapFeatures = [.pointsOfInterest]
+
+        let mapConfiguration = MKStandardMapConfiguration()
+        mapConfiguration.pointOfInterestFilter = MKPointOfInterestFilter(including: [MKPointOfInterestCategory.nightlife])
+
+        mapView.preferredConfiguration = mapConfiguration
     }
     
     func setupNewScheduleView() {
@@ -109,7 +115,6 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         ])
     }
     
-    // MARK: 這邊還沒用
     func setupSelectLocationView() {
         selectLocationView.backgroundColor = UIColor.black
         selectLocationView.layer.borderColor = UIColor.steelPink.cgColor
@@ -181,7 +186,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             searchBothButton.leadingAnchor.constraint(equalTo: searchBarButton.trailingAnchor, constant: 10),
             searchBothButton.centerYAnchor.constraint(equalTo: selectLocationView.centerYAnchor),
             searchBothButton.widthAnchor.constraint(equalToConstant: 80),
-            searchBothButton.heightAnchor.constraint(equalToConstant: 50),
+            searchBothButton.heightAnchor.constraint(equalToConstant: 50)
             
         ])
     }
@@ -430,7 +435,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     @objc func searchBarButtonTapped() {
         selectLocationView.isHidden = true
         
-        MapManager.shared.searchForPlaces(query: "酒吧", mapView: mapView) { result in
+        MapManager.shared.searchForPlaces(query: "酒吧", region: mapView.region) { result in
             switch result {
             case .success(let annotations):
                 self.mapView.removeAnnotations(self.mapView.annotations)
@@ -444,7 +449,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     @objc func searchConvenienceStoreButtonTapped() {
         selectLocationView.isHidden = true
         
-        MapManager.shared.searchForPlaces(query: "超商", mapView: mapView) { result in
+        MapManager.shared.searchForPlaces(query: "超商", region: mapView.region) { result in
             switch result {
             case .success(let annotations):
                 self.mapView.removeAnnotations(self.mapView.annotations)
@@ -457,14 +462,14 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
     @objc func searchBothButtonTapped() {
         selectLocationView.isHidden = true
-
+        
         let dispatchGroup = DispatchGroup()
-
+        
         var barAnnotations: [MKPointAnnotation] = []
         var convenienceStoreAnnotations: [MKPointAnnotation] = []
-
+        
         dispatchGroup.enter()
-        MapManager.shared.searchForPlaces(query: "酒吧", mapView: mapView) { result in
+        MapManager.shared.searchForPlaces(query: "酒吧", region: mapView.region) { result in
             defer {
                 dispatchGroup.leave()
             }
@@ -475,9 +480,9 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
                 print("Error searching for bars: \(error.localizedDescription)")
             }
         }
-
+        
         dispatchGroup.enter()
-        MapManager.shared.searchForPlaces(query: "超商", mapView: mapView) { result in
+        MapManager.shared.searchForPlaces(query: "超商", region: mapView.region) { result in
             defer {
                 dispatchGroup.leave()
             }
@@ -488,11 +493,49 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
                 print("Error searching for convenience stores: \(error.localizedDescription)")
             }
         }
-
+        
         dispatchGroup.notify(queue: .main) {
             let allAnnotations = barAnnotations + convenienceStoreAnnotations
             self.mapView.removeAnnotations(self.mapView.annotations)
             self.mapView.addAnnotations(allAnnotations)
         }
     }
+
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        guard let annotation = view.annotation else {
+            return
+        }
+        
+        if let title = annotation.title {
+            print("Selected annotation with title: \(title ?? "No title")")
+            
+            getMapItem(for: annotation) { mapItem in
+                if let mapItem = mapItem {
+                    var region = mapView.region
+                    region.center = mapItem.placemark.coordinate
+                    
+                    print("Map Item Details:")
+                    print("Name: \(mapItem.name ?? "No name")")
+                    print("Phone: \(mapItem.phoneNumber ?? "No phone number")")
+                    print("Address: \(mapItem.placemark.title ?? "")")
+                    print("Coordinate: \(mapItem.placemark.coordinate.latitude), \(mapItem.placemark.coordinate.longitude)")
+                }
+            }
+        }
+    }
+
+    private func getMapItem(for annotation: MKAnnotation, completion: @escaping (MKMapItem?) -> Void) {
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = annotation.title ?? ""
+
+        let search = MKLocalSearch(request: request)
+        search.start { response, error in
+            guard let mapItem = response?.mapItems.first else {
+                completion(nil)
+                return
+            }
+            completion(mapItem)
+        }
+    }
+    
 }

@@ -25,10 +25,10 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         locationManager.startUpdatingLocation()
     }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.first {
-            locationManager.stopUpdatingLocation()
-            currentLocation = location
-        }
-    }
+//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+//        if let location = locations.first {
+//            locationManager.stopUpdatingLocation()
+//            currentLocation = location
+//        }
+//    }
 }

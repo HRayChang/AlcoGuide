@@ -7,15 +7,22 @@
 
 import MapKit
 
-class MapManager: NSObject {
-    
+class MapManager: NSObject, MKMapViewDelegate {
+
     static let shared = MapManager()
-    
-    func searchForPlaces(query: String, mapView: MKMapView, completion: @escaping (Result<[MKPointAnnotation], Error>) -> Void) {
+
+    private var mapView: MKMapView?
+
+    func configure(mapView: MKMapView) {
+        self.mapView = mapView
+        mapView.delegate = self
+    }
+
+    func searchForPlaces(query: String, region: MKCoordinateRegion, completion: @escaping (Result<[MKPointAnnotation], Error>) -> Void) {
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = query
-        request.region = mapView.region
-        
+        request.region = region
+
         let search = MKLocalSearch(request: request)
         search.start { response, error in
             guard let response = response, error == nil else {
@@ -24,16 +31,16 @@ class MapManager: NSObject {
                 }
                 return
             }
-            
+
             var annotations: [MKPointAnnotation] = []
-            
+
             for item in response.mapItems {
                 let annotation = MKPointAnnotation()
                 annotation.coordinate = item.placemark.coordinate
                 annotation.title = item.name
                 annotations.append(annotation)
             }
-            
+
             completion(.success(annotations))
         }
     }
