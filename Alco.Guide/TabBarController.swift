@@ -41,7 +41,11 @@ class TabBarController: UITabBarController {
         personalViewController.tabBarItem.image = UIImage(systemName: "heart")
         personalViewController.tabBarItem.title = "Heart"
         
-        viewControllers = [chatViewController, scheduleViewController, mapHomeViewController, cocktailViewController, personalViewController]
+        viewControllers = [chatViewController, 
+                           scheduleViewController,
+                           mapHomeViewController,
+                           cocktailViewController, 
+                           personalViewController]
         
         let appearance = UITabBarItem.appearance()
 

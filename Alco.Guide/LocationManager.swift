@@ -27,33 +27,15 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
+            locationManager.stopUpdatingLocation()
             currentLocation = location
         }
     }
     
-    // Add more location-related functions as needed
-    
-    // Example function to get the current user address
-    func getCurrentAddress(completion: @escaping (String?) -> Void) {
-        guard let currentLocation = currentLocation else {
-            completion(nil)
-            return
-        }
-        
-        // Implement reverse geocoding to get the address from the location
-        
-        // Example code (uncomment and modify as needed):
-        /*
-        CLGeocoder().reverseGeocodeLocation(currentLocation) { (placemark, error) in
-            if let placemark = placemark?.first {
-                var address = ""
-                // Build the address string
-                // ...
-                completion(address)
-            } else {
-                completion(nil)
-            }
-        }
-        */
-    }
+//    func getCurrentAddress(completion: @escaping (String?) -> Void) {
+//        guard let currentLocation = currentLocation else {
+//            completion(nil)
+//            return
+//        }
+//    }
 }
