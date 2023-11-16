@@ -13,7 +13,7 @@ extension UIColor {
     }
     
     static var steelPink: UIColor {
-        return UIColor(hex: 0xA13E97)
+        return UIColor(hex: 0xC40DC4) //  C40DC4  A13E97
     }
     
     static var eminence: UIColor {

@@ -15,6 +15,9 @@ class MapHomeViewController: UIViewController {
     let assembleButton = UIButton()
     let selectScheduleView = UIView()
     let scheduleView = UIView()
+    let newScheduleView = UIView()
+    let addScheduleView = UIView()
+    let selectLocationView = UIView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +29,9 @@ class MapHomeViewController: UIViewController {
         setupButtonLineView()
         setupSelectScheduleView()
         setupScheduleView()
+        setupNewScheduleView()
+        setupAddScheduleView()
+        setupSelectLocationView()
         setupConstraints()
     }
     
@@ -39,6 +45,109 @@ class MapHomeViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         
         mapView.showsUserLocation = true
+    }
+    
+    func setupNewScheduleView() {
+        newScheduleView.backgroundColor = UIColor.black
+        newScheduleView.layer.borderColor = UIColor.steelPink.cgColor
+        newScheduleView.layer.borderWidth = 5
+        newScheduleView.layer.cornerRadius = 20
+        newScheduleView.isHidden = true
+        
+        let newScheduleViewTextField = UITextField()
+        let newScheduleViewButton = UIButton()
+        
+        newScheduleViewTextField.layer.borderColor = UIColor.steelPink.cgColor
+        newScheduleViewTextField.layer.borderWidth = 5
+        newScheduleViewTextField.layer.cornerRadius = 20
+        newScheduleViewTextField.textAlignment = .center
+        newScheduleViewTextField.textColor = UIColor.white
+        newScheduleViewTextField.attributedPlaceholder = NSAttributedString(
+            string: "請輸入行程名稱",
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.white]
+        )
+        
+        newScheduleViewButton.backgroundColor = UIColor.black
+        newScheduleViewButton.layer.borderColor = UIColor.steelPink.cgColor
+        newScheduleViewButton.layer.borderWidth = 5
+        newScheduleViewButton.layer.cornerRadius = 20
+        newScheduleViewButton.setTitle("新增行程", for: .normal)
+        newScheduleViewButton.setTitleColor(UIColor.white, for: .normal)
+        newScheduleViewButton.addTarget(self, action: #selector(newScheduleViewButtonTapped), for: .touchUpInside)
+        
+        newScheduleViewButton.translatesAutoresizingMaskIntoConstraints = false
+        newScheduleViewTextField.translatesAutoresizingMaskIntoConstraints = false
+        
+        newScheduleView.addSubview(newScheduleViewTextField)
+        newScheduleView.addSubview(newScheduleViewButton)
+        
+        NSLayoutConstraint.activate([
+            newScheduleViewTextField.leadingAnchor.constraint(equalTo: newScheduleView.leadingAnchor, constant: 50),
+            newScheduleViewTextField.trailingAnchor.constraint(equalTo: newScheduleView.trailingAnchor, constant: -50),
+            newScheduleViewTextField.centerYAnchor.constraint(equalTo: newScheduleView.centerYAnchor, constant: -30),
+            newScheduleViewTextField.heightAnchor.constraint(equalToConstant: 50),
+            
+            newScheduleViewButton.leadingAnchor.constraint(equalTo: newScheduleView.leadingAnchor, constant: 50),
+            newScheduleViewButton.trailingAnchor.constraint(equalTo: newScheduleView.trailingAnchor, constant: -50),
+            newScheduleViewButton.centerYAnchor.constraint(equalTo: newScheduleView.centerYAnchor, constant: 30),
+            newScheduleViewButton.heightAnchor.constraint(equalToConstant: 50),
+        ])
+    }
+    
+    // MARK: 這邊還沒用
+    func setupSelectLocationView() {
+        selectLocationView.backgroundColor = UIColor.black
+        selectLocationView.layer.borderColor = UIColor.steelPink.cgColor
+        selectLocationView.layer.borderWidth = 5
+        selectLocationView.layer.cornerRadius = 30
+        addScheduleView.isHidden = true
+    }
+    
+    func setupAddScheduleView() {
+        addScheduleView.backgroundColor = UIColor.black
+        addScheduleView.layer.borderColor = UIColor.steelPink.cgColor
+        addScheduleView.layer.borderWidth = 5
+        addScheduleView.layer.cornerRadius = 20
+        addScheduleView.isHidden = true
+        
+        let addScheduleViewTextField = UITextField()
+        let addScheduleViewButton = UIButton()
+        
+        addScheduleViewTextField.layer.borderColor = UIColor.steelPink.cgColor
+        addScheduleViewTextField.layer.borderWidth = 5
+        addScheduleViewTextField.layer.cornerRadius = 20
+        addScheduleViewTextField.textAlignment = .center
+        addScheduleViewTextField.textColor = UIColor.white
+        addScheduleViewTextField.attributedPlaceholder = NSAttributedString(
+            string: "請輸入行程編號",
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.white]
+        )
+        
+        addScheduleViewButton.backgroundColor = UIColor.black
+        addScheduleViewButton.layer.borderColor = UIColor.steelPink.cgColor
+        addScheduleViewButton.layer.borderWidth = 5
+        addScheduleViewButton.layer.cornerRadius = 20
+        addScheduleViewButton.setTitle("加入行程", for: .normal)
+        addScheduleViewButton.setTitleColor(UIColor.white, for: .normal)
+        addScheduleViewButton.addTarget(self, action: #selector(addScheduleViewButtonTapped), for: .touchUpInside)
+        
+        addScheduleViewButton.translatesAutoresizingMaskIntoConstraints = false
+        addScheduleViewTextField.translatesAutoresizingMaskIntoConstraints = false
+        
+        addScheduleView.addSubview(addScheduleViewTextField)
+        addScheduleView.addSubview(addScheduleViewButton)
+        
+        NSLayoutConstraint.activate([
+            addScheduleViewTextField.leadingAnchor.constraint(equalTo: addScheduleView.leadingAnchor, constant: 50),
+            addScheduleViewTextField.trailingAnchor.constraint(equalTo: addScheduleView.trailingAnchor, constant: -50),
+            addScheduleViewTextField.centerYAnchor.constraint(equalTo: addScheduleView.centerYAnchor, constant: -30),
+            addScheduleViewTextField.heightAnchor.constraint(equalToConstant: 50),
+            
+            addScheduleViewButton.leadingAnchor.constraint(equalTo: addScheduleView.leadingAnchor, constant: 50),
+            addScheduleViewButton.trailingAnchor.constraint(equalTo: addScheduleView.trailingAnchor, constant: -50),
+            addScheduleViewButton.centerYAnchor.constraint(equalTo: addScheduleView.centerYAnchor, constant: 30),
+            addScheduleViewButton.heightAnchor.constraint(equalToConstant: 50),
+        ])
     }
     
     func setupButtonLineView() {
@@ -144,12 +253,18 @@ class MapHomeViewController: UIViewController {
         assembleButton.translatesAutoresizingMaskIntoConstraints = false
         selectScheduleView.translatesAutoresizingMaskIntoConstraints = false
         scheduleView.translatesAutoresizingMaskIntoConstraints = false
+        newScheduleView.translatesAutoresizingMaskIntoConstraints = false
+        addScheduleView.translatesAutoresizingMaskIntoConstraints = false
+        selectLocationView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(mapView)
         view.addSubview(buttonLineView)
         view.addSubview(assembleButton)
         view.addSubview(selectScheduleView)
         view.addSubview(scheduleView)
+        view.addSubview(newScheduleView)
+        view.addSubview(addScheduleView)
+        view.addSubview(selectLocationView)
         
         NSLayoutConstraint.activate([
             mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -175,7 +290,22 @@ class MapHomeViewController: UIViewController {
             scheduleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
             scheduleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
             scheduleView.heightAnchor.constraint(equalToConstant: 40),
-            scheduleView.topAnchor.constraint(equalTo: mapView.topAnchor, constant: 20)
+            scheduleView.topAnchor.constraint(equalTo: mapView.topAnchor, constant: 20),
+            
+            newScheduleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
+            newScheduleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
+            newScheduleView.heightAnchor.constraint(equalTo: newScheduleView.widthAnchor, multiplier: 2/3),
+            newScheduleView.centerYAnchor.constraint(equalTo: mapView.centerYAnchor),
+            
+            addScheduleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
+            addScheduleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
+            addScheduleView.heightAnchor.constraint(equalTo: addScheduleView.widthAnchor, multiplier: 2/3),
+            addScheduleView.centerYAnchor.constraint(equalTo: mapView.centerYAnchor),
+            
+            selectLocationView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
+            selectLocationView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
+            selectLocationView.heightAnchor.constraint(equalTo: selectLocationView.widthAnchor),
+            selectLocationView.centerYAnchor.constraint(equalTo: mapView.centerYAnchor)
         ])
     }
     // MARK: Setup UI -
@@ -185,15 +315,31 @@ class MapHomeViewController: UIViewController {
     }
     
     @objc func newScheduleButtonTapped() {
+        selectScheduleView.isHidden = true
+        newScheduleView.isHidden = false
         print("Button tapped!")
     }
     
     @objc func addScheduleButtonTapped() {
+        selectScheduleView.isHidden = true
+        addScheduleView.isHidden = false
         print("Button tapped!")
     }
     
     @objc func myScheduleButtonTapped() {
+        selectScheduleView.isHidden = true
         print("Button tapped!")
     }
+    
+    @objc func newScheduleViewButtonTapped() {
+        newScheduleView.isHidden = true
+        print("Button tapped!")
+    }
+
+    @objc func addScheduleViewButtonTapped() {
+        addScheduleView.isHidden = true
+        print("Button tapped!")
+    }
+
     
 }
