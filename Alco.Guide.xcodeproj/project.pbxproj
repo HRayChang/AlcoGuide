@@ -21,6 +21,8 @@
 		734207022B04F1010030BA37 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734207012B04F1010030BA37 /* ScheduleViewController.swift */; };
 		734207042B04F1290030BA37 /* CocktailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734207032B04F1290030BA37 /* CocktailViewController.swift */; };
 		734207062B04F15F0030BA37 /* PersonalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734207052B04F15F0030BA37 /* PersonalViewController.swift */; };
+		734207082B05C1680030BA37 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 734207072B05C1680030BA37 /* CoreLocation.framework */; };
+		7342070A2B05D6340030BA37 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734207092B05D6340030BA37 /* LocationManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +41,8 @@
 		734207012B04F1010030BA37 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		734207032B04F1290030BA37 /* CocktailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CocktailViewController.swift; sourceTree = "<group>"; };
 		734207052B04F15F0030BA37 /* PersonalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalViewController.swift; sourceTree = "<group>"; };
+		734207072B05C1680030BA37 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		734207092B05D6340030BA37 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		A70542C8FB22292566ABD1D2 /* Pods-Alco.Guide.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Alco.Guide.release.xcconfig"; path = "Target Support Files/Pods-Alco.Guide/Pods-Alco.Guide.release.xcconfig"; sourceTree = "<group>"; };
 		B2F788178EF46E0F799535FE /* Pods-Alco.Guide.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Alco.Guide.debug.xcconfig"; path = "Target Support Files/Pods-Alco.Guide/Pods-Alco.Guide.debug.xcconfig"; sourceTree = "<group>"; };
 		E10E05AABDE6AE1232AFB8F5 /* Pods_Alco_Guide.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Alco_Guide.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -49,6 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				734207082B05C1680030BA37 /* CoreLocation.framework in Frameworks */,
 				2BC611FD745DC1C9BF3848B8 /* Pods_Alco_Guide.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -59,6 +64,7 @@
 		3EEDDB92210F0F83D1ABD91C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				734207072B05C1680030BA37 /* CoreLocation.framework */,
 				E10E05AABDE6AE1232AFB8F5 /* Pods_Alco_Guide.framework */,
 			);
 			name = Frameworks;
@@ -94,6 +100,7 @@
 				734207012B04F1010030BA37 /* ScheduleViewController.swift */,
 				734206FF2B04F0ED0030BA37 /* ChatViewController.swift */,
 				734207052B04F15F0030BA37 /* PersonalViewController.swift */,
+				734207092B05D6340030BA37 /* LocationManager.swift */,
 				734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */,
 				730A002F2B04C2D300D57D05 /* Main.storyboard */,
 				730A00322B04C2D400D57D05 /* Assets.xcassets */,
@@ -231,6 +238,7 @@
 				734206FA2B04D8190030BA37 /* LoginViewController.swift in Sources */,
 				730A002E2B04C2D300D57D05 /* MapHomeViewController.swift in Sources */,
 				730A002A2B04C2D300D57D05 /* AppDelegate.swift in Sources */,
+				7342070A2B05D6340030BA37 /* LocationManager.swift in Sources */,
 				734207022B04F1010030BA37 /* ScheduleViewController.swift in Sources */,
 				734207042B04F1290030BA37 /* CocktailViewController.swift in Sources */,
 				734207002B04F0ED0030BA37 /* ChatViewController.swift in Sources */,

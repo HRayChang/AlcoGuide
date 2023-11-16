@@ -7,8 +7,9 @@
 
 import UIKit
 import MapKit
+import CoreLocation
 
-class MapHomeViewController: UIViewController {
+class MapHomeViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     
     var mapView = MKMapView()
     let buttonLineView = UIView()
@@ -19,11 +20,14 @@ class MapHomeViewController: UIViewController {
     let addScheduleView = UIView()
     let selectLocationView = UIView()
     
+    var locationManager = CLLocationManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.black
         
+        setupMap()
         setupAssembleButton()
         setupMapView()
         setupButtonLineView()
@@ -35,16 +39,97 @@ class MapHomeViewController: UIViewController {
         setupConstraints()
     }
     
+    func setupMap() {
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+        mapView.delegate = self
+        mapView.showsUserLocation = true
+        mapView.userTrackingMode = .follow
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.first {
+            locationManager.stopUpdatingLocation()
+            
+            render(location)
+        }
+//
+//        let userLocation: CLLocation = locations[0]
+//
+//        //CLGeocoder地理編碼 經緯度轉換地址位置
+//        CLGeocoder().reverseGeocodeLocation(userLocation) { (placemark, error) in
+//            
+//            if error != nil {
+//                
+//                print(error)
+//                
+//            } else {
+//                
+//                //the geocoder actually returns CLPlacemark objects, which contain both the coordinate and the original information that you provided.
+//                if let placemark = placemark?[0] {
+//                    
+//                    //print(placemark)
+//                    var address = ""
+//                    
+//                    if placemark.subThoroughfare != nil {
+//                        
+//                        address += placemark.subThoroughfare! + " "
+//                        
+//                    }
+//                    
+//                    if placemark.thoroughfare != nil {
+//                        
+//                        address += placemark.thoroughfare! + "\n"
+//                        
+//                    }
+//                    
+//                    if placemark.subLocality != nil {
+//                        
+//                        address += placemark.subLocality! + "\n"
+//                        
+//                    }
+//                    
+//                    if placemark.subAdministrativeArea != nil {
+//                        
+//                        address += placemark.subAdministrativeArea! + "\n"
+//                        
+//                    }
+//                    
+//                    if placemark.postalCode != nil {
+//                        
+//                        address += placemark.postalCode! + "\n"
+//                        
+//                    }
+//                    
+//                    if placemark.country != nil {
+//                        
+//                        address += placemark.country!
+//                        
+//                    }
+//                }
+//                
+//            }
+// 
+//        }
+    }
+    
+    func render(_ location: CLLocation) {
+        let coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        
+        let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+        
+        let region = MKCoordinateRegion(center: coordinate, span: span)
+        
+        mapView.setRegion(region, animated: true)
+    }
+    
     // MARK: - Setup UI
     func setupMapView() {
         if #available(iOS 13.0, *) {
             mapView.overrideUserInterfaceStyle = .dark
         }
-        
-        let locationManager = CLLocationManager()
-        locationManager.requestWhenInUseAuthorization()
-        
-        mapView.showsUserLocation = true
     }
     
     func setupNewScheduleView() {
@@ -90,7 +175,7 @@ class MapHomeViewController: UIViewController {
             newScheduleViewButton.leadingAnchor.constraint(equalTo: newScheduleView.leadingAnchor, constant: 50),
             newScheduleViewButton.trailingAnchor.constraint(equalTo: newScheduleView.trailingAnchor, constant: -50),
             newScheduleViewButton.centerYAnchor.constraint(equalTo: newScheduleView.centerYAnchor, constant: 30),
-            newScheduleViewButton.heightAnchor.constraint(equalToConstant: 50),
+            newScheduleViewButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
@@ -100,7 +185,7 @@ class MapHomeViewController: UIViewController {
         selectLocationView.layer.borderColor = UIColor.steelPink.cgColor
         selectLocationView.layer.borderWidth = 5
         selectLocationView.layer.cornerRadius = 30
-        addScheduleView.isHidden = true
+        selectLocationView.isHidden = true
     }
     
     func setupAddScheduleView() {
@@ -146,7 +231,7 @@ class MapHomeViewController: UIViewController {
             addScheduleViewButton.leadingAnchor.constraint(equalTo: addScheduleView.leadingAnchor, constant: 50),
             addScheduleViewButton.trailingAnchor.constraint(equalTo: addScheduleView.trailingAnchor, constant: -50),
             addScheduleViewButton.centerYAnchor.constraint(equalTo: addScheduleView.centerYAnchor, constant: 30),
-            addScheduleViewButton.heightAnchor.constraint(equalToConstant: 50),
+            addScheduleViewButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
