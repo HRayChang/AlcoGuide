@@ -10,6 +10,13 @@ import MapKit
 
 class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
+    var didSelectLocationClosure: ((String?, String?, String?, CLLocationCoordinate2D?) -> Void)?
+    
+    var locationName: String?
+    var locationPhoneNumber: String?
+    var locationAddress: String?
+    var locationCoordinate: CLLocationCoordinate2D?
+    
     var mapView = MKMapView()
     let buttonLineView = UIView()
     let assembleButton = UIButton()
@@ -154,7 +161,6 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         selectScheduleView.isHidden = false
     }
     
-
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         guard let annotation = view.annotation else {
             return
@@ -163,19 +169,36 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         if let title = annotation.title {
             print("Selected annotation with title: \(title ?? "No title")")
             
-            getMapItem(for: annotation) { mapItem in
+            getMapItem(for: annotation) { [self] mapItem in
                 if let mapItem = mapItem {
                     var region = mapView.region
                     region.center = mapItem.placemark.coordinate
                     
+                    locationName = mapItem.name
+                    locationPhoneNumber = mapItem.phoneNumber
+                    locationAddress = mapItem.placemark.title
+                    locationCoordinate = mapItem.placemark.coordinate
+                    
                     print("Map Item Details:")
-                    print("Name: \(mapItem.name ?? "No name")")
-                    print("Phone: \(mapItem.phoneNumber ?? "No phone number")")
-                    print("Address: \(mapItem.placemark.title ?? "")")
-                    print("Coordinate: \(mapItem.placemark.coordinate.latitude), \(mapItem.placemark.coordinate.longitude)")
+                    print("Name: \(locationName ?? "No name")")
+                    print("Phone: \(locationPhoneNumber ?? "No phone number")")
+                    print("Address: \(locationAddress ?? "")")
+                    print("Coordinate: \(String(describing: locationCoordinate))")
                 }
             }
         }
+
+        let viewController = DetailViewController()
+        if let sheetPresentationController = viewController.sheetPresentationController {
+            sheetPresentationController.largestUndimmedDetentIdentifier = .medium
+            sheetPresentationController.detents = [
+                .medium(),
+                .custom(resolver: { context in
+                    context.maximumDetentValue * 0.3
+                }), .large()
+            ]
+        }
+        present(viewController, animated: true)
     }
 
     private func getMapItem(for annotation: MKAnnotation, completion: @escaping (MKMapItem?) -> Void) {
@@ -192,6 +215,10 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    func didSelectLocation() {
+        // 当某个地点被选择时，调用闭包传递数据
+        didSelectLocationClosure?(locationName, locationPhoneNumber, locationAddress, locationCoordinate)
+    }
     
 }
 
