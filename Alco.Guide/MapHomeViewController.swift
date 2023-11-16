@@ -20,6 +20,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     var mapView = MKMapView()
     let buttonLineView = UIView()
     let assembleButton = UIButton()
+    let returnToCurrentLocationButton = UIButton()
     
     
     let selectLocationView = SelectLocationView()
@@ -37,6 +38,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         setupAssembleButton()
         setupMapView()
         setupConstraints()
+        setupReturnToCurrentLocationButton()
         
         selectScheduleView.delegate = self
         joinScheduleView.delegate = self
@@ -100,6 +102,22 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         assembleButton.addTarget(self, action: #selector(assembleButtonTapped), for: .touchUpInside)
     }
     
+    func setupReturnToCurrentLocationButton() {
+           returnToCurrentLocationButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
+           returnToCurrentLocationButton.tintColor = .white
+           returnToCurrentLocationButton.translatesAutoresizingMaskIntoConstraints = false
+           returnToCurrentLocationButton.addTarget(self, action: #selector(returnToCurrentLocation), for: .touchUpInside)
+
+           view.addSubview(returnToCurrentLocationButton)
+
+           NSLayoutConstraint.activate([
+               returnToCurrentLocationButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+               returnToCurrentLocationButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+               returnToCurrentLocationButton.widthAnchor.constraint(equalToConstant: 40),
+               returnToCurrentLocationButton.heightAnchor.constraint(equalToConstant: 40)
+           ])
+       }
+    
     func setupConstraints() {
         
         mapView.translatesAutoresizingMaskIntoConstraints = false
@@ -161,6 +179,15 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         selectScheduleView.isHidden = false
     }
     
+    @objc func returnToCurrentLocation() {
+          if let location = locationManager.currentLocation {
+              let coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+              let span = MKCoordinateSpan(latitudeDelta: 0.006, longitudeDelta: 0.006)
+              let region = MKCoordinateRegion(center: coordinate, span: span)
+              mapView.setRegion(region, animated: true)
+          }
+      }
+    
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         guard let annotation = view.annotation else {
             return
@@ -200,6 +227,20 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         }
         present(viewController, animated: true)
     }
+    
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+
+            MapManager.shared.searchForPlaces(query: "酒吧", region: mapView.region) { result in
+                switch result {
+                case .success(let annotations):
+                    self.mapView.removeAnnotations(self.mapView.annotations)
+                    self.mapView.addAnnotations(annotations)
+                case .failure(let error):
+                    print("Error searching for nearby places: \(error.localizedDescription)")
+                }
+            }
+        }
+
 
     private func getMapItem(for annotation: MKAnnotation, completion: @escaping (MKMapItem?) -> Void) {
         let request = MKLocalSearch.Request()
