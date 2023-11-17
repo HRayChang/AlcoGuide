@@ -20,15 +20,16 @@ class DetailViewController: UIViewController {
     let nameLabel = UILabel()
     let phoneLabel = UILabel()
     let addressLabel = UILabel()
+    let addToScheduleButton = UIButton()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupDetailView()
+        setupDetailViewUI()
         setupConstraints()
     }
     
-    func setupDetailView() {
+    func setupDetailViewUI() {
         view.backgroundColor = UIColor.black
         
         nameLabel.text = locationName
@@ -39,21 +40,36 @@ class DetailViewController: UIViewController {
         
         addressLabel.text = locationAddress
         addressLabel.textColor = .white
+        
+        addToScheduleButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        addToScheduleButton.layer.borderWidth = 3
+        addToScheduleButton.layer.borderColor = UIColor.steelPink.cgColor
+        addToScheduleButton.tintColor = UIColor.steelPink
+        addToScheduleButton.layer.cornerRadius = 20
     }
     
     func setupConstraints() {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         phoneLabel.translatesAutoresizingMaskIntoConstraints = false
         addressLabel.translatesAutoresizingMaskIntoConstraints = false
+        addToScheduleButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(nameLabel)
         view.addSubview(phoneLabel)
         view.addSubview(addressLabel)
+        view.addSubview(addToScheduleButton)
         
         NSLayoutConstraint.activate([
             nameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            
             phoneLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
-            addressLabel.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 8)
+            
+            addressLabel.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 8),
+            
+            addToScheduleButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+            addToScheduleButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            addToScheduleButton.heightAnchor.constraint(equalToConstant: 40),
+            addToScheduleButton.widthAnchor.constraint(equalTo: addToScheduleButton.heightAnchor)
         ])
     }
 
