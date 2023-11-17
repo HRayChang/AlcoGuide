@@ -8,13 +8,17 @@
 import UIKit
 
 protocol SelectLocationViewDelegate: AnyObject {
-    func convenienceStoreButtonTapped()
-    func barButtonTapped()
-    func bothButtonTapped()
+    func locationButtonTapped(type: LocationType)
+}
+
+enum LocationType {
+    case convenienceStore
+    case bar
+    case both
 }
 
 class SelectLocationView: UIView {
-
+    
     let scheduleLabel = UILabel()
     let scheduleIDLabel = UILabel()
     let searchConvenienceStoreButton = UIButton()
@@ -22,44 +26,44 @@ class SelectLocationView: UIView {
     let searchBothButton = UIButton()
     
     weak var delegate: SelectLocationViewDelegate?
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupSelectLocationView()
     }
-
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupSelectLocationView()
     }
-
+    
     private func setupSelectLocationView() {
         backgroundColor = UIColor.black
         layer.borderColor = UIColor.steelPink.cgColor
         layer.borderWidth = 5
         layer.cornerRadius = 30
         isHidden = true
-
+        
         scheduleLabel.textColor = UIColor.white
 
         scheduleIDLabel.textColor = UIColor.white
-
-        setupButton(searchConvenienceStoreButton, title: "超商", action: #selector(convenienceStoreButtonTapped))
-        setupButton(searchBarButton, title: "酒吧", action: #selector(barButtonTapped))
-        setupButton(searchBothButton, title: "Both", action: #selector(bothButtonTapped))
-
+        
+        setupButton(searchConvenienceStoreButton, title: "超商", action: #selector(locationButtonTapped))
+        setupButton(searchBarButton, title: "酒吧", action: #selector(locationButtonTapped))
+        setupButton(searchBothButton, title: "Both", action: #selector(locationButtonTapped))
+        
         scheduleLabel.translatesAutoresizingMaskIntoConstraints = false
         scheduleIDLabel.translatesAutoresizingMaskIntoConstraints = false
         searchConvenienceStoreButton.translatesAutoresizingMaskIntoConstraints = false
         searchBarButton.translatesAutoresizingMaskIntoConstraints = false
         searchBothButton.translatesAutoresizingMaskIntoConstraints = false
-
+        
         addSubview(scheduleLabel)
         addSubview(scheduleIDLabel)
         addSubview(searchConvenienceStoreButton)
         addSubview(searchBarButton)
         addSubview(searchBothButton)
-
+        
         NSLayoutConstraint.activate([
             scheduleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             searchConvenienceStoreButton.trailingAnchor.constraint(equalTo: searchBarButton.leadingAnchor, constant: -10),
@@ -76,7 +80,7 @@ class SelectLocationView: UIView {
             searchBothButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
-
+    
     private func setupButton(_ button: UIButton, title: String, action: Selector) {
         button.backgroundColor = UIColor.black
         button.layer.borderColor = UIColor.steelPink.cgColor
@@ -87,15 +91,20 @@ class SelectLocationView: UIView {
         button.addTarget(self, action: action, for: .touchUpInside)
     }
     
-    @objc private func convenienceStoreButtonTapped() {
-          delegate?.convenienceStoreButtonTapped()
-      }
-
-      @objc private func barButtonTapped() {
-          delegate?.barButtonTapped()
-      }
-
-      @objc private func bothButtonTapped() {
-          delegate?.bothButtonTapped()
-      }
+    @objc private func locationButtonTapped(_ sender: UIButton) {
+        var locationType: LocationType
+        
+        switch sender {
+        case searchConvenienceStoreButton:
+            locationType = .convenienceStore
+        case searchBarButton:
+            locationType = .bar
+        case searchBothButton:
+            locationType = .both
+        default:
+            return
+        }
+        
+        delegate?.locationButtonTapped(type: locationType)
+    }
 }

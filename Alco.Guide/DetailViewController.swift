@@ -25,18 +25,6 @@ class DetailViewController: UIViewController {
         
         view.backgroundColor = UIColor.black
         
-        if let mapHomeVC = navigationController?.viewControllers.first as? MapHomeViewController {
-            mapHomeVC.didSelectLocationClosure = { [weak self] name, phoneNumber, address, coordinate in
- 
-                self?.locationName = name
-                self?.locationPhoneNumber = phoneNumber
-                self?.locationAddress = address
-                self?.locationCoordinate = coordinate
-            }
-        }
-        
-        
-        
         nameLabel.text = locationName
         nameLabel.textColor = .white
         phoneLabel.text = locationPhoneNumber
@@ -46,6 +34,18 @@ class DetailViewController: UIViewController {
         
         setupConstraints()
     }
+    
+    init(name: String?, phoneNumber: String?, address: String?, coordinate: CLLocationCoordinate2D?) {
+         super.init(nibName: nil, bundle: nil)
+         self.locationName = name
+         self.locationPhoneNumber = phoneNumber
+         self.locationAddress = address
+         self.locationCoordinate = coordinate
+     }
+     
+     required init?(coder: NSCoder) {
+         super.init(coder: coder)
+     }
     
     func setupConstraints() {
         
