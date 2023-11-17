@@ -7,8 +7,11 @@
 
 import UIKit
 import MapKit
+import FirebaseFirestore
 
 class DetailViewController: UIViewController {
+    
+    let db = Firestore.firestore()
     
     let mapManager = MapManager.shared
     
@@ -46,6 +49,7 @@ class DetailViewController: UIViewController {
         addToScheduleButton.layer.borderColor = UIColor.steelPink.cgColor
         addToScheduleButton.tintColor = UIColor.steelPink
         addToScheduleButton.layer.cornerRadius = 20
+        addToScheduleButton.addTarget(self, action: #selector(addToScheduleButtonTapped), for: .touchUpInside)
     }
     
     func setupConstraints() {
@@ -92,4 +96,12 @@ class DetailViewController: UIViewController {
     private func getMapItem(for annotation: MKAnnotation, completion: @escaping (MKMapItem?) -> Void) {
          mapManager.getMapItem(for: annotation, completion: completion)
      }
+    
+    @objc func addToScheduleButtonTapped() {
+        let dataToSave: [String: Any] = [
+                    "key1": "value1",
+                    "key2": "value2"
+                    // 在這裡添加其他資料...
+                ]
+    }
 }

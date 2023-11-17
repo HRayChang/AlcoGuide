@@ -157,6 +157,7 @@
 				730A00232B04C2D300D57D05 /* Frameworks */,
 				730A00242B04C2D300D57D05 /* Resources */,
 				734206F82B04C85F0030BA37 /* ShellScript */,
+				B3EC9FC359EEC84423DB7EE3 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -231,6 +232,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\n\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+		};
+		B3EC9FC359EEC84423DB7EE3 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Alco.Guide/Pods-Alco.Guide-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Alco.Guide/Pods-Alco.Guide-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Alco.Guide/Pods-Alco.Guide-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		D4B0F6179A06919DFDDE0F4A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
