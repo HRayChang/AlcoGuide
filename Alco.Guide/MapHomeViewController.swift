@@ -10,6 +10,8 @@ import MapKit
 
 class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
+    var currentLocationType: LocationType?
+    
     let mapView = MKMapView()
     let buttonLineView = UIView()
     let assembleButton = UIButton()
@@ -93,7 +95,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         joinScheduleView.translatesAutoresizingMaskIntoConstraints = false
         selectLocationView.translatesAutoresizingMaskIntoConstraints = false
         returnToCurrentLocationButton.translatesAutoresizingMaskIntoConstraints = false
-
+        
         view.addSubview(mapView)
         view.addSubview(buttonLineView)
         view.addSubview(assembleButton)
@@ -153,77 +155,85 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     }
     
     @objc func returnToCurrentLocation() {
-          if let location = locationManager.currentLocation {
-              let coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude, 
-                                                      longitude: location.coordinate.longitude)
-              let span = MKCoordinateSpan(latitudeDelta: 0.006, longitudeDelta: 0.006)
-              let region = MKCoordinateRegion(center: coordinate, span: span)
-              mapView.setRegion(region, animated: true)
-          }
-      }
+        if let location = locationManager.currentLocation {
+            let coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude,
+                                                    longitude: location.coordinate.longitude)
+            let span = MKCoordinateSpan(latitudeDelta: 0.006, longitudeDelta: 0.006)
+            let region = MKCoordinateRegion(center: coordinate, span: span)
+            mapView.setRegion(region, animated: true)
+        }
+    }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        guard let annotation = view.annotation else {
-            return
+        guard let annotation = view.annotation else { return }
+        
+        if let detailViewController = presentedViewController as? DetailViewController {
+            detailViewController.updateUI(with: annotation)
+        } else {
+            let detailViewController = DetailViewController()
+            detailViewController.updateUI(with: annotation)
+            if let sheetPresentationController = detailViewController.sheetPresentationController {
+                sheetPresentationController.largestUndimmedDetentIdentifier = .medium
+                sheetPresentationController.detents = [
+                    .custom(resolver: { context in
+                        context.maximumDetentValue * 0.3
+                    }), .medium()
+                ]
+            }
+            present(detailViewController, animated: true)
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        // Assuming you have a property to store the current location type
+        guard let currentLocationType = currentLocationType else { return }
+        
+        var queries: [String] = []
+        
+        switch currentLocationType {
+        case .convenienceStore:
+            queries = ["超商"]
+            
+        case .bar:
+            queries = ["酒吧"]
+            
+        case .both:
+            queries = ["超商", "酒吧"]
         }
         
-        if let title = annotation.title {
-            print("Selected annotation with title: \(title ?? "No title")")
-            
-            getMapItem(for: annotation) { mapItem in
-                if let mapItem = mapItem {
-                    var region = mapView.region
-                    region.center = mapItem.placemark.coordinate
-                    
-                    print("Map Item Details:")
-                    print("Name: \(mapItem.name ?? "No name")")
-                    print("Phone: \(mapItem.phoneNumber ?? "No phone number")")
-                    print("Address: \(mapItem.placemark.title ?? "")")
-                    print("Coordinate: \(String(describing: mapItem.placemark.coordinate))")
-                    
-                    self.presentDetailViewController(with: mapItem)
+        searchForAndDisplayPlaces(queries: queries)
+    }
+    
+    // MARK: - Search location
+    private func searchForAndDisplayPlaces(queries: [String]) {
+        let dispatchGroup = DispatchGroup()
+        var annotations: [MKPointAnnotation] = []
+        
+        for query in queries {
+            dispatchGroup.enter()
+            mapManager.searchForPlaces(query: query, region: mapView.region) { result in
+                defer {
+                    dispatchGroup.leave()
+                }
+                switch result {
+                case .success(let resultAnnotations):
+                    annotations += resultAnnotations
+                case .failure(let error):
+                    print("Error searching for \(query): \(error.localizedDescription)")
                 }
             }
         }
         
-    }
-    
-    func presentDetailViewController(with mapItem: MKMapItem) {
-        let viewController = DetailViewController(
-            name: mapItem.name,
-            phoneNumber: mapItem.phoneNumber,
-            address: mapItem.placemark.title,
-            coordinate: mapItem.placemark.coordinate
-        )
-        
-        if let sheetPresentationController = viewController.sheetPresentationController {
-            sheetPresentationController.largestUndimmedDetentIdentifier = .medium
-            sheetPresentationController.detents = [
-                .custom(resolver: { context in
-                    context.maximumDetentValue * 0.3
-                }), .large()
-            ]
+        dispatchGroup.notify(queue: .main) {
+            self.displayAnnotations(annotations)
         }
-        
-        present(viewController, animated: true)
     }
     
-//    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-//
-//        mapManager.searchForPlaces(query: "酒吧", region: mapView.region) { result in
-//                switch result {
-//                case .success(let annotations):
-//                    self.mapView.removeAnnotations(self.mapView.annotations)
-//                    self.mapView.addAnnotations(annotations)
-//                case .failure(let error):
-//                    print("Error searching for nearby places: \(error.localizedDescription)")
-//                }
-//            }
-//        }
-
-    private func getMapItem(for annotation: MKAnnotation, completion: @escaping (MKMapItem?) -> Void) {
-        mapManager.getMapItem(for: annotation, completion: completion)
+    private func displayAnnotations(_ annotations: [MKPointAnnotation]) {
+        mapView.removeAnnotations(mapView.annotations)
+        mapView.addAnnotations(annotations)
     }
+    // MARK: Search location -
 }
 
 // MARK: - Delegate
@@ -258,9 +268,9 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
         
     }
     
-    // MARK: - Search location
     func locationButtonTapped(type: LocationType) {
         selectLocationView.isHidden = true
+        currentLocationType = type
         
         switch type {
         case .convenienceStore:
@@ -273,36 +283,6 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
             searchForAndDisplayPlaces(queries: ["超商", "酒吧"])
         }
     }
-
-    private func searchForAndDisplayPlaces(queries: [String]) {
-        let dispatchGroup = DispatchGroup()
-        var annotations: [MKPointAnnotation] = []
-
-        for query in queries {
-            dispatchGroup.enter()
-            mapManager.searchForPlaces(query: query, region: mapView.region) { result in
-                defer {
-                    dispatchGroup.leave()
-                }
-                switch result {
-                case .success(let resultAnnotations):
-                    annotations += resultAnnotations
-                case .failure(let error):
-                    print("Error searching for \(query): \(error.localizedDescription)")
-                }
-            }
-        }
-
-        dispatchGroup.notify(queue: .main) {
-            self.displayAnnotations(annotations)
-        }
-    }
-
-    private func displayAnnotations(_ annotations: [MKPointAnnotation]) {
-        mapView.removeAnnotations(mapView.annotations)
-        mapView.addAnnotations(annotations)
-    }
-    // MARK: Search location -
     
     func showAlert(message: String) {
         let alertController = UIAlertController(title: "提醒", message: message, preferredStyle: .alert)

@@ -10,11 +10,12 @@ import MapKit
 
 class DetailViewController: UIViewController {
     
+    let mapManager = MapManager.shared
+    
     var locationName: String?
     var locationPhoneNumber: String?
     var locationAddress: String?
     var locationCoordinate: CLLocationCoordinate2D?
-
     
     let nameLabel = UILabel()
     let phoneLabel = UILabel()
@@ -23,50 +24,56 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupDetailView()
+        setupConstraints()
+    }
+    
+    func setupDetailView() {
         view.backgroundColor = UIColor.black
         
         nameLabel.text = locationName
         nameLabel.textColor = .white
+        
         phoneLabel.text = locationPhoneNumber
         phoneLabel.textColor = .white
+        
         addressLabel.text = locationAddress
         addressLabel.textColor = .white
-        
-        setupConstraints()
     }
     
-    init(name: String?, phoneNumber: String?, address: String?, coordinate: CLLocationCoordinate2D?) {
-         super.init(nibName: nil, bundle: nil)
-         self.locationName = name
-         self.locationPhoneNumber = phoneNumber
-         self.locationAddress = address
-         self.locationCoordinate = coordinate
-     }
-     
-     required init?(coder: NSCoder) {
-         super.init(coder: coder)
-     }
-    
     func setupConstraints() {
-        
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         phoneLabel.translatesAutoresizingMaskIntoConstraints = false
         addressLabel.translatesAutoresizingMaskIntoConstraints = false
-
         
         view.addSubview(nameLabel)
         view.addSubview(phoneLabel)
         view.addSubview(addressLabel)
-  
         
         NSLayoutConstraint.activate([
-            
             nameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            
             phoneLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
-            
-            addressLabel.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 8),
-            
+            addressLabel.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 8)
         ])
     }
+
+    func updateUI(with annotation: MKAnnotation) {
+        getMapItem(for: annotation) { [weak self] mapItem in
+            guard let self = self else { return }
+            
+            self.locationName = mapItem?.name
+            self.locationPhoneNumber = mapItem?.phoneNumber
+            self.locationAddress = mapItem?.placemark.title
+            self.locationCoordinate = mapItem?.placemark.coordinate
+            
+            // Update the UI with the new data
+            self.nameLabel.text = self.locationName
+            self.phoneLabel.text = self.locationPhoneNumber
+            self.addressLabel.text = self.locationAddress
+        }
+    }
+    
+    private func getMapItem(for annotation: MKAnnotation, completion: @escaping (MKMapItem?) -> Void) {
+         mapManager.getMapItem(for: annotation, completion: completion)
+     }
 }
