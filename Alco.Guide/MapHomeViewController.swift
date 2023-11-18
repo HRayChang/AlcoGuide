@@ -7,8 +7,12 @@
 
 import UIKit
 import MapKit
+import FirebaseFirestore
 
 class MapHomeViewController: UIViewController, MKMapViewDelegate {
+    
+    let dataBase = Firestore.firestore()
+    var scheduleReference: DocumentReference?
     
     var currentLocationType: LocationType?
     
@@ -150,6 +154,10 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     }
     // MARK: Setup UI -
     
+    func postScheduleAddedNotification(scheduleID: [String: Any]) {
+        NotificationCenter.default.post(name: Notification.Name("ScheduleChange"), object: nil, userInfo: ["scheduleID": scheduleID])
+    }
+    
     @objc func assembleButtonTapped() {
         selectScheduleView.isHidden = false
     }
@@ -265,6 +273,26 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
     func addNewScheduleButtonTapped(scheduleName: String) {
         addNewScheduleView.isHidden = true
         selectLocationView.isHidden = false
+        
+        let data: [String: Any] = [
+            "scheduleName": scheduleName
+        ]
+        
+        scheduleReference = dataBase.collection("Schedules").document()
+        
+        scheduleReference?.setData(data) { error in
+            if let error = error {
+                print("Error adding document: \(error)")
+            } else {
+                print("Document added successfully")
+                
+                ScheduleID.scheduleID = self.scheduleReference?.documentID
+            }
+        }
+        
+
+        guard let scheduleID = ScheduleID.scheduleID else { return }
+//        postScheduleAddedNotification(scheduleID: scheduleID)
         
     }
     

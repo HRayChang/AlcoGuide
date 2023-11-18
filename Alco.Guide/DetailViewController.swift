@@ -11,7 +11,7 @@ import FirebaseFirestore
 
 class DetailViewController: UIViewController {
     
-    let db = Firestore.firestore()
+    let dataBase = Firestore.firestore()
     
     let mapManager = MapManager.shared
     
@@ -24,7 +24,7 @@ class DetailViewController: UIViewController {
     let phoneLabel = UILabel()
     let addressLabel = UILabel()
     let addToScheduleButton = UIButton()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -76,7 +76,7 @@ class DetailViewController: UIViewController {
             addToScheduleButton.widthAnchor.constraint(equalTo: addToScheduleButton.heightAnchor)
         ])
     }
-
+    
     func updateUI(with annotation: MKAnnotation) {
         getMapItem(for: annotation) { [weak self] mapItem in
             guard let self = self else { return }
@@ -94,14 +94,28 @@ class DetailViewController: UIViewController {
     }
     
     private func getMapItem(for annotation: MKAnnotation, completion: @escaping (MKMapItem?) -> Void) {
-         mapManager.getMapItem(for: annotation, completion: completion)
-     }
+        mapManager.getMapItem(for: annotation, completion: completion)
+    }
     
     @objc func addToScheduleButtonTapped() {
-        let dataToSave: [String: Any] = [
-                    "key1": "value1",
-                    "key2": "value2"
-                    // 在這裡添加其他資料...
-                ]
+        guard let locationCoordinate = locationCoordinate else {
+            print("Invalid location coordinate")
+            return
+        }
+        
+        let geoPoint = GeoPoint(latitude: locationCoordinate.latitude, longitude: locationCoordinate.longitude)
+        
+        let data: [String: Any] = [
+            "locationCoordinate": FieldValue.arrayUnion([geoPoint])
+        ]
+        
+        guard let scheduleID = ScheduleID.scheduleID else { return }
+        dataBase.collection("Schedules").document(scheduleID).updateData(data) { error in
+            if let error = error {
+                print("Error adding document: \(error)")
+            } else {
+                print("Document added successfully!")
+            }
+        }
     }
 }
