@@ -155,10 +155,6 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     }
     // MARK: Setup UI -
     
-    func postScheduleAddedNotification(scheduleID: [String: Any]) {
-        NotificationCenter.default.post(name: Notification.Name("ScheduleChange"), object: nil, userInfo: ["scheduleID": scheduleID])
-    }
-    
     @objc func assembleButtonTapped() {
         selectScheduleView.isHidden = false
     }
@@ -282,7 +278,7 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
                 print("Error adding document")
             }
         }
-        guard let scheduleID = ScheduleID.scheduleID else { return }
+        guard let scheduleID = ScheduleInfo.scheduleID else { return }
 //        postScheduleAddedNotification(scheduleID: scheduleID)
     }
     

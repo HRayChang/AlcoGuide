@@ -88,7 +88,6 @@ class DetailViewController: UIViewController {
             self.locationAddress = mapItem?.placemark.title
             self.locationCoordinate = mapItem?.placemark.coordinate
             
-            // Update the UI with the new data
             self.nameLabel.text = self.locationName
             self.phoneLabel.text = self.locationPhoneNumber
             self.addressLabel.text = self.locationAddress
@@ -105,7 +104,7 @@ class DetailViewController: UIViewController {
              return
          }
 
-         guard let scheduleID = ScheduleID.scheduleID else { return }
+         guard let scheduleID = ScheduleInfo.scheduleID else { return }
 
          locationDataManager.addLocationToSchedule(locationCoordinate: locationCoordinate, scheduleID: scheduleID) { error in
              if let error = error {

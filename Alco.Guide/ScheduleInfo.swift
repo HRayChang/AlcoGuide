@@ -7,6 +7,7 @@
 
 import Foundation
 
-struct ScheduleID {
+struct ScheduleInfo {
     static var scheduleID: String?
+    static var scheduleName: String?
 }

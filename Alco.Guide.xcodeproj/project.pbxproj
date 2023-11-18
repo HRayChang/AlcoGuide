@@ -30,7 +30,7 @@
 		7342071B2B06352B0030BA37 /* SelectScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7342071A2B06352B0030BA37 /* SelectScheduleView.swift */; };
 		7342071D2B06365B0030BA37 /* JoinScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7342071C2B06365B0030BA37 /* JoinScheduleView.swift */; };
 		73BC5A6C2B076BF200DBB82B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 73BC5A6B2B076BF200DBB82B /* GoogleService-Info.plist */; };
-		73BC5A6E2B07A16600DBB82B /* ScheduleID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A6D2B07A16600DBB82B /* ScheduleID.swift */; };
+		73BC5A6E2B07A16600DBB82B /* ScheduleInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A6D2B07A16600DBB82B /* ScheduleInfo.swift */; };
 		73BC5A702B08B25500DBB82B /* LocationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A6F2B08B25500DBB82B /* LocationDataManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,7 +59,7 @@
 		7342071A2B06352B0030BA37 /* SelectScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectScheduleView.swift; sourceTree = "<group>"; };
 		7342071C2B06365B0030BA37 /* JoinScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinScheduleView.swift; sourceTree = "<group>"; };
 		73BC5A6B2B076BF200DBB82B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		73BC5A6D2B07A16600DBB82B /* ScheduleID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleID.swift; sourceTree = "<group>"; };
+		73BC5A6D2B07A16600DBB82B /* ScheduleInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleInfo.swift; sourceTree = "<group>"; };
 		73BC5A6F2B08B25500DBB82B /* LocationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDataManager.swift; sourceTree = "<group>"; };
 		A70542C8FB22292566ABD1D2 /* Pods-Alco.Guide.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Alco.Guide.release.xcconfig"; path = "Target Support Files/Pods-Alco.Guide/Pods-Alco.Guide.release.xcconfig"; sourceTree = "<group>"; };
 		B2F788178EF46E0F799535FE /* Pods-Alco.Guide.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Alco.Guide.debug.xcconfig"; path = "Target Support Files/Pods-Alco.Guide/Pods-Alco.Guide.debug.xcconfig"; sourceTree = "<group>"; };
@@ -122,7 +122,7 @@
 				7342070D2B06080A0030BA37 /* DetailViewController.swift */,
 				73BC5A712B08B78100DBB82B /* Manager */,
 				734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */,
-				73BC5A6D2B07A16600DBB82B /* ScheduleID.swift */,
+				73BC5A6D2B07A16600DBB82B /* ScheduleInfo.swift */,
 				730A002F2B04C2D300D57D05 /* Main.storyboard */,
 				730A00322B04C2D400D57D05 /* Assets.xcassets */,
 				730A00342B04C2D400D57D05 /* LaunchScreen.storyboard */,
@@ -304,7 +304,7 @@
 				7342070A2B05D6340030BA37 /* CoreLocationManager.swift in Sources */,
 				734207172B0631E50030BA37 /* SelectLocationView.swift in Sources */,
 				7342070C2B05FE6F0030BA37 /* MapManager.swift in Sources */,
-				73BC5A6E2B07A16600DBB82B /* ScheduleID.swift in Sources */,
+				73BC5A6E2B07A16600DBB82B /* ScheduleInfo.swift in Sources */,
 				734207022B04F1010030BA37 /* ScheduleViewController.swift in Sources */,
 				7342071D2B06365B0030BA37 /* JoinScheduleView.swift in Sources */,
 				734207042B04F1290030BA37 /* CocktailViewController.swift in Sources */,

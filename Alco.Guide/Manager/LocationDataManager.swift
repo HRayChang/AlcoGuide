@@ -14,6 +14,10 @@ class LocationDataManager {
     static let shared = LocationDataManager()
 
     private let database = Firestore.firestore()
+    
+    func postScheduleAddedNotification(scheduleInfo: [String: Any]) {
+        NotificationCenter.default.post(name: Notification.Name("ScheduleChange"), object: nil, userInfo: scheduleInfo)
+    }
 
     func addNewSchedule(scheduleName: String, completion: @escaping (String?) -> Void) {
         let data: [String: Any] = [
@@ -22,7 +26,7 @@ class LocationDataManager {
 
         let scheduleReference = database.collection("Schedules").document()
 
-        scheduleReference.setData(data) { error in
+        scheduleReference.setData(data) { [self] error in
             if let error = error {
                 print("Error adding document: \(error)")
                 completion(nil)
@@ -31,7 +35,10 @@ class LocationDataManager {
 
                 completion(scheduleReference.documentID)
 
-                ScheduleID.scheduleID = scheduleReference.documentID
+                ScheduleInfo.scheduleID = scheduleReference.documentID
+                ScheduleInfo.scheduleName = scheduleName
+                
+                postScheduleAddedNotification(scheduleInfo: ["scheduleID": ScheduleInfo.scheduleID!, "scheduleName": ScheduleInfo.scheduleName!])
             }
         }
     }
