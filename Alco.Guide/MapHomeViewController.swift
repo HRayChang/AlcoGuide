@@ -26,8 +26,9 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     let joinScheduleView = JoinScheduleView()
     let addNewScheduleView = AddNewScheduleView()
     
-    let locationManager = LocationManager.shared
+    let coreLocationManager = CoreLocationManager.shared
     let mapManager = MapManager.shared
+    let locationDataManager = LocationDataManager.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -163,7 +164,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     }
     
     @objc func returnToCurrentLocation() {
-        if let location = locationManager.currentLocation {
+        if let location = coreLocationManager.currentLocation {
             let coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude,
                                                     longitude: location.coordinate.longitude)
             let span = MKCoordinateSpan(latitudeDelta: 0.006, longitudeDelta: 0.006)
@@ -274,26 +275,15 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
         addNewScheduleView.isHidden = true
         selectLocationView.isHidden = false
         
-        let data: [String: Any] = [
-            "scheduleName": scheduleName
-        ]
-        
-        scheduleReference = dataBase.collection("Schedules").document()
-        
-        scheduleReference?.setData(data) { error in
-            if let error = error {
-                print("Error adding document: \(error)")
+        locationDataManager.addNewSchedule(scheduleName: scheduleName) { documentID in
+            if let documentID = documentID {
+                print("Document added successfully with ID: \(documentID)")
             } else {
-                print("Document added successfully")
-                
-                ScheduleID.scheduleID = self.scheduleReference?.documentID
+                print("Error adding document")
             }
         }
-        
-
         guard let scheduleID = ScheduleID.scheduleID else { return }
 //        postScheduleAddedNotification(scheduleID: scheduleID)
-        
     }
     
     func locationButtonTapped(type: LocationType) {

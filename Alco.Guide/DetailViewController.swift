@@ -14,6 +14,7 @@ class DetailViewController: UIViewController {
     let dataBase = Firestore.firestore()
     
     let mapManager = MapManager.shared
+    let locationDataManager = LocationDataManager.shared
     
     var locationName: String?
     var locationPhoneNumber: String?
@@ -45,6 +46,7 @@ class DetailViewController: UIViewController {
         addressLabel.textColor = .white
         
         addToScheduleButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        addToScheduleButton.backgroundColor = UIColor.black
         addToScheduleButton.layer.borderWidth = 3
         addToScheduleButton.layer.borderColor = UIColor.steelPink.cgColor
         addToScheduleButton.tintColor = UIColor.steelPink
@@ -98,24 +100,19 @@ class DetailViewController: UIViewController {
     }
     
     @objc func addToScheduleButtonTapped() {
-        guard let locationCoordinate = locationCoordinate else {
-            print("Invalid location coordinate")
-            return
-        }
-        
-        let geoPoint = GeoPoint(latitude: locationCoordinate.latitude, longitude: locationCoordinate.longitude)
-        
-        let data: [String: Any] = [
-            "locationCoordinate": FieldValue.arrayUnion([geoPoint])
-        ]
-        
-        guard let scheduleID = ScheduleID.scheduleID else { return }
-        dataBase.collection("Schedules").document(scheduleID).updateData(data) { error in
-            if let error = error {
-                print("Error adding document: \(error)")
-            } else {
-                print("Document added successfully!")
-            }
-        }
-    }
+         guard let locationCoordinate = locationCoordinate else {
+             print("Invalid location coordinate")
+             return
+         }
+
+         guard let scheduleID = ScheduleID.scheduleID else { return }
+
+         locationDataManager.addLocationToSchedule(locationCoordinate: locationCoordinate, scheduleID: scheduleID) { error in
+             if let error = error {
+                 print("Error adding document: \(error)")
+             } else {
+                 print("Location added successfully")
+             }
+         }
+     }
 }
