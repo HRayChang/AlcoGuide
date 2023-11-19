@@ -9,7 +9,9 @@ import UIKit
 import MapKit
 import FirebaseFirestore
 
-class DetailViewController: UIViewController {
+class LocationDetailViewController: UIViewController {
+    
+    var scheduleInfo = ScheduleInfo(scheduleID: nil, scheduleName: nil, isRunning: nil)
     
     let dataBase = Firestore.firestore()
     
@@ -104,7 +106,7 @@ class DetailViewController: UIViewController {
              return
          }
 
-         guard let scheduleID = ScheduleInfo.scheduleID else { return }
+         guard let scheduleID = scheduleInfo.scheduleID else { return }
 
          locationDataManager.addLocationToSchedule(locationCoordinate: locationCoordinate, scheduleID: scheduleID) { error in
              if let error = error {

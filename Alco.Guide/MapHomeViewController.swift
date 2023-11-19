@@ -11,7 +11,8 @@ import FirebaseFirestore
 
 class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
-    let dataBase = Firestore.firestore()
+    var scheduleInfo = ScheduleInfo(scheduleID: nil, scheduleName: nil, isRunning: nil)
+    
     var scheduleReference: DocumentReference?
     
     var currentLocationType: LocationType?
@@ -172,10 +173,10 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         guard let annotation = view.annotation else { return }
         
-        if let detailViewController = presentedViewController as? DetailViewController {
+        if let detailViewController = presentedViewController as? LocationDetailViewController {
             detailViewController.updateUI(with: annotation)
         } else {
-            let detailViewController = DetailViewController()
+            let detailViewController = LocationDetailViewController()
             detailViewController.updateUI(with: annotation)
             if let sheetPresentationController = detailViewController.sheetPresentationController {
                 sheetPresentationController.largestUndimmedDetentIdentifier = .medium
@@ -259,12 +260,12 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
     
     func showMyScheduleView() {
         selectScheduleView.isHidden = true
-        self.navigationController?.pushViewController(ScheduleViewController(), animated: true)
+        self.navigationController?.pushViewController(MyScheduleViewController(), animated: true)
     }
     
     func joinScheduleButtonTapped() {
         joinScheduleView.isHidden = true
-        self.navigationController?.pushViewController(ScheduleViewController(), animated: true)
+        self.navigationController?.pushViewController(MyScheduleViewController(), animated: true)
     }
     
     func addNewScheduleButtonTapped(scheduleName: String) {
@@ -278,7 +279,7 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
                 print("Error adding document")
             }
         }
-        guard let scheduleID = ScheduleInfo.scheduleID else { return }
+        guard let scheduleID = scheduleInfo.scheduleID else { return }
 //        postScheduleAddedNotification(scheduleID: scheduleID)
     }
     

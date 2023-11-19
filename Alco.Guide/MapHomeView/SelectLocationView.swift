@@ -45,7 +45,7 @@ class SelectLocationView: UIView {
     
     // MARK: - Update schedule labels
     private func setupObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(updateScheduleLabels(_:)), name: Notification.Name("ScheduleChange"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateScheduleLabels(_:)), name: Notification.Name("ScheduleAdd"), object: nil)
     }
     
     @objc private func updateScheduleLabels(_ notification: Notification) {

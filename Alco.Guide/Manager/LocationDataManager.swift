@@ -12,51 +12,110 @@ import FirebaseFirestore
 class LocationDataManager {
     
     static let shared = LocationDataManager()
-
+    
     private let database = Firestore.firestore()
     
+    private let collectionPath = "Schedules"
+    
     func postScheduleAddedNotification(scheduleInfo: [String: Any]) {
-        NotificationCenter.default.post(name: Notification.Name("ScheduleChange"), object: nil, userInfo: scheduleInfo)
+        NotificationCenter.default.post(name: Notification.Name("ScheduleAdd"), object: nil, userInfo: scheduleInfo)
     }
-
+    
     func addNewSchedule(scheduleName: String, completion: @escaping (String?) -> Void) {
         let data: [String: Any] = [
-            "scheduleName": scheduleName
+            "scheduleName": scheduleName,
+            "isRunning": true
         ]
-
-        let scheduleReference = database.collection("Schedules").document()
-
+        
+        let scheduleReference = database.collection(collectionPath).document()
+        
         scheduleReference.setData(data) { [self] error in
             if let error = error {
                 print("Error adding document: \(error)")
                 completion(nil)
             } else {
                 print("New schedule added successfully")
-
-                completion(scheduleReference.documentID)
-
-                ScheduleInfo.scheduleID = scheduleReference.documentID
-                ScheduleInfo.scheduleName = scheduleName
                 
-                postScheduleAddedNotification(scheduleInfo: ["scheduleID": ScheduleInfo.scheduleID!, "scheduleName": ScheduleInfo.scheduleName!])
+                let scheduleInfo = ScheduleInfo(scheduleID: scheduleReference.documentID, scheduleName: scheduleName, isRunning: true)
+                
+                completion(scheduleReference.documentID)
+                
+                postScheduleAddedNotification(scheduleInfo: ["scheduleID": scheduleInfo.scheduleID!, "scheduleName": scheduleInfo.scheduleName!])
             }
         }
     }
     
     func addLocationToSchedule(locationCoordinate: CLLocationCoordinate2D?, scheduleID: String, completion: @escaping (Error?) -> Void) {
+        
         guard let locationCoordinate = locationCoordinate else {
             let error = NSError(domain: "Invalid location coordinate", code: 0, userInfo: nil)
             completion(error)
             return
         }
-
+        
         let geoPoint = GeoPoint(latitude: locationCoordinate.latitude, longitude: locationCoordinate.longitude)
-
+        
         let data: [String: Any] = [
             "locationCoordinate": FieldValue.arrayUnion([geoPoint])
         ]
+        
+        database.collection(collectionPath).document(scheduleID).updateData(data) { error in
+            completion(error)
+        }
+    }
+    
+    func fetchSchedules(completion: @escaping (Bool) -> Void) {
+        
+        let schedulesReference = database.collection(collectionPath)
+        
+        schedulesReference.getDocuments { [weak self] (querySnapshot, error) in
+            guard let self = self else { return }
+            
+            if let error = error {
+                print("Error getting documents: \(error)")
+                completion(false)
+            } else {
+                Situation.runningSchedules.removeAll()
+                Situation.finishedSchedules.removeAll()
+                
+                for document in querySnapshot!.documents {
+                    let scheduleID = document.documentID
+                    let scheduleName = document.data()["scheduleName"] as? String ?? "Unknown"
+                    let isRunning = document.data()["isRunning"] as? Bool ?? false
+                    
+                    let scheduleInfo = ScheduleInfo(scheduleID: scheduleID, scheduleName: scheduleName, isRunning: isRunning)
+                    
+                    if isRunning {
+                        Situation.runningSchedules.append(scheduleInfo)
+                        print("Running schedules: \(Situation.runningSchedules)")
+                    } else {
+                        Situation.finishedSchedules.append(scheduleInfo)
+                        print("Finished schedules: \(Situation.finishedSchedules)")
+                    }
+                }
+                
+                completion(true)
+            }
+        }
+    }
+    
+    func deleteSchedule(scheduleID: String) {
+         
+        let scheduleReference = database.collection(collectionPath)
+         
+        scheduleReference.document(scheduleID).delete { error in
+             if let error = error {
+                 print("Error deleting schedule: \(error.localizedDescription)")
+             } else {
+                 print("Schedule deleted successfully")
+             }
+         }
+     }
+    
+    func finishSchedule(for scheduleID: String, isRunning: Bool, completion: @escaping (Error?) -> Void) {
+        let scheduleReference = database.collection(collectionPath).document(scheduleID)
 
-        database.collection("Schedules").document(scheduleID).updateData(data) { error in
+        scheduleReference.updateData(["isRunning": isRunning]) { error in
             completion(error)
         }
     }

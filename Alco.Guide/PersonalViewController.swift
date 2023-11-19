@@ -14,6 +14,8 @@ class PersonalViewController: UIViewController {
         
         view.backgroundColor = UIColor.purple
         
+//        self.dismiss(animated: true, completion: nil)
+        
     }
 
 
