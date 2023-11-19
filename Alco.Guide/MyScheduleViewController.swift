@@ -33,6 +33,14 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         setupObservers()
         
         fetchSchedules()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+
+        tableView.setEditing(true, animated: false)
+        editButtonTapped()
 
     }
     
@@ -50,8 +58,6 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     func setupMyScheduleViewUI() {
         view.backgroundColor = UIColor.black
         
-        self.navigationItem.rightBarButtonItem = editButtonItem
-        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.white
     }
     
     func setupConstraints() {
@@ -68,20 +74,36 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.register(MyScheduleTableViewCell.self, forCellReuseIdentifier: "cell")
     }
     
+    @objc func editButtonTapped() {
+        tableView.setEditing(!tableView.isEditing, animated: true)
+                             
+        if (!tableView.isEditing) {
+    
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "編輯", style: .plain, target: self, action: #selector(MyScheduleViewController.editButtonTapped))
+            
+        } else {
+
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "完成", style: .plain, target: self, action: #selector(MyScheduleViewController.editButtonTapped))
+            
+            self.view.endEditing(true)
+
+        }
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return Section.allCases.count
     }
-
+    
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return Section.allCases[section].rawValue
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch Section.allCases[section] {
         case .running:
-            return Situation.runningSchedules.count
+            return locationDataManager.runningSchedules.count
         case .finished:
-            return Situation.finishedSchedules.count
+            return locationDataManager.finishedSchedules.count
         }
     }
     
@@ -96,25 +118,25 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         
         switch Section.allCases[indexPath.section] {
         case .running:
-            cell.configureCell(with: Situation.runningSchedules, at: indexPath.row)
+            cell.configureCell(with: locationDataManager.runningSchedules, at: indexPath.row)
         case .finished:
-            cell.configureCell(with: Situation.finishedSchedules, at: indexPath.row)
+            cell.configureCell(with: locationDataManager.finishedSchedules, at: indexPath.row)
         }
         return cell
     }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         
         switch Section.allCases[indexPath.section] {
         case .running:
-            scheduleInfo.scheduleID = Situation.runningSchedules[indexPath.row].scheduleID
-            scheduleInfo.scheduleName = Situation.runningSchedules[indexPath.row].scheduleName
-            scheduleInfo.isRunnung = Situation.runningSchedules[indexPath.row].isRunnung
+            scheduleInfo.scheduleID = locationDataManager.runningSchedules[indexPath.row].scheduleID
+            scheduleInfo.scheduleName = locationDataManager.runningSchedules[indexPath.row].scheduleName
+            scheduleInfo.isRunnung = locationDataManager.runningSchedules[indexPath.row].isRunnung
         case .finished:
-            scheduleInfo.scheduleID = Situation.finishedSchedules[indexPath.row].scheduleID
-            scheduleInfo.scheduleName = Situation.finishedSchedules[indexPath.row].scheduleName
-            scheduleInfo.isRunnung = Situation.finishedSchedules[indexPath.row].isRunnung
+            scheduleInfo.scheduleID = locationDataManager.finishedSchedules[indexPath.row].scheduleID
+            scheduleInfo.scheduleName = locationDataManager.finishedSchedules[indexPath.row].scheduleName
+            scheduleInfo.isRunnung = locationDataManager.finishedSchedules[indexPath.row].isRunnung
         }
         
         
@@ -124,27 +146,27 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         
         navigationController?.pushViewController(myScheduleDetailViewController, animated: true)
     }
-
+    
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-      return true
+        return true
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-  
+            
             switch Section.allCases[indexPath.section] {
             case .running:
-                guard let scheduleID = Situation.runningSchedules[indexPath.row].scheduleID else { return }
+                guard let scheduleID = locationDataManager.runningSchedules[indexPath.row].scheduleID else { return }
                 locationDataManager.deleteSchedule(scheduleID: scheduleID)
             case .finished:
-                guard let scheduleID = Situation.finishedSchedules[indexPath.row].scheduleID else { return }
+                guard let scheduleID = locationDataManager.finishedSchedules[indexPath.row].scheduleID else { return }
                 locationDataManager.deleteSchedule(scheduleID: scheduleID)
             }
             fetchSchedules()
         }
     }
-
+    
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         switch Section.allCases[indexPath.section] {
         case .running:
@@ -155,20 +177,46 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        
-//        guard
-//          sourceIndexPath != destinationIndexPath,
-//          sourceIndexPath.section == destinationIndexPath.section,
-//          let ScheduleIDToMove = Situation.runningSchedules[sourceIndexPath.row]["ScheduleID"],
-//          let ScheduleIDAtDestination = Situation.finishedSchedules[sourceIndexPath.row]["ScheduleID"],
-//        else {
-//          apply(snapshot(), animatingDifferences: false)
-//          return
-//        }
-//        
-//        reorderSchedules(ScheduleIDToMove: ScheduleIDToMove, ScheduleIDAtDestination: ScheduleIDAtDestination)
-//        update(sortStyle: currentSortStyle, animatingDifferences: false)
-//      }
+        let scheduleIDToMove = locationDataManager.runningSchedules.remove(at: sourceIndexPath.row)
+
+        if sourceIndexPath.section == destinationIndexPath.section {
+            // Moving within the same section (running section)
+            locationDataManager.runningSchedules.insert(scheduleIDToMove, at: destinationIndexPath.row)
+        } else {
+            // Moving to the "finished" section
+            locationDataManager.finishedSchedules.insert(scheduleIDToMove, at: destinationIndexPath.row)
+        }
+
+        locationDataManager.finishSchedule(for: scheduleIDToMove.scheduleID!, isRunning: sourceIndexPath.section == 0) { error in
+            if let error = error {
+                print("Error updating Firestore document: \(error.localizedDescription)")
+            } else {
+                print("Firestore document updated successfully!")
+            }
+        }
+        fetchSchedules()
+
+        tableView.reloadData() // Refresh the table view
+    }
+
+    
+}
+
+
+
+
+//guard
+//    sourceIndexPath != destinationIndexPath,
+//    sourceIndexPath.section == destinationIndexPath.section,
+//    let ScheduleIDToMove = locationDataManager.runningSchedules[sourceIndexPath],
+//    let ScheduleIDAtDestination = locationDataManager.finishedSchedules[sourceIndexPath]
+//else {
+//    return
+//}
+//
+//locationDataManager.reorderSchedules(ScheduleToMove: ScheduleIDToMove, ScheduleAtDestination: ScheduleIDAtDestination)
+//
+//
 ////            switch Section.allCases[sourceIndexPath.section] {
 ////            case .running:
 ////                scheduleIDToMove = locationDataManager.runningSchedules[sourceIndexPath.row].scheduleID
@@ -177,21 +225,11 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
 ////            }
 //
 //
-//            locationDataManager.finishSchedule(for: finishScheduleID, isRunning: false) { error in
-//                if let error = error {
-//                    print("Error updating Firestore document: \(error.localizedDescription)")
-//                } else {
-//                    print("Firestore document updated successfully!")
-//                }
-//            }
-//            fetchSchedules()
-//        }
-//
-//static func reorderSchedules(ScheduleIDToMove: Book, ScheduleIDAtDestination: Book) {
-//  let destinationIndex = Library.books.firstIndex(of: bookAtDestination) ?? 0
-//  books.removeAll(where: { $0.title == bookToMove.title })
-//  books.insert(bookToMove, at: destinationIndex)
-//  saveAllBooks()
-}
-    
-}
+//locationDataManager.finishSchedule(for: ScheduleIDToMove, isRunning: false) { error in
+//    if let error = error {
+//        print("Error updating Firestore document: \(error.localizedDescription)")
+//    } else {
+//        print("Firestore document updated successfully!")
+//    }
+//}
+//fetchSchedules()

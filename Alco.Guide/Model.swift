@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ScheduleInfo {
+struct ScheduleInfo: Codable, Equatable {
     var scheduleID: String?
     var scheduleName: String?
     var isRunnung: Bool?
@@ -19,7 +19,4 @@ struct ScheduleInfo {
     }
 }
 
-struct Situation {
-    static var runningSchedules: [ScheduleInfo] = []
-    static var finishedSchedules: [ScheduleInfo] = []
-}
+

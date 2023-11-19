@@ -17,6 +17,9 @@ class LocationDataManager {
     
     private let collectionPath = "Schedules"
     
+    var runningSchedules: [ScheduleInfo] = []
+    var finishedSchedules: [ScheduleInfo] = []
+    
     func postScheduleAddedNotification(scheduleInfo: [String: Any]) {
         NotificationCenter.default.post(name: Notification.Name("ScheduleAdd"), object: nil, userInfo: scheduleInfo)
     }
@@ -75,8 +78,8 @@ class LocationDataManager {
                 print("Error getting documents: \(error)")
                 completion(false)
             } else {
-                Situation.runningSchedules.removeAll()
-                Situation.finishedSchedules.removeAll()
+                runningSchedules.removeAll()
+                finishedSchedules.removeAll()
                 
                 for document in querySnapshot!.documents {
                     let scheduleID = document.documentID
@@ -86,11 +89,11 @@ class LocationDataManager {
                     let scheduleInfo = ScheduleInfo(scheduleID: scheduleID, scheduleName: scheduleName, isRunning: isRunning)
                     
                     if isRunning {
-                        Situation.runningSchedules.append(scheduleInfo)
-                        print("Running schedules: \(Situation.runningSchedules)")
+                        runningSchedules.append(scheduleInfo)
+                        print("Running schedules: \(runningSchedules)")
                     } else {
-                        Situation.finishedSchedules.append(scheduleInfo)
-                        print("Finished schedules: \(Situation.finishedSchedules)")
+                        finishedSchedules.append(scheduleInfo)
+                        print("Finished schedules: \(finishedSchedules)")
                     }
                 }
                 
