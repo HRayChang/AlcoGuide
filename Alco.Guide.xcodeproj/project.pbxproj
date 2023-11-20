@@ -14,7 +14,9 @@
 		730A00312B04C2D300D57D05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 730A002F2B04C2D300D57D05 /* Main.storyboard */; };
 		730A00332B04C2D400D57D05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 730A00322B04C2D400D57D05 /* Assets.xcassets */; };
 		730A00362B04C2D400D57D05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 730A00342B04C2D400D57D05 /* LaunchScreen.storyboard */; };
-		733C7F0D2B0A42F00097EAB1 /* MyScheduleDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F0C2B0A42F00097EAB1 /* MyScheduleDetailTableViewCell.swift */; };
+		733C7F0D2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F0C2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift */; };
+		733C7F132B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F122B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift */; };
+		733C7F152B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F142B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift */; };
 		734206FA2B04D8190030BA37 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206F92B04D8190030BA37 /* LoginViewController.swift */; };
 		734206FC2B04D99D0030BA37 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */; };
 		734206FE2B04EE230030BA37 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206FD2B04EE230030BA37 /* TabBarController.swift */; };
@@ -47,7 +49,9 @@
 		730A00322B04C2D400D57D05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		730A00352B04C2D400D57D05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		730A00372B04C2D400D57D05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		733C7F0C2B0A42F00097EAB1 /* MyScheduleDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailTableViewCell.swift; sourceTree = "<group>"; };
+		733C7F0C2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailActivitiesTableViewCell.swift; sourceTree = "<group>"; };
+		733C7F122B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailLocationNameTableViewCell.swift; sourceTree = "<group>"; };
+		733C7F142B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailButtonTableViewCell.swift; sourceTree = "<group>"; };
 		734206F92B04D8190030BA37 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		734206FD2B04EE230030BA37 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -128,7 +132,9 @@
 				734207012B04F1010030BA37 /* MyScheduleViewController.swift */,
 				73BC5A742B08EDE200DBB82B /* MyScheduleTableViewCell.swift */,
 				73BC5A762B08EEED00DBB82B /* MyScheduleDetailViewController.swift */,
-				733C7F0C2B0A42F00097EAB1 /* MyScheduleDetailTableViewCell.swift */,
+				733C7F122B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift */,
+				733C7F142B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift */,
+				733C7F0C2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift */,
 				73BC5A722B08C96D00DBB82B /* MyScheduleCell.swift */,
 				734206FF2B04F0ED0030BA37 /* ChatViewController.swift */,
 				734207052B04F15F0030BA37 /* PersonalViewController.swift */,
@@ -314,7 +320,7 @@
 				73BC5A732B08C96D00DBB82B /* MyScheduleCell.swift in Sources */,
 				73BC5A752B08EDE200DBB82B /* MyScheduleTableViewCell.swift in Sources */,
 				730A002E2B04C2D300D57D05 /* MapHomeViewController.swift in Sources */,
-				733C7F0D2B0A42F00097EAB1 /* MyScheduleDetailTableViewCell.swift in Sources */,
+				733C7F0D2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift in Sources */,
 				730A002A2B04C2D300D57D05 /* AppDelegate.swift in Sources */,
 				7342070A2B05D6340030BA37 /* CoreLocationManager.swift in Sources */,
 				734207172B0631E50030BA37 /* SelectLocationView.swift in Sources */,
@@ -322,6 +328,8 @@
 				73BC5A6E2B07A16600DBB82B /* Model.swift in Sources */,
 				734207022B04F1010030BA37 /* MyScheduleViewController.swift in Sources */,
 				7342071D2B06365B0030BA37 /* JoinScheduleView.swift in Sources */,
+				733C7F152B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift in Sources */,
+				733C7F132B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift in Sources */,
 				734207042B04F1290030BA37 /* CocktailViewController.swift in Sources */,
 				734207002B04F0ED0030BA37 /* ChatViewController.swift in Sources */,
 				734207062B04F15F0030BA37 /* PersonalViewController.swift in Sources */,

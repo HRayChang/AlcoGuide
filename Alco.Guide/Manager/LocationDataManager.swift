@@ -27,7 +27,8 @@ class LocationDataManager {
     func addNewSchedule(scheduleName: String, completion: @escaping (String?) -> Void) {
         let data: [String: Any] = [
             "scheduleName": scheduleName,
-            "isRunning": true
+            "isRunning": true,
+            "users": [String]()
         ]
         
         let scheduleReference = database.collection(collectionPath).document()
@@ -50,37 +51,23 @@ class LocationDataManager {
     }
     
     func addLocationToSchedule(locationCoordinate: CLLocationCoordinate2D?, locationName: String?, scheduleID: String, completion: @escaping (Error?) -> Void) {
+
+        var locationData: [String: Any] = [:]
         
-        guard let locationCoordinate = locationCoordinate, let locationName = locationName else {
-            let error = NSError(domain: "Invalid location coordinate or name", code: 0, userInfo: nil)
-            completion(error)
-            return
+        if let coordinate = locationCoordinate {
+            // 將經緯度資訊轉換成 GeoPoint
+            let geoPoint = GeoPoint(latitude: coordinate.latitude, longitude: coordinate.longitude)
+            locationData["locationCoordinate"] = geoPoint
         }
         
-        let geoPoint = GeoPoint(latitude: locationCoordinate.latitude, longitude: locationCoordinate.longitude)
+        locationData["activities"] = []
         
-        let newLocationData: [String: Any] = [locationName: geoPoint ]
+        // 在locations collection中添加新的document
+        let locationsCollection = database.collection("Schedules").document(scheduleID).collection("locations").document(locationName ?? "Unknow Location Name")
         
-        let field = "locations"
-        
-        let locationDocumentRef = database.collection(collectionPath).document(scheduleID)
-
-        locationDocumentRef.getDocument { (document, error) in
-            if let document = document, document.exists {
-                // Document exists, update the existing data
-                locationDocumentRef.updateData([
-                    "\(field).\(locationName)": geoPoint
-                ]) { error in
-                    completion(error)
-                }
-            } else {
-                // Document does not exist, create a new one
-                locationDocumentRef.setData([
-                    field: newLocationData
-                ]) { error in
-                    completion(error)
-                }
-            }
+        locationsCollection.setData(locationData) { error in
+            // 處理完成後的動作
+            completion(error)
         }
     }
     
@@ -102,20 +89,33 @@ class LocationDataManager {
                     let scheduleID = document.documentID
                     let scheduleName = document.data()["scheduleName"] as? String ?? "Unknown"
                     let isRunning = document.data()["isRunning"] as? Bool ?? false
-                    let locations = document.data()["locations"] as? [String: GeoPoint] ?? nil
                     
-                    let scheduleInfo = ScheduleInfo(scheduleID: scheduleID, scheduleName: scheduleName, isRunning: isRunning, locations: locations)
-                    
-                    if isRunning {
-                        runningSchedules.append(scheduleInfo)
-                        print("Running schedules: \(runningSchedules)")
-                    } else {
-                        finishedSchedules.append(scheduleInfo)
-                        print("Finished schedules: \(finishedSchedules)")
+                    // Fetch locations data
+                    let locationsCollection = document.reference.collection("locations")
+                    locationsCollection.getDocuments { (locationsSnapshot, locationsError) in
+                        var locations: [Location] = []
+                        for locationDocument in locationsSnapshot?.documents ?? [] {
+                            let locationName = locationDocument.documentID
+                            let coordinate = locationDocument.data()["locationCoordinate"] as? GeoPoint
+                            let activities = locationDocument.data()["activities"] as? [String] ?? []
+                            
+                            let location = Location(locationName: locationName, coordinate: coordinate, activities: activities)
+                            locations.append(location)
+                        }
+                        
+                        let scheduleInfo = ScheduleInfo(scheduleID: scheduleID, scheduleName: scheduleName, isRunning: isRunning, locations: locations, users: [])
+                        
+                        if isRunning {
+                            self.runningSchedules.append(scheduleInfo)
+                            print("Running schedules: \(self.runningSchedules)")
+                        } else {
+                            self.finishedSchedules.append(scheduleInfo)
+                            print("Finished schedules: \(self.finishedSchedules)")
+                        }
+                        
+                        completion(true)
                     }
                 }
-                
-                completion(true)
             }
         }
     }
@@ -140,4 +140,23 @@ class LocationDataManager {
             completion(error)
         }
     }
+    
+    func addActivities(scheduleID: String, locationName: String, text: String, completion: @escaping (Error?) -> Void) {
+            let locationRef = database.collection("Schedules").document(scheduleID).collection("locations").document(locationName)
+
+            locationRef.getDocument { (document, error) in
+                if let document = document, document.exists {
+                    var data = document.data()
+                    var activities = data?["activities"] as? [String] ?? []
+                    activities.append(text)
+                    data?["activities"] = activities
+
+                    locationRef.setData(data ?? [:], merge: true) { error in
+                        completion(error)
+                    }
+                } else {
+                    completion(error)
+                }
+            }
+        }
 }

@@ -19,7 +19,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     let locationDataManager = LocationDataManager.shared
     
-    var scheduleInfo = ScheduleInfo(scheduleID: nil, scheduleName: nil, isRunning: nil, locations: nil)
+    var scheduleInfo = ScheduleInfo(scheduleID: nil, scheduleName: nil, isRunning: nil, locations: nil, users: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,7 +108,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 70
+        return 100
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -142,7 +142,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         
         let myScheduleDetailViewController = MyScheduleDetailViewController()
         
-        myScheduleDetailViewController.currentLocations = CurrentSchedule.currentLocations
+//        myScheduleDetailViewController.currentLocations = CurrentSchedule.currentLocations
         
         myScheduleDetailViewController.title = CurrentSchedule.currentScheduleName
         
