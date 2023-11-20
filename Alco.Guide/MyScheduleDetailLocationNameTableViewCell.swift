@@ -6,36 +6,47 @@
 //
 
 import UIKit
-import MapKit
-import FirebaseFirestore
 
 class MyScheduleDetailLocationNameTableViewCell: UITableViewCell {
     
-    let locationNameLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        return label
-    }()
+    let locationNameLabel = UILabel()
+    let frameView = UIView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupUI()
+        setupMyScheduleDetailLocationNameTableViewCellUI()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        setupUI()
+        setupMyScheduleDetailLocationNameTableViewCellUI()
     }
     
-    private func setupUI() {
+    private func setupMyScheduleDetailLocationNameTableViewCellUI() {
+        
+        locationNameLabel.textColor = UIColor.black
+        locationNameLabel.font = UIFont.boldSystemFont(ofSize: 25)
+        
+        frameView.layer.borderColor = UIColor.red.cgColor
+        frameView.layer.borderWidth = 5
+        frameView.layer.cornerRadius = 10
+        
+        locationNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        frameView.translatesAutoresizingMaskIntoConstraints = false
+        
         contentView.addSubview(locationNameLabel)
-      
+        contentView.addSubview(frameView)
+        
         NSLayoutConstraint.activate([
-            locationNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            locationNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            locationNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            locationNameLabel.leadingAnchor.constraint(equalTo: frameView.leadingAnchor, constant: 20),
+            locationNameLabel.trailingAnchor.constraint(equalTo: frameView.trailingAnchor, constant: -20),
+            locationNameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            
+            frameView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            frameView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            frameView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            frameView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            frameView.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
-
 }

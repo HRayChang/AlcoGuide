@@ -10,75 +10,90 @@ import UIKit
 class MyScheduleDetailButtonTableViewCell: UITableViewCell {
     
     var locationName: String?
-
-    let button: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Tap me", for: .normal)
-        return button
-    }()
     
-    let textField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Enter text"
-        textField.isHidden = true
-        return textField
-    }()
+    let addActivityButton = UIButton()
+    let addActivityTextField = UITextField()
+    let sendButton = UIButton()
     
-    let sendButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Send", for: .normal)
-        button.isHidden = true
-        return button
-    }()
-
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupUI()
+        setupMyScheduleDetailButtonTableViewCellUI()
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        setupUI()
+        setupMyScheduleDetailButtonTableViewCellUI()
     }
-
-    private func setupUI() {
-        contentView.addSubview(button)
-        contentView.addSubview(textField)
+    
+    private func setupMyScheduleDetailButtonTableViewCellUI() {
+        
+        addActivityButton.setTitle("新增活動", for: .normal)
+        addActivityButton.setTitleColor(.black, for: .normal)
+        addActivityButton.layer.borderColor = UIColor.red.cgColor
+        addActivityButton.layer.borderWidth = 5
+        addActivityButton.layer.cornerRadius = 10
+        
+        let leftPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: addActivityTextField.frame.height))
+        addActivityTextField.leftView = leftPaddingView
+        addActivityTextField.leftViewMode = .always
+        
+        addActivityTextField.placeholder = "Enter text"
+        addActivityTextField.textColor = UIColor.black
+        addActivityTextField.layer.borderColor = UIColor.red.cgColor
+        addActivityTextField.layer.borderWidth = 3
+        addActivityTextField.layer.cornerRadius = 10
+        addActivityTextField.isHidden = true
+        
+        sendButton.setTitle("新增", for: .normal)
+        sendButton.setTitleColor(.black, for: .normal)
+        sendButton.layer.borderColor = UIColor.red.cgColor
+        sendButton.layer.borderWidth = 5
+        sendButton.layer.cornerRadius = 10
+        sendButton.isHidden = true
+        
+        contentView.addSubview(addActivityButton)
+        contentView.addSubview(addActivityTextField)
         contentView.addSubview(sendButton)
-
+        
+        addActivityButton.translatesAutoresizingMaskIntoConstraints = false
+        addActivityTextField.translatesAutoresizingMaskIntoConstraints = false
+        sendButton.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
-            button.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            button.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            addActivityButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -50),
+            addActivityButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            addActivityButton.widthAnchor.constraint(equalToConstant: 100),
             
-            textField.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            textField.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            addActivityTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30),
+            addActivityTextField.trailingAnchor.constraint(equalTo: sendButton.leadingAnchor, constant: -10),
+            addActivityTextField.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            addActivityTextField.heightAnchor.constraint(equalTo: sendButton.heightAnchor),
             
-            sendButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            sendButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30),
             sendButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            sendButton.widthAnchor.constraint(equalToConstant: 60),
         ])
         
-        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        addActivityButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         sendButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
     }
     
     @objc private func buttonTapped() {
-        button.isHidden = true
-        textField.isHidden = false
+        addActivityButton.isHidden = true
+        addActivityTextField.isHidden = false
         sendButton.isHidden = false
     }
     
     @objc private func sendButtonTapped() {
-         guard let text = textField.text, !text.isEmpty else {
-             // Handle the case when the textField is empty
-             return
-         }
-
-         // Replace 'YourFirestoreReference' with the actual path to your Firestore data
+        guard let text = addActivityTextField.text, !text.isEmpty else {
+            // Handle the case when the textField is empty
+            return
+        }
+        
+        // Replace 'YourFirestoreReference' with the actual path to your Firestore data
         let scheduleID = CurrentSchedule.currentScheduleID
-         
+        
         LocationDataManager.shared.addActivities(scheduleID: scheduleID!, locationName: locationName!, text: text) { error in
             if let error = error {
                 print("Error updating activities in Firestore: \(error)")
@@ -86,10 +101,10 @@ class MyScheduleDetailButtonTableViewCell: UITableViewCell {
                 print("Activities successfully updated in Firestore")
             }
         }
-         // Hide the text field and send button after sending the data
-         button.isHidden = false
-         textField.isHidden = true
-         sendButton.isHidden = true
-         textField.text = nil // Clear the text field
-     }
+        // Hide the text field and send button after sending the data
+        addActivityButton.isHidden = false
+        addActivityTextField.isHidden = true
+        sendButton.isHidden = true
+        addActivityTextField.text = nil // Clear the text field
+    }
 }

@@ -6,36 +6,46 @@
 //
 
 import UIKit
-import MapKit
-import FirebaseFirestore
 
 class MyScheduleDetailActivitiesTableViewCell: UITableViewCell {
     
-    let activityLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        return label
-    }()
+    let activityLabel = UILabel()
+    let frameView = UIView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupUI()
+        setupMyScheduleDetailActivitiesTableViewCellUI()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        setupUI()
+        setupMyScheduleDetailActivitiesTableViewCellUI()
     }
     
-    private func setupUI() {
+    private func setupMyScheduleDetailActivitiesTableViewCellUI() {
+        
+        activityLabel.font = UIFont.systemFont(ofSize: 20)
+        
+        frameView.layer.borderColor = UIColor.red.cgColor
+        frameView.layer.borderWidth = 4
+        frameView.layer.cornerRadius = 10
+        
+        activityLabel.translatesAutoresizingMaskIntoConstraints = false
+        frameView.translatesAutoresizingMaskIntoConstraints = false
+        
         contentView.addSubview(activityLabel)
-      
+        contentView.addSubview(frameView)
+        
         NSLayoutConstraint.activate([
-            activityLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            activityLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            activityLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            activityLabel.leadingAnchor.constraint(equalTo: frameView.leadingAnchor, constant: 20),
+            activityLabel.trailingAnchor.constraint(equalTo: frameView.trailingAnchor, constant: -20),
+            activityLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            
+            frameView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30),
+            frameView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30),
+            frameView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
+            frameView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
+            frameView.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
-
 }

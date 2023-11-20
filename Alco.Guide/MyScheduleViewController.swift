@@ -34,6 +34,8 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         
         fetchSchedules()
         
+        overrideUserInterfaceStyle = .dark
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,6 +60,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     func setupMyScheduleViewUI() {
         view.backgroundColor = UIColor.black
         
+        tableView.backgroundColor = UIColor.black
     }
     
     func setupConstraints() {
