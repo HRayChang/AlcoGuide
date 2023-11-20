@@ -11,8 +11,6 @@ import FirebaseFirestore
 
 class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
-    var scheduleInfo = ScheduleInfo(scheduleID: nil, scheduleName: nil, isRunning: nil)
-    
     var scheduleReference: DocumentReference?
     
     var currentLocationType: LocationType?
@@ -279,8 +277,6 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
                 print("Error adding document")
             }
         }
-        guard let scheduleID = scheduleInfo.scheduleID else { return }
-//        postScheduleAddedNotification(scheduleID: scheduleID)
     }
     
     func locationButtonTapped(type: LocationType) {

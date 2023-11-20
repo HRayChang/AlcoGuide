@@ -21,7 +21,7 @@ class LocationDataManager {
     var finishedSchedules: [ScheduleInfo] = []
     
     func postScheduleAddedNotification(scheduleInfo: [String: Any]) {
-        NotificationCenter.default.post(name: Notification.Name("ScheduleAdd"), object: nil, userInfo: scheduleInfo)
+        NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)
     }
     
     func addNewSchedule(scheduleName: String, completion: @escaping (String?) -> Void) {
@@ -39,31 +39,48 @@ class LocationDataManager {
             } else {
                 print("New schedule added successfully")
                 
-                let scheduleInfo = ScheduleInfo(scheduleID: scheduleReference.documentID, scheduleName: scheduleName, isRunning: true)
+                CurrentSchedule.currentScheduleID = scheduleReference.documentID
+                CurrentSchedule.currentScheduleName = scheduleName
                 
                 completion(scheduleReference.documentID)
                 
-                postScheduleAddedNotification(scheduleInfo: ["scheduleID": scheduleInfo.scheduleID!, "scheduleName": scheduleInfo.scheduleName!])
+                postScheduleAddedNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
             }
         }
     }
     
-    func addLocationToSchedule(locationCoordinate: CLLocationCoordinate2D?, scheduleID: String, completion: @escaping (Error?) -> Void) {
+    func addLocationToSchedule(locationCoordinate: CLLocationCoordinate2D?, locationName: String?, scheduleID: String, completion: @escaping (Error?) -> Void) {
         
-        guard let locationCoordinate = locationCoordinate else {
-            let error = NSError(domain: "Invalid location coordinate", code: 0, userInfo: nil)
+        guard let locationCoordinate = locationCoordinate, let locationName = locationName else {
+            let error = NSError(domain: "Invalid location coordinate or name", code: 0, userInfo: nil)
             completion(error)
             return
         }
         
         let geoPoint = GeoPoint(latitude: locationCoordinate.latitude, longitude: locationCoordinate.longitude)
         
-        let data: [String: Any] = [
-            "locationCoordinate": FieldValue.arrayUnion([geoPoint])
-        ]
+        let newLocationData: [String: Any] = [locationName: geoPoint ]
         
-        database.collection(collectionPath).document(scheduleID).updateData(data) { error in
-            completion(error)
+        let field = "locations"
+        
+        let locationDocumentRef = database.collection(collectionPath).document(scheduleID)
+
+        locationDocumentRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                // Document exists, update the existing data
+                locationDocumentRef.updateData([
+                    "\(field).\(locationName)": geoPoint
+                ]) { error in
+                    completion(error)
+                }
+            } else {
+                // Document does not exist, create a new one
+                locationDocumentRef.setData([
+                    field: newLocationData
+                ]) { error in
+                    completion(error)
+                }
+            }
         }
     }
     
@@ -85,8 +102,9 @@ class LocationDataManager {
                     let scheduleID = document.documentID
                     let scheduleName = document.data()["scheduleName"] as? String ?? "Unknown"
                     let isRunning = document.data()["isRunning"] as? Bool ?? false
+                    let locations = document.data()["locations"] as? [String: GeoPoint] ?? nil
                     
-                    let scheduleInfo = ScheduleInfo(scheduleID: scheduleID, scheduleName: scheduleName, isRunning: isRunning)
+                    let scheduleInfo = ScheduleInfo(scheduleID: scheduleID, scheduleName: scheduleName, isRunning: isRunning, locations: locations)
                     
                     if isRunning {
                         runningSchedules.append(scheduleInfo)

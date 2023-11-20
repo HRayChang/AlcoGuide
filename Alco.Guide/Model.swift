@@ -6,17 +6,30 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
-struct ScheduleInfo: Codable, Equatable {
+struct CurrentSchedule {
+    static var currentScheduleID: String?
+    static var currentScheduleName: String?
+    static var currentIsRunnung: Bool?
+    static var currentLocations: [String: GeoPoint]?
+}
+
+struct ScheduleInfo: Codable {
     var scheduleID: String?
     var scheduleName: String?
-    var isRunnung: Bool?
+    var isRunning: Bool?
+    var locations: [String: GeoPoint]?
+
     
-    init(scheduleID: String?, scheduleName: String?, isRunning: Bool?) {
+    init(scheduleID: String?, scheduleName: String?, isRunning: Bool?, locations: [String: GeoPoint]?) {
         self.scheduleID = scheduleID
         self.scheduleName = scheduleName
-        self.isRunnung = isRunning
+        self.isRunning = isRunning
+        self.locations = locations
     }
 }
 
-
+struct Location: Codable {
+    var locationCoordinate: GeoPoint?
+}

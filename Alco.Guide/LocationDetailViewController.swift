@@ -11,8 +11,6 @@ import FirebaseFirestore
 
 class LocationDetailViewController: UIViewController {
     
-    var scheduleInfo = ScheduleInfo(scheduleID: nil, scheduleName: nil, isRunning: nil)
-    
     let dataBase = Firestore.firestore()
     
     let mapManager = MapManager.shared
@@ -106,9 +104,9 @@ class LocationDetailViewController: UIViewController {
              return
          }
 
-         guard let scheduleID = scheduleInfo.scheduleID else { return }
+         guard let scheduleID = CurrentSchedule.currentScheduleID else { return }
 
-         locationDataManager.addLocationToSchedule(locationCoordinate: locationCoordinate, scheduleID: scheduleID) { error in
+        locationDataManager.addLocationToSchedule(locationCoordinate: locationCoordinate, locationName: locationName, scheduleID: scheduleID) { error in
              if let error = error {
                  print("Error adding document: \(error)")
              } else {

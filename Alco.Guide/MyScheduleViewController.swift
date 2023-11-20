@@ -19,7 +19,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     let locationDataManager = LocationDataManager.shared
     
-    var scheduleInfo = ScheduleInfo(scheduleID: nil, scheduleName: nil, isRunning: nil)
+    var scheduleInfo = ScheduleInfo(scheduleID: nil, scheduleName: nil, isRunning: nil, locations: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +45,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     private func setupObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("ScheduleAdd"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("CurrentSchedule"), object: nil)
     }
     
     @objc private func fetchSchedules() {
@@ -127,22 +127,24 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        
         switch Section.allCases[indexPath.section] {
         case .running:
-            scheduleInfo.scheduleID = locationDataManager.runningSchedules[indexPath.row].scheduleID
-            scheduleInfo.scheduleName = locationDataManager.runningSchedules[indexPath.row].scheduleName
-            scheduleInfo.isRunnung = locationDataManager.runningSchedules[indexPath.row].isRunnung
+            CurrentSchedule.currentScheduleID = locationDataManager.runningSchedules[indexPath.row].scheduleID
+            CurrentSchedule.currentScheduleName = locationDataManager.runningSchedules[indexPath.row].scheduleName
+            CurrentSchedule.currentIsRunnung = locationDataManager.runningSchedules[indexPath.row].isRunning
+            CurrentSchedule.currentLocations = locationDataManager.runningSchedules[indexPath.row].locations
         case .finished:
-            scheduleInfo.scheduleID = locationDataManager.finishedSchedules[indexPath.row].scheduleID
-            scheduleInfo.scheduleName = locationDataManager.finishedSchedules[indexPath.row].scheduleName
-            scheduleInfo.isRunnung = locationDataManager.finishedSchedules[indexPath.row].isRunnung
+            CurrentSchedule.currentScheduleID = locationDataManager.finishedSchedules[indexPath.row].scheduleID
+            CurrentSchedule.currentScheduleName = locationDataManager.finishedSchedules[indexPath.row].scheduleName
+            CurrentSchedule.currentIsRunnung = locationDataManager.finishedSchedules[indexPath.row].isRunning
+            CurrentSchedule.currentLocations = locationDataManager.finishedSchedules[indexPath.row].locations
         }
-        
         
         let myScheduleDetailViewController = MyScheduleDetailViewController()
         
-        myScheduleDetailViewController.title = scheduleInfo.scheduleName
+        myScheduleDetailViewController.currentLocations = CurrentSchedule.currentLocations
+        
+        myScheduleDetailViewController.title = CurrentSchedule.currentScheduleName
         
         navigationController?.pushViewController(myScheduleDetailViewController, animated: true)
     }
@@ -180,10 +182,10 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         let scheduleIDToMove = locationDataManager.runningSchedules.remove(at: sourceIndexPath.row)
 
         if sourceIndexPath.section == destinationIndexPath.section {
-            // Moving within the same section (running section)
+            
             locationDataManager.runningSchedules.insert(scheduleIDToMove, at: destinationIndexPath.row)
         } else {
-            // Moving to the "finished" section
+            
             locationDataManager.finishedSchedules.insert(scheduleIDToMove, at: destinationIndexPath.row)
         }
 
@@ -196,40 +198,8 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         fetchSchedules()
 
-        tableView.reloadData() // Refresh the table view
+        tableView.reloadData()
     }
 
     
 }
-
-
-
-
-//guard
-//    sourceIndexPath != destinationIndexPath,
-//    sourceIndexPath.section == destinationIndexPath.section,
-//    let ScheduleIDToMove = locationDataManager.runningSchedules[sourceIndexPath],
-//    let ScheduleIDAtDestination = locationDataManager.finishedSchedules[sourceIndexPath]
-//else {
-//    return
-//}
-//
-//locationDataManager.reorderSchedules(ScheduleToMove: ScheduleIDToMove, ScheduleAtDestination: ScheduleIDAtDestination)
-//
-//
-////            switch Section.allCases[sourceIndexPath.section] {
-////            case .running:
-////                scheduleIDToMove = locationDataManager.runningSchedules[sourceIndexPath.row].scheduleID
-////            case .finished:
-////                scheduleIDToMove = locationDataManager.finishedSchedules[sourceIndexPath.row].scheduleID
-////            }
-//
-//
-//locationDataManager.finishSchedule(for: ScheduleIDToMove, isRunning: false) { error in
-//    if let error = error {
-//        print("Error updating Firestore document: \(error.localizedDescription)")
-//    } else {
-//        print("Firestore document updated successfully!")
-//    }
-//}
-//fetchSchedules()
