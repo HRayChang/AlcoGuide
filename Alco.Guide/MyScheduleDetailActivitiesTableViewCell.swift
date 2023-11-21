@@ -24,9 +24,12 @@ class MyScheduleDetailActivitiesTableViewCell: UITableViewCell {
     
     private func setupMyScheduleDetailActivitiesTableViewCellUI() {
         
+        contentView.backgroundColor = UIColor.black
+        
+        activityLabel.textColor = UIColor.white
         activityLabel.font = UIFont.systemFont(ofSize: 20)
         
-        frameView.layer.borderColor = UIColor.red.cgColor
+        frameView.layer.borderColor = UIColor.steelPink.cgColor
         frameView.layer.borderWidth = 4
         frameView.layer.cornerRadius = 10
         

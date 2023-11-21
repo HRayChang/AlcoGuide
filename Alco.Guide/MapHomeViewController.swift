@@ -27,7 +27,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
     let coreLocationManager = CoreLocationManager.shared
     let mapManager = MapManager.shared
-    let locationDataManager = LocationDataManager.shared
+    let dataManager = DataManager.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -270,7 +270,7 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
         addNewScheduleView.isHidden = true
         selectLocationView.isHidden = false
         
-        locationDataManager.addNewSchedule(scheduleName: scheduleName) { documentID in
+        dataManager.addNewSchedule(scheduleName: scheduleName) { documentID in
             if let documentID = documentID {
                 print("Document added successfully with ID: \(documentID)")
             } else {

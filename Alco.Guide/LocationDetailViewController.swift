@@ -14,7 +14,9 @@ class LocationDetailViewController: UIViewController {
     let dataBase = Firestore.firestore()
     
     let mapManager = MapManager.shared
-    let locationDataManager = LocationDataManager.shared
+    let dataManager = DataManager.shared
+    
+    var scheduleID = CurrentSchedule.currentScheduleID
     
     var locationName: String?
     var locationPhoneNumber: String?
@@ -104,13 +106,13 @@ class LocationDetailViewController: UIViewController {
              return
          }
 
-         guard let scheduleID = CurrentSchedule.currentScheduleID else { return }
+         guard let scheduleID = scheduleID else { return }
 
-        locationDataManager.addLocationToSchedule(locationCoordinate: locationCoordinate, locationName: locationName, scheduleID: scheduleID) { error in
+        dataManager.addLocationToSchedule(locationCoordinate: locationCoordinate, locationName: locationName, locationPhoneNumber: locationPhoneNumber, scheduleID: scheduleID) { error in
              if let error = error {
                  print("Error adding document: \(error)")
              } else {
-                 print("Location added successfully")
+                 print("Location: \(String(describing: self.locationName)) added successfully")
              }
          }
      }

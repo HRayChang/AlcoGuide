@@ -34,7 +34,7 @@
 		7342071D2B06365B0030BA37 /* JoinScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7342071C2B06365B0030BA37 /* JoinScheduleView.swift */; };
 		73BC5A6C2B076BF200DBB82B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 73BC5A6B2B076BF200DBB82B /* GoogleService-Info.plist */; };
 		73BC5A6E2B07A16600DBB82B /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A6D2B07A16600DBB82B /* Model.swift */; };
-		73BC5A702B08B25500DBB82B /* LocationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A6F2B08B25500DBB82B /* LocationDataManager.swift */; };
+		73BC5A702B08B25500DBB82B /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A6F2B08B25500DBB82B /* DataManager.swift */; };
 		73BC5A732B08C96D00DBB82B /* MyScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A722B08C96D00DBB82B /* MyScheduleCell.swift */; };
 		73BC5A752B08EDE200DBB82B /* MyScheduleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A742B08EDE200DBB82B /* MyScheduleTableViewCell.swift */; };
 		73BC5A772B08EEED00DBB82B /* MyScheduleDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A762B08EEED00DBB82B /* MyScheduleDetailViewController.swift */; };
@@ -69,7 +69,7 @@
 		7342071C2B06365B0030BA37 /* JoinScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinScheduleView.swift; sourceTree = "<group>"; };
 		73BC5A6B2B076BF200DBB82B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		73BC5A6D2B07A16600DBB82B /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
-		73BC5A6F2B08B25500DBB82B /* LocationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDataManager.swift; sourceTree = "<group>"; };
+		73BC5A6F2B08B25500DBB82B /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		73BC5A722B08C96D00DBB82B /* MyScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleCell.swift; sourceTree = "<group>"; };
 		73BC5A742B08EDE200DBB82B /* MyScheduleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleTableViewCell.swift; sourceTree = "<group>"; };
 		73BC5A762B08EEED00DBB82B /* MyScheduleDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailViewController.swift; sourceTree = "<group>"; };
@@ -166,7 +166,7 @@
 			children = (
 				7342070B2B05FE6F0030BA37 /* MapManager.swift */,
 				734207092B05D6340030BA37 /* CoreLocationManager.swift */,
-				73BC5A6F2B08B25500DBB82B /* LocationDataManager.swift */,
+				73BC5A6F2B08B25500DBB82B /* DataManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -334,7 +334,7 @@
 				734207002B04F0ED0030BA37 /* ChatViewController.swift in Sources */,
 				734207062B04F15F0030BA37 /* PersonalViewController.swift in Sources */,
 				7342071B2B06352B0030BA37 /* SelectScheduleView.swift in Sources */,
-				73BC5A702B08B25500DBB82B /* LocationDataManager.swift in Sources */,
+				73BC5A702B08B25500DBB82B /* DataManager.swift in Sources */,
 				734206FE2B04EE230030BA37 /* TabBarController.swift in Sources */,
 				734207192B06346C0030BA37 /* AddNewScheduleView.swift in Sources */,
 				730A002C2B04C2D300D57D05 /* SceneDelegate.swift in Sources */,

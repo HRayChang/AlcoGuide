@@ -24,10 +24,12 @@ class MyScheduleDetailLocationNameTableViewCell: UITableViewCell {
     
     private func setupMyScheduleDetailLocationNameTableViewCellUI() {
         
-        locationNameLabel.textColor = UIColor.black
+        contentView.backgroundColor = UIColor.black
+        
+        locationNameLabel.textColor = UIColor.white
         locationNameLabel.font = UIFont.boldSystemFont(ofSize: 25)
         
-        frameView.layer.borderColor = UIColor.red.cgColor
+        frameView.layer.borderColor = UIColor.steelPink.cgColor
         frameView.layer.borderWidth = 5
         frameView.layer.cornerRadius = 10
         

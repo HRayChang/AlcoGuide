@@ -28,9 +28,11 @@ class MyScheduleDetailButtonTableViewCell: UITableViewCell {
     
     private func setupMyScheduleDetailButtonTableViewCellUI() {
         
+        contentView.backgroundColor = UIColor.black
+        
         addActivityButton.setTitle("新增活動", for: .normal)
-        addActivityButton.setTitleColor(.black, for: .normal)
-        addActivityButton.layer.borderColor = UIColor.red.cgColor
+        addActivityButton.setTitleColor(.white, for: .normal)
+        addActivityButton.layer.borderColor = UIColor.steelPink.cgColor
         addActivityButton.layer.borderWidth = 5
         addActivityButton.layer.cornerRadius = 10
         
@@ -39,15 +41,15 @@ class MyScheduleDetailButtonTableViewCell: UITableViewCell {
         addActivityTextField.leftViewMode = .always
         
         addActivityTextField.placeholder = "Enter text"
-        addActivityTextField.textColor = UIColor.black
-        addActivityTextField.layer.borderColor = UIColor.red.cgColor
+        addActivityTextField.textColor = UIColor.white
+        addActivityTextField.layer.borderColor = UIColor.steelPink.cgColor
         addActivityTextField.layer.borderWidth = 3
         addActivityTextField.layer.cornerRadius = 10
         addActivityTextField.isHidden = true
         
         sendButton.setTitle("新增", for: .normal)
-        sendButton.setTitleColor(.black, for: .normal)
-        sendButton.layer.borderColor = UIColor.red.cgColor
+        sendButton.setTitleColor(.white, for: .normal)
+        sendButton.layer.borderColor = UIColor.steelPink.cgColor
         sendButton.layer.borderWidth = 5
         sendButton.layer.cornerRadius = 10
         sendButton.isHidden = true
@@ -72,7 +74,7 @@ class MyScheduleDetailButtonTableViewCell: UITableViewCell {
             
             sendButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30),
             sendButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            sendButton.widthAnchor.constraint(equalToConstant: 60),
+            sendButton.widthAnchor.constraint(equalToConstant: 60)
         ])
         
         addActivityButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
@@ -94,7 +96,7 @@ class MyScheduleDetailButtonTableViewCell: UITableViewCell {
         // Replace 'YourFirestoreReference' with the actual path to your Firestore data
         let scheduleID = CurrentSchedule.currentScheduleID
         
-        LocationDataManager.shared.addActivities(scheduleID: scheduleID!, locationName: locationName!, text: text) { error in
+        DataManager.shared.addActivities(scheduleID: scheduleID!, locationName: locationName!, text: text) { error in
             if let error = error {
                 print("Error updating activities in Firestore: \(error)")
             } else {

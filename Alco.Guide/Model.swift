@@ -12,29 +12,31 @@ struct CurrentSchedule {
     static var currentScheduleID: String?
     static var currentScheduleName: String?
     static var currentIsRunnung: Bool?
-    static var currentLocations: [Location]?
+    static var currentLocations: [String]?
     static var currentUsers: [String]?
+    static var currentActivities: [String: [String]]?
 }
 
 struct ScheduleInfo: Codable {
     var scheduleID: String?
     var scheduleName: String?
     var isRunning: Bool?
-    var locations: [Location]?
+    var locations: [String]?
     var users: [String]?
+    var activities: [String: [String]]?
 
     
-    init(scheduleID: String?, scheduleName: String?, isRunning: Bool?, locations: [Location]?, users: [String]?) {
+    init(scheduleID: String?, scheduleName: String?, isRunning: Bool?, locations: [String]?, users: [String]?, activities: [String: [String]]?) {
         self.scheduleID = scheduleID
         self.scheduleName = scheduleName
         self.isRunning = isRunning
         self.locations = locations
         self.users = users
+        self.activities = activities
     }
 }
 
 struct Location: Codable {
     var locationName: String?
     var coordinate: GeoPoint?
-    var activities: [String]?
 }
