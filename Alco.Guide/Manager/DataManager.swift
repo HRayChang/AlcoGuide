@@ -106,7 +106,7 @@ class DataManager {
     
     // MARK: - Add activities to schedule's location
     func addActivities(scheduleID: String, locationName: String, text: String, completion: @escaping (Error?) -> Void) {
-        let locationRef = database.collection("Schedules").document(scheduleID).collection("locations").document(locationName)
+        let locationRef = database.collection("Schedules").document(scheduleID)
         
         locationRef.getDocument { (document, error) in
             if let document = document, document.exists {
@@ -158,14 +158,10 @@ class DataManager {
                     fetchLocationName(locationsId: locationsId) { updatedLocations in
                         
                         locationsId = updatedLocations
-                        
-                        print("++++\(updatedLocations)")
-                        
-                        print("!!!!!!!\(locationsId)")
+                    
                         dispatchGroup.leave()
                     }
                     dispatchGroup.notify(queue: .main) {
-                        print("@@@@@@@@\(locationsId)")
                         
                         let scheduleInfo = ScheduleInfo(scheduleID: scheduleID, scheduleName: scheduleName, isRunning: isRunning, locations: locationsId, users: users, activities: activities)
                         
@@ -194,21 +190,21 @@ class DataManager {
         let group = DispatchGroup()
         
         for locationId in locationsId {
+            
             group.enter()
-            // 使用 locationId 查詢 Firestore 中的 document
+            
             locationsCollection.document(locationId).getDocument { (documentSnapshot, error) in
                 defer {
                     group.leave()
                 }
                 
                 guard let document = documentSnapshot, document.exists else {
-                    // 處理 document 不存在的情況
+          
                     return
                 }
                 
                 if let locationName = document.data()?["locationName"] as? String {
-                    updatedLocations.append(locationName)
-                    print("!!!!!@@@@@\(updatedLocations)")
+                    updatedLocations.insert(locationName, at: 0)
                 }
             }
         }
@@ -243,8 +239,46 @@ class DataManager {
     }
     // MARK: Set Schedule from Running to Finished -
     
-    func deleteLocation(scheduleID: String ) {
+    func updateLocationOrder(sourceIndexPath: Int, destinationIndexPath: Int, scheduleID: String) {
         
+        let scheduleReference = database.collection(schedulesCollectionPath).document(scheduleID)
+        
+        scheduleReference.getDocument { (document, error) in
+            if let document = document, document.exists {
+                // 取得目前的 locationId 陣列
+                var currentLocationId = document.get("locationsId") as? [String] ?? []
+            
+                // 確保 sourceIndexPath 和 destinationIndexPath 在有效範圍內
+                guard sourceIndexPath < currentLocationId.count, destinationIndexPath < currentLocationId.count else {
+                    print("Invalid index paths.")
+                    return
+                }
+                
+                // 移動 sourceIndexPath 的值到 destinationIndexPath
+                let removedValue = currentLocationId.remove(at: sourceIndexPath)
+                currentLocationId.insert(removedValue, at: destinationIndexPath)
+                
+                // 更新 Firestore 文檔中的 locationId 字段
+                scheduleReference.updateData(["locationsId": currentLocationId]) { error in
+                    if let error = error {
+                        print("Error updating document: \(error)")
+                    } else {
+                        print("Document successfully updated")
+                        
+                        NotificationCenter.default.post(name: Notification.Name("UpdateLocationOrder"), object: nil, userInfo: nil)
+                        
+                    }
+                }
+                
+            } else {
+                print("Document does not exist")
+            }
+        }
+        
+    }
+    
+    func deleteLocation(scheduleID: String, locationIndex: Int) {
+        let scheduleReference = database.collection(schedulesCollectionPath).document(scheduleID)
     }
     
     func deleteActivity(scheduleID: String) {

@@ -37,7 +37,6 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         
         tableView.setEditing(true, animated: false)
         editButtonTapped()
-
     }
     
     @objc private func fetchSchedules() {
@@ -49,6 +48,8 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     private func setupObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(updateCurrentScheduleLabel), name: Notification.Name("CurrentSchedule"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("UpdateLocationOrder"), object: nil)
     }
     
     @objc private func updateCurrentScheduleLabel(_ notification: Notification) {

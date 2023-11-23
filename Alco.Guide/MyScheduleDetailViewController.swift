@@ -143,6 +143,8 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
             }, completion: nil)
         }
         
+        dataManager.updateLocationOrder(sourceIndexPath: sourceIndexPath.section, destinationIndexPath: destinationIndexPath.section, scheduleID: CurrentSchedule.currentScheduleID!)
+        
         tableView.reloadData()
     }
     
@@ -246,7 +248,7 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
             guard let scheduleID = CurrentSchedule.currentScheduleID else { return }
-//            dataManager.deleteLocation(scheduleID: scheduleID, location: indexPath.section)
+            dataManager.deleteLocation(scheduleID: scheduleID, locationIndex: indexPath.section)
  
         } else {
                 
