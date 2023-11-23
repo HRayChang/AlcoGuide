@@ -246,12 +246,18 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if indexPath.row == 0 {
-            guard let scheduleID = CurrentSchedule.currentScheduleID else { return }
-            dataManager.deleteLocation(scheduleID: scheduleID, locationIndex: indexPath.section)
- 
-        } else {
+        if editingStyle == .delete {
+            if indexPath.row == 0 {
                 
+                guard let scheduleID = CurrentSchedule.currentScheduleID else { return }
+                CurrentSchedule.currentLocations?.remove(at: indexPath.row)
+                dataManager.deleteLocation(scheduleID: scheduleID, locationIndex: indexPath.section)
+                tableView.beginUpdates()
+                tableView.deleteSections(IndexSet(integer: indexPath.section), with: .automatic)
+                tableView.endUpdates()
+            } else {
+                
+            }
         }
     }
     // MARK: TableView -

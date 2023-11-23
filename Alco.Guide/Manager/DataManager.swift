@@ -36,7 +36,7 @@ class DataManager {
             "scheduleName": scheduleName,
             "isRunning": true,
             "users": [String](),
-            "locations": [String](),
+            "locationsId": [String](),
             "activities": [String: [Any]]()
         ]
         
@@ -279,6 +279,52 @@ class DataManager {
     
     func deleteLocation(scheduleID: String, locationIndex: Int) {
         let scheduleReference = database.collection(schedulesCollectionPath).document(scheduleID)
+        
+        scheduleReference.getDocument { (document, error) in
+            if let document = document, document.exists {
+                // 从文档中获取locationsId字段的值（假设是一个数组）
+                var locationsId = document.data()?["locationsId"] as? [String] ?? []
+                
+                // 检查locationIndex是否有效
+                if locationIndex >= 0 && locationIndex < locationsId.count {
+                    // 记录要删除的值
+                    let deletedValue = locationsId[locationIndex]
+                    
+                    // 删除数组中的指定索引位置的元素
+                    locationsId.remove(at: locationIndex)
+                    
+                    // 更新文档数据
+                    scheduleReference.updateData(["locationsId": locationsId]) { error in
+                        if let error = error {
+                            print("Error updating document: \(error)")
+                        } else {
+                            // 打印已删除的值
+                            print("Deleted value: \(deletedValue)")
+                            print("Document successfully updated")
+                            
+                            // 获取activities字段的值（假设是一个字典）
+                            var activities = document.data()?["activities"] as? [String: Any] ?? [:]
+                            
+                            // 删除activities中特定键的条目
+                            activities.removeValue(forKey: deletedValue)
+                            
+                            // 更新文档中的activities字段
+                            scheduleReference.updateData(["activities": activities]) { error in
+                                if let error = error {
+                                    print("Error updating activities: \(error)")
+                                } else {
+                                    print("Activities successfully updated")
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    print("Invalid locationIndex")
+                }
+            } else {
+                print("Document does not exist")
+            }
+        }
     }
     
     func deleteActivity(scheduleID: String) {
