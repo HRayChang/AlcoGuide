@@ -22,8 +22,12 @@ class DataManager {
     var runningSchedules: [ScheduleInfo] = []
     var finishedSchedules: [ScheduleInfo] = []
     
-    func postScheduleAddedNotification(scheduleInfo: [String: Any]) {
-        NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)
+    func postCurrentScheduleNotification(scheduleInfo: [String: Any]) {
+            NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)
+    }
+    
+    func postLocationAddedNotification(locationInfo: [String: Any]) {
+        NotificationCenter.default.post(name: Notification.Name("AddedLocation"), object: nil, userInfo: locationInfo)
     }
     
     // MARK: - Add Schedule to Schedules Collection
@@ -50,31 +54,26 @@ class DataManager {
                 
                 completion(scheduleReference.documentID)
                 
-                postScheduleAddedNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
+                postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
             }
         }
     }
     // MARK: Add Schedule to Schedules Collection -
     
     // MARK: - Add location to schedule and Location Collection
-    func addLocationToSchedule(locationCoordinate: CLLocationCoordinate2D?, locationName: String?, locationPhoneNumber: String?, scheduleID: String, completion: @escaping (Error?) -> Void) {
+    func addLocationToSchedule(locationName: String, locationId: String, locationCoordinate: LocationGeometry, scheduleID: String, completion: @escaping (Error?) -> Void) {
         
         let schedulesReference = database.collection("Schedules").document(scheduleID)
-        
-        if let locationName = locationName {
             
             var scheduleLocationsData = [
-                "locations": FieldValue.arrayUnion([locationName])
+                "locationsId": FieldValue.arrayUnion([locationId])
             ]
             
             schedulesReference.updateData(scheduleLocationsData) { error in
                 completion(error)
-            }
-            
         }
         
-        guard let locationName = locationName else { return }
-        let activitiesField = "activities.\(locationName)"
+        let activitiesField = "activities.\(locationId)"
                         let scheduleActivitiesData = [
                             activitiesField: FieldValue.arrayUnion([])
                         ]
@@ -83,16 +82,13 @@ class DataManager {
             completion(error)
         }
         
-        let locationsReference = database.collection(locationsCollectionPath).document(locationPhoneNumber ?? "N/A PhoneNumber")
+        let locationsReference = database.collection(locationsCollectionPath).document(locationId)
         
         var locationData: [String: Any] = [:]
-        
-        if let coordinate = locationCoordinate {
             
-            let geoPoint = GeoPoint(latitude: coordinate.latitude, longitude: coordinate.longitude)
+            let geoPoint = GeoPoint(latitude: locationCoordinate.lat, longitude: locationCoordinate.lng)
             
             locationData["locationCoordinate"] = geoPoint
-        }
         
         locationData["locationName"] = locationName
         
@@ -102,6 +98,7 @@ class DataManager {
                 completion(nil)
             } else {
                 print("New location added successfully")
+                self.postLocationAddedNotification(locationInfo: ["scheduleName": CurrentSchedule.currentScheduleName!])
             }
         }
     }
@@ -150,23 +147,73 @@ class DataManager {
                     let scheduleID = document.documentID
                     let scheduleName = document.data()["scheduleName"] as? String ?? "Unknown"
                     let isRunning = document.data()["isRunning"] as? Bool ?? false
-                    let locations = document.data()["locations"] as? [String] ?? []
+                    var locationsId = document.data()["locationsId"] as? [String] ?? []
                     let users = document.data()["users"] as? [String] ?? []
-                    let activities = document.data()["activities"] as? [String : [String]] ?? [:]
+                    let activities = document.data()["activities"] as? [String: [String]] ?? [:]
                     
-                    let scheduleInfo = ScheduleInfo(scheduleID: scheduleID, scheduleName: scheduleName, isRunning: isRunning, locations: locations, users: users, activities: activities)
+                    let dispatchGroup = DispatchGroup()
                     
-                    if isRunning {
-                        self.runningSchedules.append(scheduleInfo)
-                        print("Running schedules: \(self.runningSchedules)")
-                    } else {
-                        self.finishedSchedules.append(scheduleInfo)
-                        print("Finished schedules: \(self.finishedSchedules)")
+                    dispatchGroup.enter()
+                    
+                    fetchLocationName(locationsId: locationsId) { updatedLocations in
+                        
+                        locationsId = updatedLocations
+                        
+                        print("++++\(updatedLocations)")
+                        
+                        print("!!!!!!!\(locationsId)")
+                        dispatchGroup.leave()
                     }
-                    
-                    completion(true)
+                    dispatchGroup.notify(queue: .main) {
+                        print("@@@@@@@@\(locationsId)")
+                        
+                        let scheduleInfo = ScheduleInfo(scheduleID: scheduleID, scheduleName: scheduleName, isRunning: isRunning, locations: locationsId, users: users, activities: activities)
+                        
+                        if isRunning {
+                            self.runningSchedules.append(scheduleInfo)
+                            print("Running schedules: \(self.runningSchedules)")
+                        } else {
+                            self.finishedSchedules.append(scheduleInfo)
+                            print("Finished schedules: \(self.finishedSchedules)")
+                        }
+                        
+                        
+                        completion(true)
+                    }
                 }
             }
+        }
+    }
+    
+    func fetchLocationName(locationsId: [String], completion: @escaping ([String]) -> Void) {
+        
+        let locationsCollection = database.collection("Locations")
+        
+        var updatedLocations: [String] = []
+        
+        let group = DispatchGroup()
+        
+        for locationId in locationsId {
+            group.enter()
+            // 使用 locationId 查詢 Firestore 中的 document
+            locationsCollection.document(locationId).getDocument { (documentSnapshot, error) in
+                defer {
+                    group.leave()
+                }
+                
+                guard let document = documentSnapshot, document.exists else {
+                    // 處理 document 不存在的情況
+                    return
+                }
+                
+                if let locationName = document.data()?["locationName"] as? String {
+                    updatedLocations.append(locationName)
+                    print("!!!!!@@@@@\(updatedLocations)")
+                }
+            }
+        }
+        group.notify(queue: .main) {
+            completion(updatedLocations)
         }
     }
     // MARK: Fetch Schedules info -
@@ -185,7 +232,7 @@ class DataManager {
          }
      }
     // MARK: Delete Schedule from Schedules Collection -
-    
+ 
     // MARK: - Set Schedule from Running to Finished
     func finishSchedule(for scheduleID: String, isRunning: Bool, completion: @escaping (Error?) -> Void) {
         let scheduleReference = database.collection(schedulesCollectionPath).document(scheduleID)
@@ -195,4 +242,12 @@ class DataManager {
         }
     }
     // MARK: Set Schedule from Running to Finished -
+    
+    func deleteLocation(scheduleID: String ) {
+        
+    }
+    
+    func deleteActivity(scheduleID: String) {
+        
+    }
 }

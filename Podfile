@@ -8,6 +8,8 @@ target 'Alco.Guide' do
   # Pods for Alco.Guide
   pod 'SwiftLint'
   pod 'FirebaseFirestore'
+  pod 'GooglePlaces'
+  pod 'Alamofire'
 
   post_install do |installer|
     installer.generated_projects.each do |project|

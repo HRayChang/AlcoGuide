@@ -34,7 +34,6 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tableView.reloadData()
         
 //        tableView.setEditing(true, animated: false)
 //        editButtonTapped()
@@ -48,6 +47,11 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
         tableView.backgroundColor = UIColor.black
         
         overrideUserInterfaceStyle = .dark
+        
+        navigationItem.title = CurrentSchedule.currentScheduleName
+        
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        self.navigationController?.navigationBar.barTintColor = UIColor.black
         
     }
         
@@ -224,12 +228,28 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
+        
+        guard let currentLocations = CurrentSchedule.currentLocations else {
+            fatalError("Current locations not available")
+        }
+        guard let currentActivities = CurrentSchedule.currentActivities else {
+            fatalError("Current activities not available")
+        }
+
+        if indexPath.row == (currentActivities[currentLocations[indexPath.section]]?.count ?? 0) + 1 {
+            return false
+        } else {
+            return true
+        }
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            
+        if indexPath.row == 0 {
+            guard let scheduleID = CurrentSchedule.currentScheduleID else { return }
+//            dataManager.deleteLocation(scheduleID: scheduleID, location: indexPath.section)
+ 
+        } else {
+                
         }
     }
     // MARK: TableView -

@@ -6,51 +6,102 @@
 //
 
 import MapKit
+import Alamofire
+import CoreLocation
 
 class MapManager: NSObject, MKMapViewDelegate {
     
+    let coreLocationManager = CoreLocationManager.shared
+    
     static let shared = MapManager()
     
-    func searchForPlaces(query: String, region: MKCoordinateRegion, completion: @escaping (Result<[MKPointAnnotation], Error>) -> Void) {
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = query
-        request.region = region
-        
-        let search = MKLocalSearch(request: request)
-        search.start { response, error in
-            guard let response = response, error == nil else {
-                if let error = error {
+    func searchNearbylocations(keyword: String, region: MKCoordinateRegion, completion: @escaping (Result<[MKPointAnnotation], Error>) -> Void) {
+        do {
+            let body: [String: Any] = [
+                "languageCode": "zh-TW",
+                "includedTypes": ["\(keyword)"],
+                "maxResultCount": 20,
+                "rankPreference": "DISTANCE",
+                "locationRestriction": [
+                    "circle": [
+                        "center": ["latitude": region.center.latitude,
+                                   "longitude": region.center.longitude],
+                        "radius": 1000.0
+                    ]
+                ]
+            ]
+            
+            let headers: [Alamofire.HTTPHeader] = [
+                .contentType("application/json"),
+                HTTPHeader(name: "X-Goog-FieldMask", value: "*"),
+                HTTPHeader(name: "X-Goog-Api-Key", value: "AIzaSyAn8r-hayr7_mAPIquepdG6Se7dfBDDL_0")
+            ]
+            let request =
+            AF.request("https://places.googleapis.com/v1/places:searchNearby",
+                       method: .post,
+                       parameters: body,
+                       encoding: JSONEncoding(options: .prettyPrinted),
+                       headers: HTTPHeaders(headers)
+            )
+            request.responseDecodable(of: Location.self) { response in
+                switch response.result {
+                case .success(let locaitons):
+                    
+                    var annotations: [MKPointAnnotation] = []
+                    
+                    for item in locaitons.places {
+                        let annotation = MKPointAnnotation()
+                        annotation.coordinate.latitude = item.location.latitude
+                        annotation.coordinate.longitude = item.location.longitude
+                        annotation.title = item.displayName.text
+                        annotation.subtitle = item.id
+                        annotations.append(annotation)
+                        
+                    }
+                    completion(.success(annotations))
+                    
+                    
+                case .failure(let error):
+                    
                     completion(.failure(error))
                 }
-                return
             }
-            
-            var annotations: [MKPointAnnotation] = []
-            
-            for item in response.mapItems {
-                let annotation = MKPointAnnotation()
-                annotation.coordinate = item.placemark.coordinate
-                annotation.title = item.name
-                annotations.append(annotation)
-            }
-            
-            completion(.success(annotations))
         }
     }
     
-    func getMapItem(for annotation: MKAnnotation, completion: @escaping (MKMapItem?) -> Void) {
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = annotation.title ?? ""
+    func fetchLocationInfo(for annotation: MKAnnotation, completion: @escaping (SelectedLocation) -> Void) {
         
-        let search = MKLocalSearch(request: request)
-        search.start { response, error in
-            guard let mapItem = response?.mapItems.first, error == nil else {
-                if let error = error {
-                    print(error)
-                }
-                return
+        let apiKey = "AIzaSyAn8r-hayr7_mAPIquepdG6Se7dfBDDL_0"
+        
+        let placeID = annotation.subtitle! ?? ""
+        
+        let urlString = "https://maps.googleapis.com/maps/api/place/details/json?place_id=\(placeID)&key=\(apiKey)&language=zh-TW"
+        
+        print(urlString)
+        
+        AF.request(urlString).responseDecodable(of: SelectedLocation.self) { response in
+            switch response.result {
+            case .success(let location):
+                print(response)
+                completion(location)
+
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
             }
-            completion(mapItem)
         }
+            
+//        let request = MKLocalSearch.Request()
+//        request.naturalLanguageQuery = annotation.id ?? ""
+////
+//        let search = MKLocalSearch(request: request)
+//        search.start { response, error in
+//            guard let mapItem = response?.mapItems.first, error == nil else {
+//                if let error = error {
+//                    print(error)
+//                }
+//                return
+//            }
+//            completion(mapItem)
+//        }
     }
 }

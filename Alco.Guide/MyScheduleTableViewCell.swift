@@ -64,9 +64,10 @@ class MyScheduleTableViewCell: UITableViewCell {
     }
 
     func configureCell(with scheduleData: [ScheduleInfo], at index: Int) {
-        if let scheduleID = scheduleData[index].scheduleID, let scheduleName = scheduleData[index].scheduleName {
-            idLabel.text = "ID: \(scheduleID)"
-            nameLabel.text = "Name: \(scheduleName)"
-        }
+        let scheduleID = scheduleData[index].scheduleID
+        let scheduleName = scheduleData[index].scheduleName
+        idLabel.text = "ID: \(scheduleID)"
+        nameLabel.text = "Name: \(scheduleName)"
+        
     }
 }

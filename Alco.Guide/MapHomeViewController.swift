@@ -19,6 +19,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     let buttonLineView = UIView()
     let assembleButton = UIButton()
     let returnToCurrentLocationButton = UIButton()
+    let currentScheduleLabel = UILabel()
     
     let selectLocationView = SelectLocationView()
     let selectScheduleView = SelectScheduleView()
@@ -41,6 +42,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         
         setupMapHomeViewUI()
         setupConstraints()
+        setupObservers()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -53,7 +55,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         
         view.backgroundColor = UIColor.black
         
-        // MARK: Setup MapView
+        // Setup MapView
         mapView.showsUserLocation = true
         mapView.userTrackingMode = .follow
         
@@ -65,10 +67,21 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             mapView.overrideUserInterfaceStyle = .dark
         }
         
-        // MARK: Setup ButtonLineView
+        // Setup CurrentScheduleLabel
+       
+            currentScheduleLabel.isHidden = true
+        
+        currentScheduleLabel.backgroundColor = UIColor.black
+        currentScheduleLabel.textColor = UIColor.white
+        currentScheduleLabel.textAlignment = .center
+//        currentScheduleLabel.layer.cornerRadius = 10
+        currentScheduleLabel.layer.borderColor = UIColor.steelPink.cgColor
+        currentScheduleLabel.layer.borderWidth = 3
+        
+        // Setup ButtonLineView
         buttonLineView.backgroundColor = UIColor.steelPink
         
-        // MARK: Setup AssembleButton
+        // Setup AssembleButton
         assembleButton.backgroundColor = UIColor.black
         assembleButton.layer.cornerRadius = 56
         assembleButton.addTarget(self, action: #selector(assembleButtonTapped), for: .touchUpInside)
@@ -84,7 +97,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             wineGlassImageView.bottomAnchor.constraint(equalTo: assembleButton.centerYAnchor, constant: 5)
         ])
         
-        // MARK: Setup ReturnToCurrentLocationButton
+        // Setup ReturnToCurrentLocationButton
         returnToCurrentLocationButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
         returnToCurrentLocationButton.tintColor = .white
         returnToCurrentLocationButton.addTarget(self, action: #selector(returnToCurrentLocation), for: .touchUpInside)
@@ -99,6 +112,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         joinScheduleView.translatesAutoresizingMaskIntoConstraints = false
         selectLocationView.translatesAutoresizingMaskIntoConstraints = false
         returnToCurrentLocationButton.translatesAutoresizingMaskIntoConstraints = false
+        currentScheduleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(mapView)
         view.addSubview(buttonLineView)
@@ -108,13 +122,18 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         view.addSubview(joinScheduleView)
         view.addSubview(selectLocationView)
         view.addSubview(returnToCurrentLocationButton)
-        
+        view.addSubview(currentScheduleLabel)
         
         NSLayoutConstraint.activate([
             mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             mapView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -22),
+            
+            currentScheduleLabel.topAnchor.constraint(equalTo: mapView.topAnchor, constant: 20),
+            currentScheduleLabel.heightAnchor.constraint(equalToConstant: 30),
+            currentScheduleLabel.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: 50),
+            currentScheduleLabel.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -50),
             
             buttonLineView.heightAnchor.constraint(equalToConstant: 12),
             buttonLineView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -154,8 +173,18 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     }
     // MARK: Setup UI -
     
+    private func setupObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCurrentScheduleLabel), name: Notification.Name("CurrentSchedule"), object: nil)
+    }
+    
+    @objc private func updateCurrentScheduleLabel(_ notification: Notification) {
+        currentScheduleLabel.text = CurrentSchedule.currentScheduleName
+        currentScheduleLabel.isHidden = false
+    }
+    
     @objc func assembleButtonTapped() {
         selectScheduleView.isHidden = false
+        assembleButton.isUserInteractionEnabled = false
     }
     
     @objc func returnToCurrentLocation() {
@@ -172,10 +201,10 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         guard let annotation = view.annotation else { return }
         
         if let detailViewController = presentedViewController as? LocationDetailViewController {
-            detailViewController.updateUI(with: annotation)
+            detailViewController.fetchLocationInfo(with: annotation)
         } else {
             let detailViewController = LocationDetailViewController()
-            detailViewController.updateUI(with: annotation)
+            detailViewController.fetchLocationInfo(with: annotation)
             if let sheetPresentationController = detailViewController.sheetPresentationController {
                 sheetPresentationController.largestUndimmedDetentIdentifier = .medium
                 sheetPresentationController.detents = [
@@ -189,20 +218,19 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        // Assuming you have a property to store the current location type
         guard let currentLocationType = currentLocationType else { return }
         
         var queries: [String] = []
         
         switch currentLocationType {
         case .convenienceStore:
-            queries = ["超商"]
+            queries = ["convenience_store"]
             
         case .bar:
-            queries = ["酒吧"]
+            queries = ["bar"]
             
         case .both:
-            queries = ["超商", "酒吧"]
+            queries = ["bar", "convenience_store"]
         }
         
         searchForAndDisplayPlaces(queries: queries)
@@ -215,7 +243,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         
         for query in queries {
             dispatchGroup.enter()
-            mapManager.searchForPlaces(query: query, region: mapView.region) { result in
+            mapManager.searchNearbylocations(keyword: query, region: mapView.region) { result in
                 defer {
                     dispatchGroup.leave()
                 }
@@ -258,12 +286,16 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
     
     func showMyScheduleView() {
         selectScheduleView.isHidden = true
+        assembleButton.isUserInteractionEnabled = true
         self.navigationController?.pushViewController(MyScheduleViewController(), animated: true)
     }
     
     func joinScheduleButtonTapped() {
         joinScheduleView.isHidden = true
+        assembleButton.isUserInteractionEnabled = true
+        
         self.navigationController?.pushViewController(MyScheduleViewController(), animated: true)
+
     }
     
     func addNewScheduleButtonTapped(scheduleName: String) {
@@ -282,16 +314,17 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
     func locationButtonTapped(type: LocationType) {
         selectLocationView.isHidden = true
         currentLocationType = type
+        assembleButton.isUserInteractionEnabled = true
         
         switch type {
         case .convenienceStore:
-            searchForAndDisplayPlaces(queries: ["超商"])
+            searchForAndDisplayPlaces(queries: ["convenience_store"])
             
         case .bar:
-            searchForAndDisplayPlaces(queries: ["酒吧"])
+            searchForAndDisplayPlaces(queries: ["bar"])
             
         case .both:
-            searchForAndDisplayPlaces(queries: ["超商", "酒吧"])
+            searchForAndDisplayPlaces(queries: ["convenience_store", "bar"])
         }
     }
     

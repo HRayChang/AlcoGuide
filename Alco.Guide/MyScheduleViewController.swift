@@ -19,8 +19,6 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     let dataManager = DataManager.shared
     
-    var scheduleInfo = ScheduleInfo(scheduleID: nil, scheduleName: nil, isRunning: nil, locations: nil, users: nil, activities: nil)
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -30,22 +28,16 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         setupMyScheduleViewUI()
         setupConstraints()
         
-        setupObservers()
-        
         fetchSchedules()
-        
+        setupObservers()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-
+        
         tableView.setEditing(true, animated: false)
         editButtonTapped()
 
-    }
-    
-    private func setupObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("CurrentSchedule"), object: nil)
     }
     
     @objc private func fetchSchedules() {
@@ -55,12 +47,23 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
+    private func setupObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCurrentScheduleLabel), name: Notification.Name("CurrentSchedule"), object: nil)
+    }
+    
+    @objc private func updateCurrentScheduleLabel(_ notification: Notification) {
+        fetchSchedules()
+    }
+    
     func setupMyScheduleViewUI() {
         view.backgroundColor = UIColor.black
         
         tableView.backgroundColor = UIColor.black
         
         overrideUserInterfaceStyle = .dark
+        
+        self.navigationController?.navigationBar.barTintColor = UIColor.black
+        self.tabBarController?.tabBar.barTintColor = UIColor.black
     }
     
     func setupConstraints() {
@@ -93,6 +96,10 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
             self.view.endEditing(true)
 
         }
+    }
+    
+    func postCurrentScheduleNotification(scheduleInfo: [String: Any]) {
+            NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -144,10 +151,10 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         let myScheduleDetailViewController = UINavigationController(rootViewController: MyScheduleDetailViewController())
-        
-        myScheduleDetailViewController.title = CurrentSchedule.currentScheduleName
 
         present(myScheduleDetailViewController, animated: true, completion: nil)
+        
+        postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
     }
     
     
@@ -160,10 +167,10 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
             
             switch Section.allCases[indexPath.section] {
             case .running:
-                guard let scheduleID = dataManager.runningSchedules[indexPath.row].scheduleID else { return }
+                let scheduleID = dataManager.runningSchedules[indexPath.row].scheduleID
                 dataManager.deleteSchedule(scheduleID: scheduleID)
             case .finished:
-                guard let scheduleID = dataManager.finishedSchedules[indexPath.row].scheduleID else { return }
+                let scheduleID = dataManager.finishedSchedules[indexPath.row].scheduleID
                 dataManager.deleteSchedule(scheduleID: scheduleID)
             }
             fetchSchedules()
@@ -190,7 +197,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
             
             dataManager.finishedSchedules.insert(scheduleIDToMove, at: destinationIndexPath.row)
             
-            guard let scheduleID = scheduleIDToMove.scheduleID else { return }
+           let scheduleID = scheduleIDToMove.scheduleID
             dataManager.finishSchedule(for: scheduleID, isRunning: destinationIndexPath.section == 0) { error in
                 if let error = error {
                     print("Error updating Firestore document: \(error.localizedDescription)")

@@ -18,15 +18,18 @@ class LocationDetailViewController: UIViewController {
     
     var scheduleID = CurrentSchedule.currentScheduleID
     
+    var locationId: String?
     var locationName: String?
     var locationPhoneNumber: String?
     var locationAddress: String?
-    var locationCoordinate: CLLocationCoordinate2D?
+    var locationOpeningHours: [String]?
+    var locationCoordinate: LocationGeometry?
     
-    let nameLabel = UILabel()
-    let phoneLabel = UILabel()
-    let addressLabel = UILabel()
-    let addToScheduleButton = UIButton()
+    var nameLabel = UILabel()
+    var phoneLabel = UILabel()
+    var addressLabel = UILabel()
+    var openingHoursLabel = UILabel()
+    var addToScheduleButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,14 +41,14 @@ class LocationDetailViewController: UIViewController {
     func setupDetailViewUI() {
         view.backgroundColor = UIColor.black
         
-        nameLabel.text = locationName
         nameLabel.textColor = .white
         
-        phoneLabel.text = locationPhoneNumber
         phoneLabel.textColor = .white
         
-        addressLabel.text = locationAddress
         addressLabel.textColor = .white
+        
+        openingHoursLabel.textColor = .white
+        openingHoursLabel.numberOfLines = 0
         
         addToScheduleButton.setImage(UIImage(systemName: "plus"), for: .normal)
         addToScheduleButton.backgroundColor = UIColor.black
@@ -61,11 +64,13 @@ class LocationDetailViewController: UIViewController {
         phoneLabel.translatesAutoresizingMaskIntoConstraints = false
         addressLabel.translatesAutoresizingMaskIntoConstraints = false
         addToScheduleButton.translatesAutoresizingMaskIntoConstraints = false
+        openingHoursLabel.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(nameLabel)
         view.addSubview(phoneLabel)
         view.addSubview(addressLabel)
         view.addSubview(addToScheduleButton)
+        view.addSubview(openingHoursLabel)
         
         NSLayoutConstraint.activate([
             nameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
@@ -74,6 +79,11 @@ class LocationDetailViewController: UIViewController {
             
             addressLabel.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 8),
             
+            openingHoursLabel.topAnchor.constraint(equalTo: addressLabel.bottomAnchor, constant: 8),
+            openingHoursLabel.heightAnchor.constraint(equalToConstant: 500),
+            openingHoursLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            openingHoursLabel.widthAnchor.constraint(equalToConstant: 500),
+            
             addToScheduleButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
             addToScheduleButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             addToScheduleButton.heightAnchor.constraint(equalToConstant: 40),
@@ -81,34 +91,29 @@ class LocationDetailViewController: UIViewController {
         ])
     }
     
-    func updateUI(with annotation: MKAnnotation) {
-        getMapItem(for: annotation) { [weak self] mapItem in
-            guard let self = self else { return }
+    func fetchLocationInfo(with annotation: MKAnnotation) {
+        mapManager.fetchLocationInfo(for: annotation) { [self] location in
             
-            self.locationName = mapItem?.name
-            self.locationPhoneNumber = mapItem?.phoneNumber
-            self.locationAddress = mapItem?.placemark.title
-            self.locationCoordinate = mapItem?.placemark.coordinate
+            locationId = location.result.placeID
+            locationName = location.result.name
+            locationPhoneNumber = location.result.internationalPhoneNumber
+            locationAddress = location.result.formattedAddress
+            locationOpeningHours = location.result.openingHours.weekdayText
+            locationCoordinate = location.result.geometry.location
             
-            self.nameLabel.text = self.locationName
-            self.phoneLabel.text = self.locationPhoneNumber
-            self.addressLabel.text = self.locationAddress
+            nameLabel.text = locationName
+            phoneLabel.text = locationPhoneNumber
+            addressLabel.text = locationAddress
+            openingHoursLabel.text = locationOpeningHours?.joined(separator: "\n")
+            
         }
     }
     
-    private func getMapItem(for annotation: MKAnnotation, completion: @escaping (MKMapItem?) -> Void) {
-        mapManager.getMapItem(for: annotation, completion: completion)
-    }
-    
     @objc func addToScheduleButtonTapped() {
-         guard let locationCoordinate = locationCoordinate else {
-             print("Invalid location coordinate")
-             return
-         }
 
-         guard let scheduleID = scheduleID else { return }
+        guard let scheduleID = scheduleID, let locationName = locationName, let locationId = locationId, let locationCoordinate = locationCoordinate else { return }
 
-        dataManager.addLocationToSchedule(locationCoordinate: locationCoordinate, locationName: locationName, locationPhoneNumber: locationPhoneNumber, scheduleID: scheduleID) { error in
+        dataManager.addLocationToSchedule(locationName: locationName, locationId: locationId, locationCoordinate: locationCoordinate, scheduleID: scheduleID) { error in
              if let error = error {
                  print("Error adding document: \(error)")
              } else {
