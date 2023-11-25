@@ -319,12 +319,22 @@ class DataManager {
                 var sourceActivity = activities[sourceCurrentLocation]
                 var destinationActivity = activities[destinationCurrentLocation]
                 
-                let sourceValue = sourceActivity?.remove(at: sourceIndexPath.row - 1)
-                
-                destinationActivity?.insert(sourceValue!, at: destinationIndexPath.row - 1)
-                
-                activities[destinationCurrentLocation] = destinationActivity
-                activities[sourceCurrentLocation] = sourceActivity
+                if sourceActivity == destinationActivity {
+                    
+                    let sourceValue = sourceActivity?.remove(at: sourceIndexPath.row - 1)
+                    
+                    sourceActivity?.insert(sourceValue!, at: destinationIndexPath.row - 1)
+                    
+                    activities[sourceCurrentLocation] = sourceActivity
+                } else {
+                    
+                    let sourceValue = sourceActivity?.remove(at: sourceIndexPath.row - 1)
+                    
+                    destinationActivity?.insert(sourceValue!, at: destinationIndexPath.row - 1)
+                    
+                    activities[destinationCurrentLocation] = destinationActivity
+                    activities[sourceCurrentLocation] = sourceActivity
+                }
                 
                 scheduleReference.updateData(["activities": activities]) { error in
                     if let error = error {
@@ -428,6 +438,37 @@ class DataManager {
                         
                     }
                 }
+            }
+        }
+    }
+    
+    func updateActivity(scheduleID: String, locationName: String, text: String, indexPath: IndexPath, completion: @escaping (Result<Void, Error>) -> Void) {
+        let locationRef = database.collection("Schedules").document(scheduleID)
+        
+        locationRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                let data = document.data()
+                var activities = data?["activities"] as? [String: [String]] ?? [:]
+                
+                var activity = activities[locationName]
+                
+                activity?[indexPath.row - 1] = text
+                
+                activities[locationName] = activity
+                
+                locationRef.updateData(["activities": activities]) { error in
+                    if let error = error {
+                        print("Error updating document: \(error)")
+                        completion(.failure(error))
+                    } else {
+                        print("Document successfully updated")
+                        NotificationCenter.default.post(name: Notification.Name("UpdateActivityOrder"), object: nil, userInfo: nil)
+                        completion(.success(()))
+                    }
+                }
+            } else if let error = error {
+                print("Error getting document: \(error)")
+                completion(.failure(error))
             }
         }
     }

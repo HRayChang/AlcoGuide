@@ -246,6 +246,51 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
         }
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        guard let currentLocations = CurrentSchedule.currentLocations else {
+            fatalError("Current locations not available")
+        }
+        guard var currentActivities = CurrentSchedule.currentActivities else {
+            fatalError("Current activities not available")
+        }
+        
+        let location = currentLocations[indexPath.section]
+        
+        if indexPath.row == 0 || indexPath.row == (currentActivities[location]?.count ?? 0) + 1 {
+            return
+        } else {
+            
+            let alertController = UIAlertController(title: "Edit Label", message: nil, preferredStyle: .alert)
+            if let alertControllerView = alertController.view {
+                alertControllerView.tintColor = UIColor.black
+                alertControllerView.backgroundColor = UIColor.black
+            }
+
+            alertController.addTextField { textField in
+                textField.text = currentActivities[location]?[indexPath.row - 1]
+            }
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+            let saveAction = UIAlertAction(title: "Save", style: .default) { action in
+                if let textField = alertController.textFields?.first, let newText = textField.text {
+                    // 更新数据源并刷新TableView
+                    CurrentSchedule.currentActivities?[location]?[indexPath.row - 1] = newText
+                    self.tableView.reloadData()
+                    
+                    self.dataManager.updateActivity(scheduleID: CurrentSchedule.currentScheduleID!, locationName: location, text: newText, indexPath: indexPath) { error in
+                        
+                        
+                    }
+                }
+            }
+            alertController.addAction(cancelAction)
+            alertController.addAction(saveAction)
+            present(alertController, animated: true, completion: nil)
+            
+            
+        }
+    }
+    
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         
         guard let currentLocations = CurrentSchedule.currentLocations else {
