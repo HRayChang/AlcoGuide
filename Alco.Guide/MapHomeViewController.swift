@@ -175,6 +175,8 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
     private func setupObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(updateCurrentScheduleLabel), name: Notification.Name("CurrentSchedule"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCurrentLocationsCoordinate), name: Notification.Name("CurrentLocationsCoordinate"), object: nil)
     }
     
     @objc private func updateCurrentScheduleLabel(_ notification: Notification) {
@@ -264,6 +266,53 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     private func displayAnnotations(_ annotations: [MKPointAnnotation]) {
         mapView.removeAnnotations(mapView.annotations)
         mapView.addAnnotations(annotations)
+    }
+    
+    @objc private func updateCurrentLocationsCoordinate() {
+        let dispatchGroup = DispatchGroup()
+        var annotations: [MKPointAnnotation] = []
+        let queries = ["convenience_store", "bar"]
+        
+        mapView.removeAnnotations(mapView.annotations)
+        
+        for query in queries {
+            dispatchGroup.enter()
+            mapManager.searchNearbylocations(keyword: query, region: mapView.region) { result in
+                defer {
+                    dispatchGroup.leave()
+                }
+                switch result {
+                case .success(let resultAnnotations):
+                    annotations += resultAnnotations
+                    self.mapView.addAnnotations(annotations)
+                case .failure(let error):
+                    print("Error searching for \(query): \(error.localizedDescription)")
+                }
+            }
+        }
+        
+        // Wait for all async tasks to finish
+        dispatchGroup.notify(queue: .main) {
+            // Add annotations to the map
+            
+        }
+    }
+
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        var annotationView: MKMarkerAnnotationView
+
+        if let pointAnnotation = annotation as? MKPointAnnotation,
+           CurrentSchedule.currentLocationCooredinate?.contains(where: { $0.latitude == pointAnnotation.coordinate.latitude && $0.longitude == pointAnnotation.coordinate.longitude }) == true {
+            
+            annotationView = mapView.dequeueReusableAnnotationView(
+                withIdentifier: "specialLocations") as? MKMarkerAnnotationView ?? MKMarkerAnnotationView(annotation: pointAnnotation, reuseIdentifier: "specialLocations")
+            annotationView.markerTintColor = UIColor.steelPink
+        } else {
+            annotationView = mapView.dequeueReusableAnnotationView(
+                withIdentifier: "defaultLocations") as? MKMarkerAnnotationView ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "defaultLocations")
+        }
+
+        return annotationView
     }
     // MARK: Search location -
 }

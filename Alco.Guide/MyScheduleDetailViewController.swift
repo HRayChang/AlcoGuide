@@ -333,6 +333,8 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
                     tableView.beginUpdates()
                     tableView.deleteRows(at: [indexPath], with: .fade)
                     tableView.endUpdates()
+                    NotificationCenter.default.post(name: Notification.Name("DeletedActivite"), object: nil, userInfo: nil)
+                    tableView.reloadData()
                 }
             }
         }

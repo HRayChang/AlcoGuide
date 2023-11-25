@@ -56,6 +56,8 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("UpdateActivity"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("DeletedLocation"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("DeletedActivite"), object: nil)
     }
     
     func setupMyScheduleViewUI() {
@@ -103,6 +105,8 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func postCurrentScheduleNotification(scheduleInfo: [String: Any]) {
             NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)
+        
+        NotificationCenter.default.post(name: Notification.Name("CurrentLocationsCoordinate"), object: nil, userInfo: scheduleInfo)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -155,11 +159,17 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
             CurrentSchedule.currentLocationsId = dataManager.finishedSchedules[indexPath.row].locationsId
         }
         
+        
+        dataManager.fetchLocationCoordinate(locationsId: CurrentSchedule.currentLocationsId!) { coordinates in
+        
+            self.postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
+        }
+        
         let myScheduleDetailViewController = UINavigationController(rootViewController: MyScheduleDetailViewController())
 
         present(myScheduleDetailViewController, animated: true, completion: nil)
         
-        postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
+//        postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
     }
     
     

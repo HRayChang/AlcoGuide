@@ -239,6 +239,37 @@ class DataManager {
             completion(updatedLocations)
         }
     }
+    
+    func fetchLocationCoordinate(locationsId: [String], completion: @escaping ([GeoPoint]) -> Void) {
+        let locationsCollection = database.collection("Locations")
+        var currentLocationCoordinate = [GeoPoint]()
+
+        let dispatchGroup = DispatchGroup()
+
+        for locationId in locationsId {
+            dispatchGroup.enter()
+
+            locationsCollection.document(locationId).getDocument { (documentSnapshot, error) in
+                defer {
+                    dispatchGroup.leave()
+                }
+
+                guard let document = documentSnapshot, document.exists else { return }
+
+                if let locationName = document.data()?["locationCoordinate"] as? GeoPoint {
+                    currentLocationCoordinate.insert(locationName, at: 0)
+                    CurrentSchedule.currentLocationCooredinate = currentLocationCoordinate
+                }
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            // 所有异步操作完成后调用回调闭包
+            completion(currentLocationCoordinate)
+        }
+    }
+    
+    
     // MARK: Fetch Schedules info -
     
     // MARK: - Delete Schedule from Schedules Collection

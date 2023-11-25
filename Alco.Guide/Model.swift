@@ -17,6 +17,7 @@ struct CurrentSchedule {
     static var currentLocationsId: [String]?
     static var currentUsers: [String]?
     static var currentActivities: [String: [String]]?
+    static var currentLocationCooredinate: [GeoPoint]?
 }
 
 struct ScheduleInfo: Codable {
