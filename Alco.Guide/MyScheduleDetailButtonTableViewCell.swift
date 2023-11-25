@@ -11,6 +11,8 @@ class MyScheduleDetailButtonTableViewCell: UITableViewCell {
     
     var locationName: String?
     
+    weak var delegate: MyScheduleDetailButtonCellDelegate?
+    
     let addActivityButton = UIButton()
     let addActivityTextField = UITextField()
     let sendButton = UIButton()
@@ -82,31 +84,20 @@ class MyScheduleDetailButtonTableViewCell: UITableViewCell {
     }
     
     @objc private func buttonTapped() {
-        addActivityButton.isHidden = true
-        addActivityTextField.isHidden = false
-        sendButton.isHidden = false
+        
+        delegate?.addButtonTapped(in: self)
+        
     }
     
     @objc private func sendButtonTapped() {
+        
         guard let text = addActivityTextField.text, !text.isEmpty else {
             // Handle the case when the textField is empty
             return
+            
         }
         
-        // Replace 'YourFirestoreReference' with the actual path to your Firestore data
-        let scheduleID = CurrentSchedule.currentScheduleID
+        delegate?.sendButtonTapped(in: self, text: text)
         
-        DataManager.shared.addActivities(scheduleID: scheduleID!, locationName: locationName!, text: text) { error in
-            if let error = error {
-                print("Error updating activities in Firestore: \(error)")
-            } else {
-                print("Activities successfully updated in Firestore")
-            }
-        }
-        // Hide the text field and send button after sending the data
-        addActivityButton.isHidden = false
-        addActivityTextField.isHidden = true
-        sendButton.isHidden = true
-        addActivityTextField.text = nil // Clear the text field
     }
 }

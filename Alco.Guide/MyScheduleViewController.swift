@@ -28,7 +28,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         setupMyScheduleViewUI()
         setupConstraints()
         
-        fetchSchedules()
+//        fetchSchedules()
         setupObservers()
     }
     
@@ -37,6 +37,8 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         
         tableView.setEditing(true, animated: false)
         editButtonTapped()
+        
+        fetchSchedules()
     }
     
     @objc private func fetchSchedules() {
@@ -50,6 +52,10 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("CurrentSchedule"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("UpdateLocationOrder"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("UpdateActivity"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("DeletedLocation"), object: nil)
     }
     
     func setupMyScheduleViewUI() {
@@ -139,12 +145,14 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
             CurrentSchedule.currentIsRunnung = dataManager.runningSchedules[indexPath.row].isRunning
             CurrentSchedule.currentLocations = dataManager.runningSchedules[indexPath.row].locations
             CurrentSchedule.currentActivities = dataManager.runningSchedules[indexPath.row].activities
+            CurrentSchedule.currentLocationsId = dataManager.runningSchedules[indexPath.row].locationsId
         case .finished:
             CurrentSchedule.currentScheduleID = dataManager.finishedSchedules[indexPath.row].scheduleID
             CurrentSchedule.currentScheduleName = dataManager.finishedSchedules[indexPath.row].scheduleName
             CurrentSchedule.currentIsRunnung = dataManager.finishedSchedules[indexPath.row].isRunning
             CurrentSchedule.currentLocations = dataManager.finishedSchedules[indexPath.row].locations
             CurrentSchedule.currentActivities = dataManager.finishedSchedules[indexPath.row].activities
+            CurrentSchedule.currentLocationsId = dataManager.finishedSchedules[indexPath.row].locationsId
         }
         
         let myScheduleDetailViewController = UINavigationController(rootViewController: MyScheduleDetailViewController())
@@ -165,10 +173,20 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
             switch Section.allCases[indexPath.section] {
             case .running:
                 let scheduleID = dataManager.runningSchedules[indexPath.row].scheduleID
+                dataManager.runningSchedules.remove(at: indexPath.row)
                 dataManager.deleteSchedule(scheduleID: scheduleID)
+                tableView.beginUpdates()
+                let indexPath = IndexPath(row: indexPath.row, section: indexPath.section)
+                tableView.deleteRows(at: [indexPath], with: .fade)
+                tableView.endUpdates()
             case .finished:
                 let scheduleID = dataManager.finishedSchedules[indexPath.row].scheduleID
+                dataManager.runningSchedules.remove(at: indexPath.row)
                 dataManager.deleteSchedule(scheduleID: scheduleID)
+                tableView.beginUpdates()
+                let indexPath = IndexPath(row: indexPath.row, section: indexPath.section)
+                tableView.deleteRows(at: [indexPath], with: .fade)
+                tableView.endUpdates()
             }
             fetchSchedules()
         }

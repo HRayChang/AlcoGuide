@@ -23,7 +23,7 @@ class DataManager {
     var finishedSchedules: [ScheduleInfo] = []
     
     func postCurrentScheduleNotification(scheduleInfo: [String: Any]) {
-            NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)
+        NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)
     }
     
     func postLocationAddedNotification(locationInfo: [String: Any]) {
@@ -51,6 +51,10 @@ class DataManager {
                 
                 CurrentSchedule.currentScheduleID = scheduleReference.documentID
                 CurrentSchedule.currentScheduleName = scheduleName
+                CurrentSchedule.currentLocations = []
+                CurrentSchedule.currentUsers = []
+                CurrentSchedule.currentActivities = [:]
+                CurrentSchedule.currentLocationsId = []
                 
                 completion(scheduleReference.documentID)
                 
@@ -64,20 +68,20 @@ class DataManager {
     func addLocationToSchedule(locationName: String, locationId: String, locationCoordinate: LocationGeometry, scheduleID: String, completion: @escaping (Error?) -> Void) {
         
         let schedulesReference = database.collection("Schedules").document(scheduleID)
-            
-            var scheduleLocationsData = [
-                "locationsId": FieldValue.arrayUnion([locationId])
-            ]
-            
-            schedulesReference.updateData(scheduleLocationsData) { error in
-                completion(error)
+        
+        var scheduleLocationsData = [
+            "locationsId": FieldValue.arrayUnion([locationId])
+        ]
+        
+        schedulesReference.updateData(scheduleLocationsData) { error in
+            completion(error)
         }
         
-        let activitiesField = "activities.\(locationId)"
-                        let scheduleActivitiesData = [
-                            activitiesField: FieldValue.arrayUnion([])
-                        ]
-                        
+        let activitiesField = "activities.\(locationName)"
+        let scheduleActivitiesData = [
+            activitiesField: FieldValue.arrayUnion([])
+        ]
+        
         schedulesReference.updateData(scheduleActivitiesData) { error in
             completion(error)
         }
@@ -85,10 +89,10 @@ class DataManager {
         let locationsReference = database.collection(locationsCollectionPath).document(locationId)
         
         var locationData: [String: Any] = [:]
-            
-            let geoPoint = GeoPoint(latitude: locationCoordinate.lat, longitude: locationCoordinate.lng)
-            
-            locationData["locationCoordinate"] = geoPoint
+        
+        let geoPoint = GeoPoint(latitude: locationCoordinate.lat, longitude: locationCoordinate.lng)
+        
+        locationData["locationCoordinate"] = geoPoint
         
         locationData["locationName"] = locationName
         
@@ -98,28 +102,44 @@ class DataManager {
                 completion(nil)
             } else {
                 print("New location added successfully")
+                
+                CurrentSchedule.currentLocations?.append(locationName)
+                CurrentSchedule.currentLocationsId?.append(locationId)
                 self.postLocationAddedNotification(locationInfo: ["scheduleName": CurrentSchedule.currentScheduleName!])
+                
             }
         }
     }
     // MARK: Add location to Schedule and Location Collection -
     
     // MARK: - Add activities to schedule's location
-    func addActivities(scheduleID: String, locationName: String, text: String, completion: @escaping (Error?) -> Void) {
+    func addActivities(scheduleID: String, locationName: String, text: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let locationRef = database.collection("Schedules").document(scheduleID)
         
         locationRef.getDocument { (document, error) in
             if let document = document, document.exists {
                 var data = document.data()
-                var activities = data?["activities"] as? [String] ?? []
-                activities.append(text)
-                data?["activities"] = activities
+                var activities = data?["activities"] as? [String: [String]] ?? [:]
                 
-                locationRef.setData(data ?? [:], merge: true) { error in
-                    completion(error)
+                var activity = activities[locationName]
+                
+                activity?.append(text)
+                
+                activities[locationName] = activity
+                
+                locationRef.updateData(["activities": activities]) { error in
+                    if let error = error {
+                        print("Error updating document: \(error)")
+                        completion(.failure(error))
+                    } else {
+                        print("Document successfully updated")
+                        NotificationCenter.default.post(name: Notification.Name("UpdateActivityOrder"), object: nil, userInfo: nil)
+                        completion(.success(()))
+                    }
                 }
-            } else {
-                completion(error)
+            } else if let error = error {
+                print("Error getting document: \(error)")
+                completion(.failure(error))
             }
         }
     }
@@ -147,7 +167,8 @@ class DataManager {
                     let scheduleID = document.documentID
                     let scheduleName = document.data()["scheduleName"] as? String ?? "Unknown"
                     let isRunning = document.data()["isRunning"] as? Bool ?? false
-                    var locationsId = document.data()["locationsId"] as? [String] ?? []
+                    var locationsName = document.data()["locationsId"] as? [String] ?? []
+                    let locationsId = document.data()["locationsId"] as? [String] ?? []
                     let users = document.data()["users"] as? [String] ?? []
                     let activities = document.data()["activities"] as? [String: [String]] ?? [:]
                     
@@ -155,15 +176,21 @@ class DataManager {
                     
                     dispatchGroup.enter()
                     
-                    fetchLocationName(locationsId: locationsId) { updatedLocations in
+                    fetchLocationName(locationsId: locationsName) { updatedLocations in
                         
-                        locationsId = updatedLocations
-                    
+                        locationsName = updatedLocations
+                        
                         dispatchGroup.leave()
                     }
                     dispatchGroup.notify(queue: .main) {
                         
-                        let scheduleInfo = ScheduleInfo(scheduleID: scheduleID, scheduleName: scheduleName, isRunning: isRunning, locations: locationsId, users: users, activities: activities)
+                        let scheduleInfo = ScheduleInfo(scheduleID: scheduleID,
+                                                        scheduleName: scheduleName,
+                                                        isRunning: isRunning,
+                                                        locations: locationsName,
+                                                        users: users,
+                                                        activities: activities,
+                                                        locationsId: locationsId)
                         
                         if isRunning {
                             self.runningSchedules.append(scheduleInfo)
@@ -199,7 +226,7 @@ class DataManager {
                 }
                 
                 guard let document = documentSnapshot, document.exists else {
-          
+                    
                     return
                 }
                 
@@ -216,23 +243,23 @@ class DataManager {
     
     // MARK: - Delete Schedule from Schedules Collection
     func deleteSchedule(scheduleID: String) {
-         
+        
         let scheduleReference = database.collection(schedulesCollectionPath)
-         
+        
         scheduleReference.document(scheduleID).delete { error in
-             if let error = error {
-                 print("Error deleting schedule: \(error.localizedDescription)")
-             } else {
-                 print("Schedule deleted successfully")
-             }
-         }
-     }
+            if let error = error {
+                print("Error deleting schedule: \(error.localizedDescription)")
+            } else {
+                print("Schedule deleted successfully")
+            }
+        }
+    }
     // MARK: Delete Schedule from Schedules Collection -
- 
+    
     // MARK: - Set Schedule from Running to Finished
     func finishSchedule(for scheduleID: String, isRunning: Bool, completion: @escaping (Error?) -> Void) {
         let scheduleReference = database.collection(schedulesCollectionPath).document(scheduleID)
-
+        
         scheduleReference.updateData(["isRunning": isRunning]) { error in
             completion(error)
         }
@@ -247,7 +274,7 @@ class DataManager {
             if let document = document, document.exists {
                 // 取得目前的 locationId 陣列
                 var currentLocationId = document.get("locationsId") as? [String] ?? []
-            
+                
                 // 確保 sourceIndexPath 和 destinationIndexPath 在有效範圍內
                 guard sourceIndexPath < currentLocationId.count, destinationIndexPath < currentLocationId.count else {
                     print("Invalid index paths.")
@@ -277,7 +304,52 @@ class DataManager {
         
     }
     
-    func deleteLocation(scheduleID: String, locationIndex: Int) {
+    func updateActivityOrder(sourceIndexPath: IndexPath, destinationIndexPath: IndexPath, scheduleID: String, currentLocations: [String]) {
+        let scheduleReference = database.collection(schedulesCollectionPath).document(scheduleID)
+        
+        scheduleReference.getDocument { (document, error) in
+            if let error = error {
+                print("Error getting document: \(error)")
+            } else if let document = document, document.exists {
+                var activities = document.data()?["activities"] as? [String: [String]] ?? [:]
+                
+                let sourceCurrentLocation = currentLocations[sourceIndexPath.section]
+                let destinationCurrentLocation = currentLocations[destinationIndexPath.section]
+                
+                var sourceActivity = activities[sourceCurrentLocation]
+                var destinationActivity = activities[destinationCurrentLocation]
+                
+                let sourceValue = sourceActivity?.remove(at: sourceIndexPath.row - 1)
+                
+                destinationActivity?.insert(sourceValue!, at: destinationIndexPath.row - 1)
+                
+                activities[destinationCurrentLocation] = destinationActivity
+                activities[sourceCurrentLocation] = sourceActivity
+                
+                scheduleReference.updateData(["activities": activities]) { error in
+                    if let error = error {
+                        print("Error updating document: \(error)")
+                    } else {
+                        
+                        if let destinationArray = destinationActivity {
+                            
+                            let destinationValue = destinationArray[destinationIndexPath.row - 1]
+                            
+                            print("Destination Value at IndexPath.row \(destinationIndexPath.row): \(destinationValue)")
+                        }
+                        
+                        print("Document successfully updated")
+                        
+                        NotificationCenter.default.post(name: Notification.Name("UpdateActivityOrder"), object: nil, userInfo: nil)
+                    }
+                }
+            } else {
+                print("Document does not exist")
+            }
+        }
+    }
+    
+    func deleteLocation(scheduleID: String, locationIndex: Int, deletedValue: String) {
         let scheduleReference = database.collection(schedulesCollectionPath).document(scheduleID)
         
         scheduleReference.getDocument { (document, error) in
@@ -288,7 +360,7 @@ class DataManager {
                 // 检查locationIndex是否有效
                 if locationIndex >= 0 && locationIndex < locationsId.count {
                     // 记录要删除的值
-                    let deletedValue = locationsId[locationIndex]
+//                    let deletedValue = locationsId[locationIndex]
                     
                     // 删除数组中的指定索引位置的元素
                     locationsId.remove(at: locationIndex)
@@ -327,7 +399,36 @@ class DataManager {
         }
     }
     
-    func deleteActivity(scheduleID: String) {
+    func deleteActivity(scheduleID: String, currentLocations: [String], indexPath: IndexPath) {
+        let scheduleReference = database.collection(schedulesCollectionPath).document(scheduleID)
         
+        scheduleReference.getDocument { (document, error) in
+            if let error = error {
+                print("Error getting document: \(error)")
+            } else if let document = document, document.exists {
+                var activities = document.data()?["activities"] as? [String: [String]] ?? [:]
+                
+                let currentLocation = currentLocations[indexPath.section]
+                
+                var activity = activities[currentLocation]
+                
+                
+                activity?.remove(at: indexPath.row - 1)
+                
+                activities[currentLocation] = activity
+                
+                scheduleReference.updateData(["activities": activities]) { error in
+                    if let error = error {
+                        print("Error updating document: \(error)")
+                    } else {
+                        
+                        print("Document successfully updated")
+                        
+                        NotificationCenter.default.post(name: Notification.Name("UpdateActivityOrder"), object: nil, userInfo: nil)
+                        
+                    }
+                }
+            }
+        }
     }
 }

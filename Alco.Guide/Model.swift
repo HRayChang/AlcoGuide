@@ -14,6 +14,7 @@ struct CurrentSchedule {
     static var currentScheduleName: String?
     static var currentIsRunnung: Bool?
     static var currentLocations: [String]?
+    static var currentLocationsId: [String]?
     static var currentUsers: [String]?
     static var currentActivities: [String: [String]]?
 }
@@ -25,6 +26,7 @@ struct ScheduleInfo: Codable {
     var locations: [String]
     var users: [String]
     var activities: [String: [String]]
+    var locationsId: [String]?
 }
 
 struct Location: Codable {

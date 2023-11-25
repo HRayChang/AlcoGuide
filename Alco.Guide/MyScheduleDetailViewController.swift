@@ -7,7 +7,12 @@
 
 import UIKit
 
-class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITableViewDragDelegate, UITableViewDropDelegate {
+protocol MyScheduleDetailButtonCellDelegate: AnyObject {
+    func addButtonTapped(in cell: MyScheduleDetailButtonTableViewCell)
+    func sendButtonTapped(in cell: MyScheduleDetailButtonTableViewCell, text: String)
+}
+
+class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITableViewDragDelegate, UITableViewDropDelegate, MyScheduleDetailButtonCellDelegate {
     
     let tableView = UITableView()
     
@@ -20,8 +25,8 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
         tableView.dataSource = self
         
         tableView.dragDelegate = self
-         tableView.dropDelegate = self
-         tableView.dragInteractionEnabled = true
+        tableView.dropDelegate = self
+        tableView.dragInteractionEnabled = true
         
         setupMyScheduleDetailViewUI()
         setupConstraints()
@@ -35,8 +40,8 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-//        tableView.setEditing(true, animated: false)
-//        editButtonTapped()
+        //        tableView.setEditing(true, animated: false)
+        //        editButtonTapped()
         
     }
     
@@ -54,13 +59,13 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
         self.navigationController?.navigationBar.barTintColor = UIColor.black
         
     }
-        
+    
     func setupConstraints() {
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(tableView)
- 
+        
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -125,8 +130,11 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
                 tableView.moveSection(sourceIndexPath.section, toSection: destinationIndexPath.section)
             }, completion: nil)
             
+            dataManager.updateLocationOrder(sourceIndexPath: sourceIndexPath.section, destinationIndexPath: destinationIndexPath.section, scheduleID: CurrentSchedule.currentScheduleID!)
+            
+            
         } else {
-        
+            
             
             if destinationIndexPath.row == 0 || destinationIndexPath.row == CurrentSchedule.currentActivities![CurrentSchedule.currentLocations![destinationIndexPath.section]]!.count + 2 {
                 return
@@ -141,9 +149,13 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
             tableView.performBatchUpdates({
                 tableView.moveRow(at: sourceIndexPath, to: destinationIndexPath)
             }, completion: nil)
+            
+            dataManager.updateActivityOrder(sourceIndexPath: sourceIndexPath,
+                                            destinationIndexPath: destinationIndexPath,
+                                            scheduleID: CurrentSchedule.currentScheduleID!,
+                                            currentLocations: CurrentSchedule.currentLocations!)
+            
         }
-        
-        dataManager.updateLocationOrder(sourceIndexPath: sourceIndexPath.section, destinationIndexPath: destinationIndexPath.section, scheduleID: CurrentSchedule.currentScheduleID!)
         
         tableView.reloadData()
     }
@@ -158,7 +170,7 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
         // Allow dropping anywhere in the table view
         let isSectionDraggable = destinationIndexPath != nil
         return UITableViewDropProposal(operation: isSectionDraggable ? .move : .forbidden, intent: .insertAtDestinationIndexPath)
-    
+        
     }
     // MARK: Drag & Drop -
     
@@ -178,21 +190,22 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
         guard let currentActivities = CurrentSchedule.currentActivities else {
             fatalError("Current activities not available")
         }
-
+        
         return (currentActivities[currentLocations[section]]?.count ?? 0) + 2
         
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         guard let currentLocations = CurrentSchedule.currentLocations else {
             fatalError("Current locations not available")
         }
         guard let currentActivities = CurrentSchedule.currentActivities else {
             fatalError("Current activities not available")
         }
-
+        
         let location = currentLocations[indexPath.section]
-
+        
         if indexPath.row == 0 {
             
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocationNameCell", for: indexPath) as? MyScheduleDetailLocationNameTableViewCell else {
@@ -200,7 +213,8 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
             }
             
             cell.locationNameLabel.text = location
-
+            
+            
             return cell
             
         } else if indexPath.row == (currentActivities[location]?.count ?? 0) + 1 {
@@ -209,12 +223,15 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
                 fatalError("Unable to dequeue ButtonTableViewCell")
             }
             
+            
+            cell.delegate = self
+            
             cell.locationName = location
             
             return cell
             
         } else {
-       
+            
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "ActivitiesCell", for: indexPath) as? MyScheduleDetailActivitiesTableViewCell else {
                 fatalError("Unable to dequeue ActivityTableViewCell")
             }
@@ -222,7 +239,7 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
             let activities = currentActivities[location]
             
             let activity = activities?[indexPath.row - 1]
-                cell.activityLabel.text = activity
+            cell.activityLabel.text = activity
             
             return cell
             
@@ -237,7 +254,7 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
         guard let currentActivities = CurrentSchedule.currentActivities else {
             fatalError("Current activities not available")
         }
-
+        
         if indexPath.row == (currentActivities[currentLocations[indexPath.section]]?.count ?? 0) + 1 {
             return false
         } else {
@@ -250,15 +267,75 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
             if indexPath.row == 0 {
                 
                 guard let scheduleID = CurrentSchedule.currentScheduleID else { return }
-                CurrentSchedule.currentLocations?.remove(at: indexPath.row)
-                dataManager.deleteLocation(scheduleID: scheduleID, locationIndex: indexPath.section)
+                var deletedValue = (CurrentSchedule.currentLocations?.remove(at: indexPath.section))!
+                dataManager.deleteLocation(scheduleID: scheduleID, locationIndex: indexPath.section, deletedValue: deletedValue)
                 tableView.beginUpdates()
-                tableView.deleteSections(IndexSet(integer: indexPath.section), with: .automatic)
+                tableView.deleteSections(IndexSet(integer: indexPath.section), with: .fade)
                 tableView.endUpdates()
+                NotificationCenter.default.post(name: Notification.Name("DeletedLocation"), object: nil, userInfo: nil)
+                tableView.reloadData()
             } else {
+                guard let scheduleID = CurrentSchedule.currentScheduleID else { return }
+                guard let currentLocation = CurrentSchedule.currentLocations?[indexPath.section] else { return }
                 
+                let dispatchGroup = DispatchGroup()
+                
+                dispatchGroup.enter()
+                CurrentSchedule.currentActivities?[currentLocation]?.remove(at: indexPath.row - 1)
+                dataManager.deleteActivity(scheduleID: CurrentSchedule.currentScheduleID!, currentLocations: CurrentSchedule.currentLocations!, indexPath: indexPath)
+                dispatchGroup.leave()
+                dispatchGroup.notify(queue: .main) {
+                    tableView.beginUpdates()
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                    tableView.endUpdates()
+                }
             }
         }
     }
     // MARK: TableView -
+    
+    func addButtonTapped(in cell: MyScheduleDetailButtonTableViewCell) {
+        // Handle add button tap
+        if let indexPath = tableView.indexPath(for: cell) {
+            // You can use indexPath to identify the cell if needed
+        }
+        cell.addActivityButton.isHidden = true
+        cell.addActivityTextField.isHidden = false
+        cell.sendButton.isHidden = false
+    }
+    
+    func sendButtonTapped(in cell: MyScheduleDetailButtonTableViewCell, text: String) {
+        // Handle send button tap
+        if let indexPath = tableView.indexPath(for: cell) {
+            // You can use indexPath to identify the cell if needed
+        }
+        let scheduleID = CurrentSchedule.currentScheduleID
+        
+        DataManager.shared.addActivities(scheduleID: scheduleID!, locationName: cell.locationName!, text: text) { result in
+            switch result {
+            case .success:
+                print("Activities successfully updated in Firestore")
+                
+                if let indexPath = self.tableView.indexPath(for: cell), let scheduleID = CurrentSchedule.currentScheduleID {
+                    // Add a new activity to the data source
+                    var newActivity = text
+                    CurrentSchedule.currentActivities![cell.locationName!]?.append(text)
+
+                    
+                    // Update the tableView
+                    self.tableView.insertRows(at: [IndexPath(row: indexPath.row + 1, section: indexPath.section)], with: .automatic)
+                }
+                self.tableView.reloadData()
+            case .failure(let error):
+                print("Error updating activities in Firestore: \(error)")
+            }
+        }
+
+        // Hide the text field and send button after sending the data
+        cell.addActivityButton.isHidden = false
+        cell.addActivityTextField.isHidden = true
+        cell.sendButton.isHidden = true
+        cell.addActivityTextField.text = nil // Clear the text field
+    }
+    
 }
