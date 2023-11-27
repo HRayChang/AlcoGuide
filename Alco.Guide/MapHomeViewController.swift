@@ -180,7 +180,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     }
     
     @objc private func updateCurrentScheduleLabel(_ notification: Notification) {
-        currentScheduleLabel.text = CurrentSchedule.currentScheduleName
+        currentScheduleLabel.text = DataManager.CurrentSchedule.currentScheduleName
         currentScheduleLabel.isHidden = false
     }
     
@@ -302,7 +302,8 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         var annotationView: MKMarkerAnnotationView
 
         if let pointAnnotation = annotation as? MKPointAnnotation,
-           CurrentSchedule.currentLocationCooredinate?.contains(where: { $0.latitude == pointAnnotation.coordinate.latitude && $0.longitude == pointAnnotation.coordinate.longitude }) == true {
+           DataManager.CurrentSchedule.currentLocationCooredinate?.contains(
+            where: { $0.latitude == pointAnnotation.coordinate.latitude && $0.longitude == pointAnnotation.coordinate.longitude }) == true {
             
             annotationView = mapView.dequeueReusableAnnotationView(
                 withIdentifier: "specialLocations") as? MKMarkerAnnotationView ?? MKMarkerAnnotationView(annotation: pointAnnotation, reuseIdentifier: "specialLocations")

@@ -16,7 +16,7 @@ class LocationDetailViewController: UIViewController {
     let mapManager = MapManager.shared
     let dataManager = DataManager.shared
     
-    var scheduleID = CurrentSchedule.currentScheduleID
+    var scheduleID = DataManager.CurrentSchedule.currentScheduleID
     
     var locationId: String?
     var locationName: String?

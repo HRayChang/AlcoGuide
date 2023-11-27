@@ -9,7 +9,14 @@ import Foundation
 import MapKit
 import FirebaseFirestore
 
+enum ArrayType {
+    case running
+    case finished
+}
+
 class DataManager {
+    
+
     
     static let shared = DataManager()
     
@@ -22,12 +29,98 @@ class DataManager {
     var runningSchedules: [ScheduleInfo] = []
     var finishedSchedules: [ScheduleInfo] = []
     
+    struct CurrentSchedule {
+        static var currentIndex: Int? {
+            didSet {
+                updateCurrentData()
+            }
+        }
+        
+        static var currentArrayType: ArrayType?
+        static var currentScheduleID: String?
+        static var currentScheduleName: String?
+        static var currentIsRunnung: Bool?
+        static var currentLocations: [String]?
+        static var currentLocationsId: [String]?
+        static var currentUsers: [String]?
+        static var currentActivities: [String: [String]]?
+        static var currentLocationCooredinate: [GeoPoint]?
+        // Add other variables
+        
+        static func updateCurrentData() {
+            if let index = currentIndex, let type = currentArrayType {
+                switch type {
+                case .running:
+                    currentScheduleID = DataManager.shared.runningSchedules[index].scheduleID
+                    currentScheduleName = DataManager.shared.runningSchedules[index].scheduleName
+                    currentIsRunnung = DataManager.shared.runningSchedules[index].isRunning
+                    currentLocations = DataManager.shared.runningSchedules[index].locations
+                    currentLocationsId = DataManager.shared.runningSchedules[index].locationsId
+                    currentUsers = DataManager.shared.runningSchedules[index].users
+                    currentActivities = DataManager.shared.runningSchedules[index].activities
+                case .finished:
+                    currentScheduleID = DataManager.shared.finishedSchedules[index].scheduleID
+                    currentScheduleName = DataManager.shared.finishedSchedules[index].scheduleName
+                    currentIsRunnung = DataManager.shared.finishedSchedules[index].isRunning
+                    currentLocations = DataManager.shared.finishedSchedules[index].locations
+                    currentLocationsId = DataManager.shared.finishedSchedules[index].locationsId
+                    currentUsers = DataManager.shared.finishedSchedules[index].users
+                    currentActivities = DataManager.shared.finishedSchedules[index].activities
+                    
+                }
+            }
+        }
+        
+        // Example function to update current index and array type
+        static func updateCurrentIndex(to index: Int, arrayType: ArrayType) {
+            currentArrayType = arrayType
+            currentIndex = index
+        }
+        
+        private init() {
+            CurrentSchedule.updateCurrentData()
+        }
+    }
+    
+    
     func postCurrentScheduleNotification(scheduleInfo: [String: Any]) {
         NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)
     }
     
     func postLocationAddedNotification(locationInfo: [String: Any]) {
         NotificationCenter.default.post(name: Notification.Name("AddedLocation"), object: nil, userInfo: locationInfo)
+    }
+    
+    func firestoreObserver() {
+        
+        let docRef = Firestore.firestore().collection("Schedules").document(DataManager.CurrentSchedule.currentScheduleID!)
+        
+        docRef.addSnapshotListener { (document, error) in
+            guard let document = document, document.exists else {
+                print("文档不存在")
+                return
+            }
+            
+            // 检查字段是否存在
+            if let fieldValue = document.get("locationsId") {
+                // 字段值发生变化，执行你的操作
+                
+                
+                // 在这里添加你的通知或其他处理逻辑
+            } else if let fieldValue = document.get("activities") {
+                
+            } else if let fieldValue = document.get("isRunning") {
+                
+            } else if let fieldValue = document.get("users") {
+                
+            } else {
+                print("字段不存在")
+            }
+            self.fetchSchedules {_ in
+                CurrentSchedule.updateCurrentData()
+                NotificationCenter.default.post(name: Notification.Name("Updatefirestore"), object: nil, userInfo: nil)
+            }
+        }
     }
     
     // MARK: - Add Schedule to Schedules Collection

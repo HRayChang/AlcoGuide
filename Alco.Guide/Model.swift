@@ -9,17 +9,6 @@ import Foundation
 import FirebaseFirestore
 import MapKit
 
-struct CurrentSchedule {
-    static var currentScheduleID: String?
-    static var currentScheduleName: String?
-    static var currentIsRunnung: Bool?
-    static var currentLocations: [String]?
-    static var currentLocationsId: [String]?
-    static var currentUsers: [String]?
-    static var currentActivities: [String: [String]]?
-    static var currentLocationCooredinate: [GeoPoint]?
-}
-
 struct ScheduleInfo: Codable {
     var scheduleID: String
     var scheduleName: String
