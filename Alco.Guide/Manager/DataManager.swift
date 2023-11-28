@@ -101,26 +101,40 @@ class DataManager {
                 return
             }
             
-            // 检查字段是否存在
-            if let fieldValue = document.get("locationsId") {
-                // 字段值发生变化，执行你的操作
-                
-                
-                // 在这里添加你的通知或其他处理逻辑
-            } else if let fieldValue = document.get("activities") {
-                
-            } else if let fieldValue = document.get("isRunning") {
-                
-            } else if let fieldValue = document.get("users") {
-                
-            } else {
-                print("字段不存在")
+            if let locationsIdValue = document.get("locationsId") as? [String] {
+                CurrentSchedule.currentLocationsId = locationsIdValue
+                self.fetchLocationName(locationsId: locationsIdValue) { locationsName in
+                    CurrentSchedule.currentLocations = locationsName
+                }
             }
-            self.fetchSchedules {_ in
-                CurrentSchedule.updateCurrentData()
-                NotificationCenter.default.post(name: Notification.Name("Updatefirestore"), object: nil, userInfo: nil)
+
+            if let activitiesValue = document.get("activities") as? [String: [String]] {
+                CurrentSchedule.currentActivities = activitiesValue
             }
+
+            if let usersValue = document.get("users") as? [String] {
+                CurrentSchedule.currentUsers = usersValue
+            }
+            
+            if let isRunningValue = document.get("isRunning") as? Bool {
+                CurrentSchedule.currentIsRunnung = isRunningValue
+            }
+
+            if document.get("locationsId") == nil && document.get("activities") == nil && document.get("users") == nil {
+                print("No fields exist")
+            }
+//            
+//            self.fetchSchedules {_ in
+            
+            
+//                CurrentSchedule.updateCurrentData()
+                
+//            }
+
+            NotificationCenter.default.post(name: Notification.Name("Updatefirestore"), object: nil, userInfo: nil)
+            NotificationCenter.default.post(name: Notification.Name("FirestoreObserver"), object: nil, userInfo: nil)
         }
+       
     }
     
     // MARK: - Add Schedule to Schedules Collection
@@ -159,47 +173,56 @@ class DataManager {
     
     // MARK: - Add location to schedule and Location Collection
     func addLocationToSchedule(locationName: String, locationId: String, locationCoordinate: LocationGeometry, scheduleID: String, completion: @escaping (Error?) -> Void) {
-        
+
         let schedulesReference = database.collection("Schedules").document(scheduleID)
-        
-        var scheduleLocationsData = [
-            "locationsId": FieldValue.arrayUnion([locationId])
-        ]
-        
-        schedulesReference.updateData(scheduleLocationsData) { error in
-            completion(error)
-        }
-        
-        let activitiesField = "activities.\(locationName)"
-        let scheduleActivitiesData = [
-            activitiesField: FieldValue.arrayUnion([])
-        ]
-        
-        schedulesReference.updateData(scheduleActivitiesData) { error in
-            completion(error)
-        }
-        
-        let locationsReference = database.collection(locationsCollectionPath).document(locationId)
-        
-        var locationData: [String: Any] = [:]
-        
-        let geoPoint = GeoPoint(latitude: locationCoordinate.lat, longitude: locationCoordinate.lng)
-        
-        locationData["locationCoordinate"] = geoPoint
-        
-        locationData["locationName"] = locationName
-        
-        locationsReference.setData(locationData) { error in
-            if let error = error {
-                print("Error adding document: \(error)")
-                completion(nil)
-            } else {
-                print("New location added successfully")
+
+        database.runTransaction({ [self] (transaction, errorPointer) -> Any? in
+            do {
+                // Get the latest snapshot of the schedule document
+                let scheduleDocument = try transaction.getDocument(schedulesReference)
                 
+                // Update the locationsId array
+                var scheduleLocationsData = scheduleDocument.data() ?? [:]
+                if var locationsIdArray = scheduleLocationsData["locationsId"] as? [String] {
+                    locationsIdArray.append(locationId)
+                    scheduleLocationsData["locationsId"] = locationsIdArray
+                    transaction.updateData(scheduleLocationsData, forDocument: schedulesReference)
+                }
+
+                // Update the activities field
+                let activitiesField = "activities.\(locationName)"
+                var scheduleActivitiesData = scheduleDocument.data() ?? [:]
+                if var activitiesArray = scheduleActivitiesData[activitiesField] as? [Any] {
+                    activitiesArray.append(contentsOf: []) // Add your desired data to the array
+                    scheduleActivitiesData[activitiesField] = activitiesArray
+                    transaction.updateData(scheduleActivitiesData, forDocument: schedulesReference)
+                }
+                
+                // Create or update the location document
+                let locationsReference = database.collection(locationsCollectionPath).document(locationId)
+                var locationData: [String: Any] = [:]
+                let geoPoint = GeoPoint(latitude: locationCoordinate.lat, longitude: locationCoordinate.lng)
+                locationData["locationCoordinate"] = geoPoint
+                locationData["locationName"] = locationName
+                transaction.setData(locationData, forDocument: locationsReference)
+                
+                return nil
+            } catch let fetchError as NSError {
+                // Handle any errors during the transaction by returning an error
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+        }) { (_, error) in
+            // Completion block
+            if let error = error {
+                print("Transaction failed: \(error)")
+                completion(error)
+            } else {
+                print("Transaction succeeded!")
                 CurrentSchedule.currentLocations?.append(locationName)
                 CurrentSchedule.currentLocationsId?.append(locationId)
                 self.postLocationAddedNotification(locationInfo: ["scheduleName": CurrentSchedule.currentScheduleName!])
-                
+                completion(nil)
             }
         }
     }
@@ -208,31 +231,43 @@ class DataManager {
     // MARK: - Add activities to schedule's location
     func addActivities(scheduleID: String, locationName: String, text: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let locationRef = database.collection("Schedules").document(scheduleID)
-        
-        locationRef.getDocument { (document, error) in
-            if let document = document, document.exists {
+
+        // Start a Firestore transaction
+        database.runTransaction({ (transaction, errorPointer) -> Any? in
+            do {
+                let document = try transaction.getDocument(locationRef)
+                
+                guard document.exists else {
+                    let error = NSError(domain: "AppErrorDomain", code: -1, userInfo: [NSLocalizedDescriptionKey: "Document does not exist"])
+                    throw error
+                }
+                
                 var data = document.data()
                 var activities = data?["activities"] as? [String: [String]] ?? [:]
-                
-                var activity = activities[locationName]
-                
-                activity?.append(text)
-                
+
+                var activity = activities[locationName, default: []]
+
+                activity.append(text)
+
                 activities[locationName] = activity
-                
-                locationRef.updateData(["activities": activities]) { error in
-                    if let error = error {
-                        print("Error updating document: \(error)")
-                        completion(.failure(error))
-                    } else {
-                        print("Document successfully updated")
-                        NotificationCenter.default.post(name: Notification.Name("UpdateActivityOrder"), object: nil, userInfo: nil)
-                        completion(.success(()))
-                    }
-                }
-            } else if let error = error {
-                print("Error getting document: \(error)")
+
+                transaction.updateData(["activities": activities], forDocument: locationRef)
+
+                // Return any value to signal success of the transaction
+                return "Transaction success"
+            } catch let fetchError as NSError {
+                // Handle any errors that occurred during the fetch
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+        }) { (result, error) in
+            if let error = error {
+                print("Transaction failed: \(error)")
                 completion(.failure(error))
+            } else {
+                print("Transaction successfully committed!")
+                NotificationCenter.default.post(name: Notification.Name("UpdateActivityOrder"), object: nil, userInfo: nil)
+                completion(.success(()))
             }
         }
     }
@@ -260,27 +295,16 @@ class DataManager {
                     let scheduleID = document.documentID
                     let scheduleName = document.data()["scheduleName"] as? String ?? "Unknown"
                     let isRunning = document.data()["isRunning"] as? Bool ?? false
-                    var locationsName = document.data()["locationsId"] as? [String] ?? []
                     let locationsId = document.data()["locationsId"] as? [String] ?? []
                     let users = document.data()["users"] as? [String] ?? []
                     let activities = document.data()["activities"] as? [String: [String]] ?? [:]
                     
-                    let dispatchGroup = DispatchGroup()
-                    
-                    dispatchGroup.enter()
-                    
-                    fetchLocationName(locationsId: locationsName) { updatedLocations in
-                        
-                        locationsName = updatedLocations
-                        
-                        dispatchGroup.leave()
-                    }
-                    dispatchGroup.notify(queue: .main) {
+                    fetchLocationName(locationsId: locationsId) { updatedLocations in
                         
                         let scheduleInfo = ScheduleInfo(scheduleID: scheduleID,
                                                         scheduleName: scheduleName,
                                                         isRunning: isRunning,
-                                                        locations: locationsName,
+                                                        locations: updatedLocations,
                                                         users: users,
                                                         activities: activities,
                                                         locationsId: locationsId)
@@ -292,8 +316,6 @@ class DataManager {
                             self.finishedSchedules.append(scheduleInfo)
                             print("Finished schedules: \(self.finishedSchedules)")
                         }
-                        
-                        
                         completion(true)
                     }
                 }
@@ -305,11 +327,11 @@ class DataManager {
         
         let locationsCollection = database.collection("Locations")
         
-        var updatedLocations: [String] = []
+        var updatedLocations: [String] = Array(repeating: "", count: locationsId.count) // Initialize with empty strings
         
         let group = DispatchGroup()
         
-        for locationId in locationsId {
+        for (index, locationId) in locationsId.enumerated() {
             
             group.enter()
             
@@ -319,15 +341,15 @@ class DataManager {
                 }
                 
                 guard let document = documentSnapshot, document.exists else {
-                    
                     return
                 }
                 
                 if let locationName = document.data()?["locationName"] as? String {
-                    updatedLocations.insert(locationName, at: 0)
+                    updatedLocations[index] = locationName
                 }
             }
         }
+        
         group.notify(queue: .main) {
             completion(updatedLocations)
         }
@@ -390,210 +412,236 @@ class DataManager {
     }
     // MARK: Set Schedule from Running to Finished -
     
-    func updateLocationOrder(sourceIndexPath: Int, destinationIndexPath: Int, scheduleID: String) {
-        
+    func updateLocationOrder(sourceIndexPath: IndexPath, destinationIndexPath: IndexPath, scheduleID: String) {
+            
         let scheduleReference = database.collection(schedulesCollectionPath).document(scheduleID)
         
-        scheduleReference.getDocument { (document, error) in
-            if let document = document, document.exists {
-                // 取得目前的 locationId 陣列
-                var currentLocationId = document.get("locationsId") as? [String] ?? []
+        database.runTransaction({ (transaction, errorPointer) -> Any? in
+            do {
+                let document = try transaction.getDocument(scheduleReference)
                 
-                // 確保 sourceIndexPath 和 destinationIndexPath 在有效範圍內
-                guard sourceIndexPath < currentLocationId.count, destinationIndexPath < currentLocationId.count else {
-                    print("Invalid index paths.")
-                    return
-                }
-                
-                // 移動 sourceIndexPath 的值到 destinationIndexPath
-                let removedValue = currentLocationId.remove(at: sourceIndexPath)
-                currentLocationId.insert(removedValue, at: destinationIndexPath)
-                
-                // 更新 Firestore 文檔中的 locationId 字段
-                scheduleReference.updateData(["locationsId": currentLocationId]) { error in
-                    if let error = error {
-                        print("Error updating document: \(error)")
-                    } else {
-                        print("Document successfully updated")
-                        
-                        NotificationCenter.default.post(name: Notification.Name("UpdateLocationOrder"), object: nil, userInfo: nil)
-                        
+                if document.exists {
+                    // 取得目前的 locationId 陣列
+                    var currentLocationId = document.get("locationsId") as? [String] ?? []
+                    
+                    // 確保 sourceIndexPath 和 destinationIndexPath 在有效範圍內
+                    guard sourceIndexPath.section < currentLocationId.count, destinationIndexPath.section < currentLocationId.count else {
+                        print("Invalid index paths.")
+                        return nil
                     }
+                    
+                    // 移動 sourceIndexPath 的值到 destinationIndexPath
+                    let removedValue = currentLocationId.remove(at: sourceIndexPath.section)
+                    currentLocationId.insert(removedValue, at: destinationIndexPath.section)
+                    
+                    // 更新 Firestore 文檔中的 locationId 字段
+                    transaction.updateData(["locationsId": currentLocationId], forDocument: scheduleReference)
+                    
+                    return currentLocationId
+                } else {
+                    print("Document does not exist")
+                    return nil
                 }
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+        }) { (result, error) in
+            if let error = error {
+                print("Transaction failed: \(error)")
+            } else if let currentLocationId = result as? [String] {
+                print("Transaction successful. Updated locationsId: \(currentLocationId)")
                 
-            } else {
-                print("Document does not exist")
+//                NotificationCenter.default.post(name: Notification.Name("UpdateLocationOrder"), object: nil, userInfo: nil)
             }
         }
-        
     }
     
     func updateActivityOrder(sourceIndexPath: IndexPath, destinationIndexPath: IndexPath, scheduleID: String, currentLocations: [String]) {
         let scheduleReference = database.collection(schedulesCollectionPath).document(scheduleID)
+
+        let sourceCurrentLocation = currentLocations[sourceIndexPath.section]
+        let destinationCurrentLocation = currentLocations[destinationIndexPath.section]
         
-        scheduleReference.getDocument { (document, error) in
-            if let error = error {
-                print("Error getting document: \(error)")
-            } else if let document = document, document.exists {
-                var activities = document.data()?["activities"] as? [String: [String]] ?? [:]
+        database.runTransaction({ (transaction, errorPointer) -> Any? in
+            do {
+                let document = try transaction.getDocument(scheduleReference)
                 
-                let sourceCurrentLocation = currentLocations[sourceIndexPath.section]
-                let destinationCurrentLocation = currentLocations[destinationIndexPath.section]
+                guard var activities = document.data()?["activities"] as? [String: [String]] else {
+                    throw NSError(domain: "AppErrorDomain", code: -1, userInfo: [NSLocalizedDescriptionKey: "Activities not found in document"])
+                }
                 
-                var sourceActivity = activities[sourceCurrentLocation]
-                var destinationActivity = activities[destinationCurrentLocation]
+                
+                
+                var sourceActivity = activities[sourceCurrentLocation] ?? []
+                var destinationActivity = activities[destinationCurrentLocation] ?? []
                 
                 if sourceActivity == destinationActivity {
-                    
-                    let sourceValue = sourceActivity?.remove(at: sourceIndexPath.row - 1)
-                    
-                    sourceActivity?.insert(sourceValue!, at: destinationIndexPath.row - 1)
-                    
+                    let sourceValue = sourceActivity.remove(at: sourceIndexPath.row - 1)
+                    sourceActivity.insert(sourceValue, at: destinationIndexPath.row - 1)
                     activities[sourceCurrentLocation] = sourceActivity
                 } else {
-                    
-                    let sourceValue = sourceActivity?.remove(at: sourceIndexPath.row - 1)
-                    
-                    destinationActivity?.insert(sourceValue!, at: destinationIndexPath.row - 1)
-                    
+                    let sourceValue = sourceActivity.remove(at: sourceIndexPath.row - 1)
+                    destinationActivity.insert(sourceValue, at: destinationIndexPath.row - 1)
                     activities[destinationCurrentLocation] = destinationActivity
                     activities[sourceCurrentLocation] = sourceActivity
                 }
                 
-                scheduleReference.updateData(["activities": activities]) { error in
-                    if let error = error {
-                        print("Error updating document: \(error)")
-                    } else {
-                        
-                        if let destinationArray = destinationActivity {
-                            
-                            let destinationValue = destinationArray[destinationIndexPath.row - 1]
-                            
-                            print("Destination Value at IndexPath.row \(destinationIndexPath.row): \(destinationValue)")
-                        }
-                        
-                        print("Document successfully updated")
-                        
-                        NotificationCenter.default.post(name: Notification.Name("UpdateActivityOrder"), object: nil, userInfo: nil)
-                    }
-                }
+                transaction.updateData(["activities": activities], forDocument: scheduleReference)
+                
+                return activities
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+        }) { (activities, error) in
+            if let error = error {
+                print("Transaction failed: \(error)")
             } else {
-                print("Document does not exist")
+                if let destinationArray = activities as? [String: [String]],
+                   let destinationActivity = destinationArray[destinationCurrentLocation],
+                   destinationIndexPath.row - 1 < destinationActivity.count {
+                    let destinationValue = destinationActivity[destinationIndexPath.row - 1]
+                    print("Destination Value at IndexPath.row \(destinationIndexPath.row): \(destinationValue)")
+                }
+                
+                print("Transaction successfully committed!")
+                NotificationCenter.default.post(name: Notification.Name("UpdateActivityOrder"), object: nil, userInfo: nil)
             }
         }
     }
+
     
     func deleteLocation(scheduleID: String, locationIndex: Int, deletedValue: String) {
         let scheduleReference = database.collection(schedulesCollectionPath).document(scheduleID)
-        
-        scheduleReference.getDocument { (document, error) in
-            if let document = document, document.exists {
-                // 从文档中获取locationsId字段的值（假设是一个数组）
-                var locationsId = document.data()?["locationsId"] as? [String] ?? []
-                
-                // 检查locationIndex是否有效
-                if locationIndex >= 0 && locationIndex < locationsId.count {
-                    // 记录要删除的值
-//                    let deletedValue = locationsId[locationIndex]
-                    
-                    // 删除数组中的指定索引位置的元素
-                    locationsId.remove(at: locationIndex)
-                    
-                    // 更新文档数据
-                    scheduleReference.updateData(["locationsId": locationsId]) { error in
-                        if let error = error {
-                            print("Error updating document: \(error)")
-                        } else {
-                            // 打印已删除的值
-                            print("Deleted value: \(deletedValue)")
-                            print("Document successfully updated")
-                            
-                            // 获取activities字段的值（假设是一个字典）
-                            var activities = document.data()?["activities"] as? [String: Any] ?? [:]
-                            
-                            // 删除activities中特定键的条目
-                            activities.removeValue(forKey: deletedValue)
-                            
-                            // 更新文档中的activities字段
-                            scheduleReference.updateData(["activities": activities]) { error in
-                                if let error = error {
-                                    print("Error updating activities: \(error)")
-                                } else {
-                                    print("Activities successfully updated")
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    print("Invalid locationIndex")
+
+        database.runTransaction({ (transaction, errorPointer) -> Any? in
+            do {
+                let document = try transaction.getDocument(scheduleReference)
+
+                guard var locationsId = document.data()?["locationsId"] as? [String] else {
+                    errorPointer?.pointee = NSError(domain: "AppErrorDomain", code: -1, userInfo: [
+                        NSLocalizedDescriptionKey: "Failed to get locationsId from document"
+                    ])
+                    return nil
                 }
+
+                // Check if locationIndex is valid
+                guard locationIndex >= 0, locationIndex < locationsId.count else {
+                    errorPointer?.pointee = NSError(domain: "AppErrorDomain", code: -1, userInfo: [
+                        NSLocalizedDescriptionKey: "Invalid locationIndex"
+                    ])
+                    return nil
+                }
+
+                // Record the value to be deleted
+                // let deletedValue = locationsId[locationIndex]
+
+                // Remove the element at the specified index in the array
+                locationsId.remove(at: locationIndex)
+
+                // Update the document data
+                transaction.updateData(["locationsId": locationsId], forDocument: scheduleReference)
+
+                // Get the "activities" field value (assuming it's a dictionary)
+                var activities = document.data()?["activities"] as? [String: Any] ?? [:]
+
+                // Remove the entry with the specified key from the "activities" dictionary
+                activities.removeValue(forKey: deletedValue)
+
+                // Update the "activities" field in the document
+                transaction.updateData(["activities": activities], forDocument: scheduleReference)
+
+                return nil
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+        }) { (object, error) in
+            if let error = error {
+                print("Transaction failed: \(error)")
             } else {
-                print("Document does not exist")
+                print("Transaction succeeded!")
             }
         }
     }
+
     
     func deleteActivity(scheduleID: String, currentLocations: [String], indexPath: IndexPath) {
         let scheduleReference = database.collection(schedulesCollectionPath).document(scheduleID)
-        
-        scheduleReference.getDocument { (document, error) in
-            if let error = error {
-                print("Error getting document: \(error)")
-            } else if let document = document, document.exists {
-                var activities = document.data()?["activities"] as? [String: [String]] ?? [:]
-                
-                let currentLocation = currentLocations[indexPath.section]
-                
-                var activity = activities[currentLocation]
-                
-                
-                activity?.remove(at: indexPath.row - 1)
-                
-                activities[currentLocation] = activity
-                
-                scheduleReference.updateData(["activities": activities]) { error in
-                    if let error = error {
-                        print("Error updating document: \(error)")
-                    } else {
-                        
-                        print("Document successfully updated")
-                        
-                        NotificationCenter.default.post(name: Notification.Name("UpdateActivityOrder"), object: nil, userInfo: nil)
-                        
-                    }
+
+        database.runTransaction({ (transaction, errorPointer) -> Any? in
+            do {
+                let scheduleDocument = try transaction.getDocument(scheduleReference)
+
+                guard let activities = scheduleDocument.data()?["activities"] as? [String: [String]] else {
+                    return nil
                 }
+
+                let currentLocation = currentLocations[indexPath.section]
+
+                var updatedActivities = activities
+                if var activity = updatedActivities[currentLocation] {
+                    activity.remove(at: indexPath.row - 1)
+                    updatedActivities[currentLocation] = activity
+                }
+
+                transaction.updateData(["activities": updatedActivities], forDocument: scheduleReference)
+
+                return nil
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+        }) { (object, error) in
+            if let error = error {
+                print("Transaction failed: \(error)")
+            } else {
+                print("Transaction succeeded!")
+
+                NotificationCenter.default.post(name: Notification.Name("UpdateActivityOrder"), object: nil, userInfo: nil)
             }
         }
     }
+
     
     func updateActivity(scheduleID: String, locationName: String, text: String, indexPath: IndexPath, completion: @escaping (Result<Void, Error>) -> Void) {
         let locationRef = database.collection("Schedules").document(scheduleID)
-        
-        locationRef.getDocument { (document, error) in
-            if let document = document, document.exists {
-                let data = document.data()
-                var activities = data?["activities"] as? [String: [String]] ?? [:]
+
+        database.runTransaction({ (transaction, errorPointer) -> Any? in
+            do {
+                let document = try transaction.getDocument(locationRef)
                 
-                var activity = activities[locationName]
-                
-                activity?[indexPath.row - 1] = text
-                
-                activities[locationName] = activity
-                
-                locationRef.updateData(["activities": activities]) { error in
-                    if let error = error {
-                        print("Error updating document: \(error)")
-                        completion(.failure(error))
-                    } else {
-                        print("Document successfully updated")
-                        NotificationCenter.default.post(name: Notification.Name("UpdateActivityOrder"), object: nil, userInfo: nil)
-                        completion(.success(()))
-                    }
+                guard let data = document.data() else {
+                    let error = NSError(domain: "AppErrorDomain", code: -1, userInfo: [NSLocalizedDescriptionKey: "Document does not exist"])
+                    throw error
                 }
-            } else if let error = error {
-                print("Error getting document: \(error)")
+                
+                var activities = data["activities"] as? [String: [String]] ?? [:]
+
+                var activity = activities[locationName]
+
+                activity?[indexPath.row - 1] = text
+
+                activities[locationName] = activity
+
+                transaction.updateData(["activities": activities], forDocument: locationRef)
+
+                return nil
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+        }) { (result, error) in
+            if let error = error {
+                print("Error updating document: \(error)")
                 completion(.failure(error))
+            } else {
+                print("Document successfully updated")
+                NotificationCenter.default.post(name: Notification.Name("UpdateActivityOrder"), object: nil, userInfo: nil)
+                completion(.success(()))
             }
         }
     }
+
 }

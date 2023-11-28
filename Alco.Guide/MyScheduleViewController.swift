@@ -52,7 +52,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     private func setupObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("CurrentSchedule"), object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("UpdateLocationOrder"), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("UpdateLocationOrder"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("UpdateActivity"), object: nil)
         
@@ -60,7 +60,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         
         NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("DeletedActivite"), object: nil)
 //        
-//        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("Updatefirestore"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("Updatefirestore"), object: nil)
     }
     
     func setupMyScheduleViewUI() {
@@ -170,7 +170,9 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        
         return true
+        
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {

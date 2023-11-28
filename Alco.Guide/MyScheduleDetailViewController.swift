@@ -38,7 +38,7 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
         
         dataManager.firestoreObserver()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadFirestoreData), name: Notification.Name("Updatefirestore"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("FirestoreObserver"), object: nil)
        
     }
     
@@ -79,8 +79,13 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
         ])
     }
     
-    @objc func reloadFirestoreData() {
-        tableView.reloadData()
+    @objc private func fetchSchedules() {
+        dataManager.fetchSchedules { [weak self] success in
+            guard let self = self, success else { return }
+            
+            self.tableView.reloadData()
+           
+        }
     }
     
     // MARK: - Drag & Drop
@@ -131,16 +136,21 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
             }
             
             // Change the whole section
-            let draggedItem = DataManager.CurrentSchedule.currentLocations![sourceIndexPath.section]
-                DataManager.CurrentSchedule.currentLocations!.remove(at: sourceIndexPath.section)
-                DataManager.CurrentSchedule.currentLocations!.insert(draggedItem, at: destinationIndexPath.section)
+            let movedLocationName = DataManager.CurrentSchedule.currentLocations?.remove(at: sourceIndexPath.section)
+            DataManager.CurrentSchedule.currentLocations?.insert(movedLocationName!, at: destinationIndexPath.section)
+            
+            let movedLocationId = DataManager.CurrentSchedule.currentLocationsId?.remove(at: sourceIndexPath.section)
+            DataManager.CurrentSchedule.currentLocationsId?.insert(movedLocationId!, at: destinationIndexPath.section)
             
             tableView.performBatchUpdates({
                 tableView.moveSection(sourceIndexPath.section, toSection: destinationIndexPath.section)
             }, completion: nil)
             
-            dataManager.updateLocationOrder(sourceIndexPath: sourceIndexPath.section, destinationIndexPath: destinationIndexPath.section, scheduleID: DataManager.CurrentSchedule.currentScheduleID!)
+            dataManager.updateLocationOrder(sourceIndexPath: sourceIndexPath, destinationIndexPath: destinationIndexPath, scheduleID: DataManager.CurrentSchedule.currentScheduleID!)
             
+        } else if sourceIndexPath.row == DataManager.CurrentSchedule.currentActivities![DataManager.CurrentSchedule.currentLocations![sourceIndexPath.section]]!.count + 1 {
+            
+            return
             
         } else {
             
@@ -167,7 +177,7 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
             
         }
         
-        tableView.reloadData()
+//        tableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
@@ -380,9 +390,9 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
 
                     
                     // Update the tableView
-                    self.tableView.insertRows(at: [IndexPath(row: indexPath.row + 1, section: indexPath.section)], with: .automatic)
+                    self.tableView.insertRows(at: [IndexPath(row: indexPath.row, section: indexPath.section)], with: .automatic)
+                    self.tableView.reloadData()
                 }
-                self.tableView.reloadData()
             case .failure(let error):
                 print("Error updating activities in Firestore: \(error)")
             }
