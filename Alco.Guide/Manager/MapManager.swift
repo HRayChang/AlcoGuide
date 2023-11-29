@@ -20,7 +20,7 @@ class MapManager: NSObject, MKMapViewDelegate {
             let body: [String: Any] = [
                 "languageCode": "zh-TW",
                 "includedTypes": ["\(keyword)"],
-                "maxResultCount": 20,
+                "maxResultCount": 10,
                 "rankPreference": "DISTANCE",
                 "locationRestriction": [
                     "circle": [
@@ -47,14 +47,15 @@ class MapManager: NSObject, MKMapViewDelegate {
                 switch response.result {
                 case .success(let locaitons):
                     
-                    var annotations: [MKPointAnnotation] = []
+                    var annotations: [CustomAnnotation] = []
                     
                     for item in locaitons.places {
-                        let annotation = MKPointAnnotation()
+                        let annotation = CustomAnnotation()
                         annotation.coordinate.latitude = item.location.latitude
                         annotation.coordinate.longitude = item.location.longitude
                         annotation.title = item.displayName.text
                         annotation.subtitle = item.id
+                        annotation.pinTintColor = UIColor.eminence
                         annotations.append(annotation)
                         
                     }

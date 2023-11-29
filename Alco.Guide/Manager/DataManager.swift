@@ -289,7 +289,7 @@ class DataManager {
             } else {
                 
                 for document in querySnapshot!.documents {
-                    
+
                     let scheduleID = document.documentID
                     let scheduleName = document.data()["scheduleName"] as? String ?? "Unknown"
                     let isRunning = document.data()["isRunning"] as? Bool ?? false
@@ -299,13 +299,9 @@ class DataManager {
                     
                     self.runningSchedules.removeAll()
                     self.finishedSchedules.removeAll()
-                    
+
                     fetchLocationName(locationsId: locationsId) { updatedLocations in
-                        
-                        if locationsId.isEmpty {
-                            return
-                        }
-                        
+
                         let scheduleInfo = ScheduleInfo(scheduleID: scheduleID,
                                                         scheduleName: scheduleName,
                                                         isRunning: isRunning,
@@ -313,14 +309,27 @@ class DataManager {
                                                         users: users,
                                                         activities: activities,
                                                         locationsId: locationsId)
-                        
-                        if isRunning {
-                            self.runningSchedules.append(scheduleInfo)
+
+                        // Check if the scheduleID already exists
+                        if let index = self.runningSchedules.firstIndex(where: { $0.scheduleID == scheduleID }) {
+                            // If it exists, update the information
+                            self.runningSchedules[index] = scheduleInfo
                             print("Running schedules: \(self.runningSchedules)")
-                        } else {
-                            self.finishedSchedules.append(scheduleInfo)
+                        } else if let index = self.finishedSchedules.firstIndex(where: { $0.scheduleID == scheduleID }) {
+                            // If it exists, update the information
+                            self.finishedSchedules[index] = scheduleInfo
                             print("Finished schedules: \(self.finishedSchedules)")
+                        } else {
+                            // If it doesn't exist, add it to the appropriate list
+                            if isRunning {
+                                self.runningSchedules.append(scheduleInfo)
+                                print("Running schedules: \(self.runningSchedules)")
+                            } else {
+                                self.finishedSchedules.append(scheduleInfo)
+                                print("Finished schedules: \(self.finishedSchedules)")
+                            }
                         }
+
                         completion(true)
                     }
                 }
@@ -360,10 +369,12 @@ class DataManager {
         }
     }
     
-    func fetchLocationCoordinate(locationsId: [String], completion: @escaping ([GeoPoint]) -> Void) {
-        let locationsCollection = database.collection("Locations")
-        var currentLocationCoordinate = [GeoPoint]()
 
+
+    func fetchLocationCoordinate(locationsId: [String], completion: @escaping ([LocationAnnotationInfo]) -> Void) {
+        let locationsCollection = database.collection("Locations")
+        var locationInfoArray = [LocationAnnotationInfo]()
+        
         let dispatchGroup = DispatchGroup()
 
         for locationId in locationsId {
@@ -376,16 +387,17 @@ class DataManager {
 
                 guard let document = documentSnapshot, document.exists else { return }
 
-                if let locationName = document.data()?["locationCoordinate"] as? GeoPoint {
-                    currentLocationCoordinate.insert(locationName, at: 0)
-                    CurrentSchedule.currentLocationCooredinate = currentLocationCoordinate
+                if let locationCoordinate = document.data()?["locationCoordinate"] as? GeoPoint,
+                   let locationName = document.data()?["locationName"] as? String {
+                    
+                    let locationInfo = LocationAnnotationInfo(locationId: locationId, locationName: locationName, locationCoordinate: locationCoordinate)
+                    locationInfoArray.insert(locationInfo, at: 0)
                 }
             }
         }
 
         dispatchGroup.notify(queue: .main) {
-            // 所有异步操作完成后调用回调闭包
-            completion(currentLocationCoordinate)
+            completion(locationInfoArray)
         }
     }
     

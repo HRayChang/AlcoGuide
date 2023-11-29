@@ -49,7 +49,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     private func setupObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("CurrentSchedule"), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("CurrentSchedule"), object: nil)
         
 //        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("UpdateLocationOrder"), object: nil)
         
@@ -105,11 +105,9 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    func postCurrentScheduleNotification(scheduleInfo: [String: Any]) {
-            NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)
-        
-        NotificationCenter.default.post(name: Notification.Name("CurrentLocationsCoordinate"), object: nil, userInfo: scheduleInfo)
-    }
+//    func postCurrentScheduleNotification(scheduleInfo: [String: Any]) {
+//            NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)
+//    }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return Section.allCases.count
@@ -159,7 +157,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
 //        
 //            self.postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
 //        }
-        
+        NotificationCenter.default.post(name: Notification.Name("CurrentLocationsCoordinate"), object: nil, userInfo: nil)
         let myScheduleDetailViewController = UINavigationController(rootViewController: MyScheduleDetailViewController())
 
         present(myScheduleDetailViewController, animated: true, completion: nil)

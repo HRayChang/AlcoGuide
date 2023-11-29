@@ -9,6 +9,10 @@ import UIKit
 import MapKit
 import FirebaseFirestore
 
+class CustomAnnotation: MKPointAnnotation {
+    var pinTintColor: UIColor?
+}
+
 class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
     var scheduleReference: DocumentReference?
@@ -86,8 +90,10 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         assembleButton.layer.cornerRadius = 56
         assembleButton.addTarget(self, action: #selector(assembleButtonTapped), for: .touchUpInside)
         
-        let wineGlassImageView = UIImageView(image: UIImage(systemName: "wineglass.fill"))
+        let wineGlassImage = UIImage(named: "Button")
+        let wineGlassImageView = UIImageView(image: wineGlassImage)
         wineGlassImageView.tintColor = UIColor.steelPink
+        wineGlassImageView.contentMode = .scaleAspectFill
         wineGlassImageView.translatesAutoresizingMaskIntoConstraints = false
         assembleButton.addSubview(wineGlassImageView)
         NSLayoutConstraint.activate([
@@ -135,7 +141,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             currentScheduleLabel.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: 50),
             currentScheduleLabel.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -50),
             
-            buttonLineView.heightAnchor.constraint(equalToConstant: 12),
+            buttonLineView.heightAnchor.constraint(equalToConstant: 5),
             buttonLineView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             buttonLineView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             buttonLineView.topAnchor.constraint(equalTo: mapView.bottomAnchor),
@@ -176,7 +182,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     private func setupObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(updateCurrentScheduleLabel), name: Notification.Name("CurrentSchedule"), object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(updateCurrentLocationsCoordinate), name: Notification.Name("CurrentLocationsCoordinate"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(showLocaitons), name: Notification.Name("CurrentLocationsCoordinate"), object: nil)
     }
     
     @objc private func updateCurrentScheduleLabel(_ notification: Notification) {
@@ -264,59 +270,82 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     }
     
     private func displayAnnotations(_ annotations: [MKPointAnnotation]) {
-        mapView.removeAnnotations(mapView.annotations)
-        mapView.addAnnotations(annotations)
+        
+        let dispatchGroup = DispatchGroup()
+        
+        dispatchGroup.enter()
+        let annotationsToRemove = mapView.annotations.filter { annotation in
+            guard let title = annotation.title else {
+                return false
+            }
+    
+                return !(DataManager.CurrentSchedule.currentLocations!.contains(title!))
+            }
+        
+        dispatchGroup.leave()
+        
+        dispatchGroup.notify(queue: .main) {
+            self.mapView.removeAnnotations(annotationsToRemove)
+            
+            self.mapView.addAnnotations(annotations)
+            
+            self.addLocationAnnotation()
+        }
     }
     
-    @objc private func updateCurrentLocationsCoordinate() {
-        let dispatchGroup = DispatchGroup()
-        var annotations: [MKPointAnnotation] = []
-        let queries = ["convenience_store", "bar"]
+    @objc private func showLocaitons() {
+        searchForAndDisplayPlaces(queries: ["bar", "convenience_store"])
+        currentLocationType = .both
         
-        mapView.removeAnnotations(mapView.annotations)
-        
-        for query in queries {
-            dispatchGroup.enter()
-            mapManager.searchNearbylocations(keyword: query, region: mapView.region) { result in
-                defer {
-                    dispatchGroup.leave()
-                }
-                switch result {
-                case .success(let resultAnnotations):
-                    annotations += resultAnnotations
-                    self.mapView.addAnnotations(annotations)
-                case .failure(let error):
-                    print("Error searching for \(query): \(error.localizedDescription)")
-                }
-            }
-        }
-        
-        // Wait for all async tasks to finish
-        dispatchGroup.notify(queue: .main) {
-            // Add annotations to the map
-            
-        }
+        addLocationAnnotation()
     }
 
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        var annotationView: MKMarkerAnnotationView
-
-        if let pointAnnotation = annotation as? MKPointAnnotation,
-           DataManager.CurrentSchedule.currentLocationCooredinate?.contains(
-            where: { $0.latitude == pointAnnotation.coordinate.latitude && $0.longitude == pointAnnotation.coordinate.longitude }) == true {
+    func addLocationAnnotation() {
+        let currentLocationsId = DataManager.CurrentSchedule.currentLocationsId!
+        dataManager.fetchLocationCoordinate(locationsId: currentLocationsId) { locationInfoArray in
             
-            annotationView = mapView.dequeueReusableAnnotationView(
-                withIdentifier: "specialLocations") as? MKMarkerAnnotationView ?? MKMarkerAnnotationView(annotation: pointAnnotation, reuseIdentifier: "specialLocations")
-            annotationView.markerTintColor = UIColor.steelPink
-        } else {
-            annotationView = mapView.dequeueReusableAnnotationView(
-                withIdentifier: "defaultLocations") as? MKMarkerAnnotationView ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "defaultLocations")
-        }
+            var annotations: [CustomAnnotation] = []
+            
+            for location in locationInfoArray {
+                let annotation = CustomAnnotation()
+                annotation.coordinate.latitude = location.locationCoordinate.latitude
+                annotation.coordinate.longitude = location.locationCoordinate.longitude
+                annotation.title = location.locationName
+                annotation.subtitle = location.locationId
+                annotation.pinTintColor = UIColor.steelPink
+                print("@@@@@\(annotation.title)")
+                annotations.append(annotation)
+            }
 
+            self.mapView.addAnnotations(annotations)
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard let customAnnotation = annotation as? CustomAnnotation else {
+            return nil
+        }
+        
+        let identifier = "CustomAnnotationView"
+        var annotationView: MKMarkerAnnotationView
+        
+        if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView {
+            annotationView = dequeuedView
+        } else {
+            annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView.canShowCallout = true
+        }
+        
+        annotationView.markerTintColor = customAnnotation.pinTintColor
+        
         return annotationView
     }
+    
+    
     // MARK: Search location -
 }
+
+
 
 // MARK: - Delegate
 extension MapHomeViewController: SelectScheduleViewDelegate,
@@ -386,3 +415,5 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
     }
 }
 // MARK: Delegate -
+
+

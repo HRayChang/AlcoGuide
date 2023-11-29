@@ -116,3 +116,10 @@ struct Review: Codable {
         case text, time, translated
     }
 }
+
+
+struct LocationAnnotationInfo {
+    let locationId: String
+    let locationName: String
+    let locationCoordinate: GeoPoint
+}
