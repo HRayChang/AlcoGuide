@@ -288,10 +288,8 @@ class DataManager {
                 
             } else {
                 
-                runningSchedules.removeAll()
-                finishedSchedules.removeAll()
-                
                 for document in querySnapshot!.documents {
+                    
                     let scheduleID = document.documentID
                     let scheduleName = document.data()["scheduleName"] as? String ?? "Unknown"
                     let isRunning = document.data()["isRunning"] as? Bool ?? false
@@ -299,7 +297,14 @@ class DataManager {
                     let users = document.data()["users"] as? [String] ?? []
                     let activities = document.data()["activities"] as? [String: [String]] ?? [:]
                     
+                    self.runningSchedules.removeAll()
+                    self.finishedSchedules.removeAll()
+                    
                     fetchLocationName(locationsId: locationsId) { updatedLocations in
+                        
+                        if locationsId.isEmpty {
+                            return
+                        }
                         
                         let scheduleInfo = ScheduleInfo(scheduleID: scheduleID,
                                                         scheduleName: scheduleName,

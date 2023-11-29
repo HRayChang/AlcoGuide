@@ -28,7 +28,6 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         setupMyScheduleViewUI()
         setupConstraints()
         
-        //        fetchSchedules()
         setupObservers()
     }
     
