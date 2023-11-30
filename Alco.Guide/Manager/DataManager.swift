@@ -87,10 +87,6 @@ class DataManager {
         NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)
     }
     
-    func postLocationAddedNotification(locationInfo: [String: Any]) {
-        NotificationCenter.default.post(name: Notification.Name("AddedLocation"), object: nil, userInfo: locationInfo)
-    }
-    
     func firestoreObserver() {
         
         let docRef = Firestore.firestore().collection("Schedules").document(DataManager.CurrentSchedule.currentScheduleID!)
@@ -221,7 +217,8 @@ class DataManager {
                 print("Transaction succeeded!")
                 CurrentSchedule.currentLocations?.append(locationName)
                 CurrentSchedule.currentLocationsId?.append(locationId)
-                self.postLocationAddedNotification(locationInfo: ["scheduleName": CurrentSchedule.currentScheduleName!])
+                    NotificationCenter.default.post(name: Notification.Name("UpdateLocation"), object: nil, userInfo: nil)
+                
                 completion(nil)
             }
         }
@@ -454,6 +451,8 @@ class DataManager {
                     // 更新 Firestore 文檔中的 locationId 字段
                     transaction.updateData(["locationsId": currentLocationId], forDocument: scheduleReference)
                     
+                    NotificationCenter.default.post(name: Notification.Name("UpdateLocation"), object: nil, userInfo: nil)
+                    
                     return currentLocationId
                 } else {
                     print("Document does not exist")
@@ -568,6 +567,8 @@ class DataManager {
 
                 // Update the "activities" field in the document
                 transaction.updateData(["activities": activities], forDocument: scheduleReference)
+                
+                NotificationCenter.default.post(name: Notification.Name("UpdateLocation"), object: nil, userInfo: nil)
 
                 return nil
             } catch let fetchError as NSError {

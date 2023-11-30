@@ -334,6 +334,7 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
                 guard let scheduleID = DataManager.CurrentSchedule.currentScheduleID else { return }
                 var deletedValue = (DataManager.CurrentSchedule.currentLocations?.remove(at: indexPath.section))!
                 dataManager.deleteLocation(scheduleID: scheduleID, locationIndex: indexPath.section, deletedValue: deletedValue)
+                DataManager.CurrentSchedule.currentLocationsId?.remove(at: indexPath.section)
                 tableView.beginUpdates()
                 tableView.deleteSections(IndexSet(integer: indexPath.section), with: .fade)
                 tableView.endUpdates()

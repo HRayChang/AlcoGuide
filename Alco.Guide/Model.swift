@@ -9,6 +9,10 @@ import Foundation
 import FirebaseFirestore
 import MapKit
 
+class CustomAnnotation: MKPointAnnotation {
+    var pinTintColor: UIColor?
+}
+
 struct ScheduleInfo: Codable {
     var scheduleID: String
     var scheduleName: String

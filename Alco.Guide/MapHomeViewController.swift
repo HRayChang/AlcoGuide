@@ -9,10 +9,6 @@ import UIKit
 import MapKit
 import FirebaseFirestore
 
-class CustomAnnotation: MKPointAnnotation {
-    var pinTintColor: UIColor?
-}
-
 class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
     var scheduleReference: DocumentReference?
@@ -33,6 +29,8 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     let coreLocationManager = CoreLocationManager.shared
     let mapManager = MapManager.shared
     let dataManager = DataManager.shared
+    
+    var isRouteCalculated: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,7 +98,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             wineGlassImageView.topAnchor.constraint(equalTo: assembleButton.topAnchor, constant: 10),
             wineGlassImageView.widthAnchor.constraint(equalTo: wineGlassImageView.heightAnchor),
             wineGlassImageView.centerXAnchor.constraint(equalTo: assembleButton.centerXAnchor),
-            wineGlassImageView.bottomAnchor.constraint(equalTo: assembleButton.centerYAnchor, constant: 5)
+            wineGlassImageView.bottomAnchor.constraint(equalTo: assembleButton.centerYAnchor)
         ])
         
         // Setup ReturnToCurrentLocationButton
@@ -183,6 +181,8 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(updateCurrentScheduleLabel), name: Notification.Name("CurrentSchedule"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(showLocaitons), name: Notification.Name("CurrentLocationsCoordinate"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(addNewLocationAnnotation), name: Notification.Name("UpdateLocation"), object: nil)
     }
     
     @objc private func updateCurrentScheduleLabel(_ notification: Notification) {
@@ -288,7 +288,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             self.mapView.removeAnnotations(annotationsToRemove)
             
             self.mapView.addAnnotations(annotations)
-            
+          
             self.addLocationAnnotation()
         }
     }
@@ -301,11 +301,10 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     }
 
     func addLocationAnnotation() {
+        var annotations: [CustomAnnotation] = []
+        
         let currentLocationsId = DataManager.CurrentSchedule.currentLocationsId!
         dataManager.fetchLocationCoordinate(locationsId: currentLocationsId) { locationInfoArray in
-            
-            var annotations: [CustomAnnotation] = []
-            
             for location in locationInfoArray {
                 let annotation = CustomAnnotation()
                 annotation.coordinate.latitude = location.locationCoordinate.latitude
@@ -313,13 +312,75 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
                 annotation.title = location.locationName
                 annotation.subtitle = location.locationId
                 annotation.pinTintColor = UIColor.steelPink
-                print("@@@@@\(annotation.title)")
                 annotations.append(annotation)
             }
-
+            
             self.mapView.addAnnotations(annotations)
+            
+            if !self.isRouteCalculated {
+                self.calculateAndDisplayRoute(annotations: annotations)
+                self.isRouteCalculated = true
+            }
         }
     }
+
+    func calculateAndDisplayRoute(annotations: [CustomAnnotation]) {
+        guard annotations.count >= 2 else {
+            // 至少需要兩個點才能計算路線
+            return
+        }
+        
+        mapView.removeOverlays(mapView.overlays)
+        
+        for location in 0..<annotations.count - 1 {
+            let sourceCoordinate = annotations[location].coordinate
+            let destinationCoordinate = annotations[location + 1].coordinate
+
+            let request = MKDirections.Request()
+            request.source = MKMapItem(placemark: MKPlacemark(coordinate: sourceCoordinate))
+            request.destination = MKMapItem(placemark: MKPlacemark(coordinate: destinationCoordinate))
+
+            request.transportType = .walking
+
+            // 创建MKDirections对象
+            let directions = MKDirections(request: request)
+
+            // 计算路线
+            directions.calculate { [weak self] (response, error) in
+                guard let self = self else { return }
+
+                if let error = error {
+                    print("計算路線錯誤：\(error.localizedDescription)")
+                } else if let response = response {
+                    for route in response.routes {
+                        // 在地圖上顯示路線
+                        self.mapView.addOverlay(route.polyline, level: .aboveRoads)
+
+                        // 設定地圖顯示範圍，讓整條路線都可見
+                        let visibleMapRect = route.polyline.boundingMapRect
+                        self.mapView.setRegion(MKCoordinateRegion(visibleMapRect), animated: true)
+                    }
+                }
+            }
+        }
+    }
+    
+    @objc func addNewLocationAnnotation() {
+        isRouteCalculated = false
+        addLocationAnnotation()
+        
+    }
+
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        if overlay is MKPolyline {
+            let renderer = MKPolylineRenderer(overlay: overlay)
+            renderer.strokeColor = UIColor.steelPink
+            renderer.lineWidth = 4
+            return renderer
+        }
+        return MKOverlayRenderer()
+    }
+
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard let customAnnotation = annotation as? CustomAnnotation else {
@@ -344,7 +405,6 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
     // MARK: Search location -
 }
-
 
 
 // MARK: - Delegate
