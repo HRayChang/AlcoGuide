@@ -217,6 +217,7 @@ class DataManager {
                 print("Transaction succeeded!")
                 CurrentSchedule.currentLocations?.append(locationName)
                 CurrentSchedule.currentLocationsId?.append(locationId)
+                
                     NotificationCenter.default.post(name: Notification.Name("UpdateLocation"), object: nil, userInfo: nil)
                 
                 completion(nil)

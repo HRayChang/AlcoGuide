@@ -151,15 +151,18 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         case .finished:
             DataManager.CurrentSchedule.updateCurrentIndex(to: indexPath.row, arrayType: .finished)
         }
-        
+        NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: nil)
         
 //        dataManager.fetchLocationCoordinate(locationsId: CurrentSchedule.currentLocationsId!) { coordinates in
 //        
 //            self.postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
 //        }
         NotificationCenter.default.post(name: Notification.Name("CurrentLocationsCoordinate"), object: nil, userInfo: nil)
+        NotificationCenter.default.post(name: Notification.Name("UpdateLocation"), object: nil, userInfo: nil)
+        
         let myScheduleDetailViewController = UINavigationController(rootViewController: MyScheduleDetailViewController())
 
+        
         present(myScheduleDetailViewController, animated: true, completion: nil)
         
 //        postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])

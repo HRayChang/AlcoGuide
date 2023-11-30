@@ -288,20 +288,22 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             self.mapView.removeAnnotations(annotationsToRemove)
             
             self.mapView.addAnnotations(annotations)
-          
-            self.addLocationAnnotation()
+//            
+//            self.addLocationAnnotation()
         }
     }
     
     @objc private func showLocaitons() {
-        searchForAndDisplayPlaces(queries: ["bar", "convenience_store"])
-        currentLocationType = .both
+//        searchForAndDisplayPlaces(queries: ["bar", "convenience_store"])
+//        currentLocationType = .both
         
         addLocationAnnotation()
     }
 
     func addLocationAnnotation() {
         var annotations: [CustomAnnotation] = []
+        
+        mapView.removeAnnotations(annotations)
         
         let currentLocationsId = DataManager.CurrentSchedule.currentLocationsId!
         dataManager.fetchLocationCoordinate(locationsId: currentLocationsId) { locationInfoArray in
@@ -315,6 +317,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
                 annotations.append(annotation)
             }
             
+            self.mapView.removeAnnotations(self.mapView.annotations)
             self.mapView.addAnnotations(annotations)
             
             if !self.isRouteCalculated {
@@ -325,12 +328,12 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     }
 
     func calculateAndDisplayRoute(annotations: [CustomAnnotation]) {
+        
+        mapView.removeOverlays(mapView.overlays)
         guard annotations.count >= 2 else {
             // 至少需要兩個點才能計算路線
             return
         }
-        
-        mapView.removeOverlays(mapView.overlays)
         
         for location in 0..<annotations.count - 1 {
             let sourceCoordinate = annotations[location].coordinate
