@@ -14,6 +14,7 @@
 		730A00312B04C2D300D57D05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 730A002F2B04C2D300D57D05 /* Main.storyboard */; };
 		730A00332B04C2D400D57D05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 730A00322B04C2D400D57D05 /* Assets.xcassets */; };
 		730A00362B04C2D400D57D05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 730A00342B04C2D400D57D05 /* LaunchScreen.storyboard */; };
+		73294D782B1854B500E5A0D1 /* SelectLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73294D772B1854B500E5A0D1 /* SelectLocationView.swift */; };
 		733C7F0D2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F0C2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift */; };
 		733C7F132B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F122B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift */; };
 		733C7F152B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F142B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift */; };
@@ -28,7 +29,7 @@
 		7342070A2B05D6340030BA37 /* CoreLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734207092B05D6340030BA37 /* CoreLocationManager.swift */; };
 		7342070C2B05FE6F0030BA37 /* MapManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7342070B2B05FE6F0030BA37 /* MapManager.swift */; };
 		7342070E2B06080A0030BA37 /* LocationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7342070D2B06080A0030BA37 /* LocationDetailViewController.swift */; };
-		734207172B0631E50030BA37 /* SelectLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734207162B0631E50030BA37 /* SelectLocationView.swift */; };
+		734207172B0631E50030BA37 /* ShareScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734207162B0631E50030BA37 /* ShareScheduleView.swift */; };
 		734207192B06346C0030BA37 /* AddNewScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734207182B06346C0030BA37 /* AddNewScheduleView.swift */; };
 		7342071B2B06352B0030BA37 /* SelectScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7342071A2B06352B0030BA37 /* SelectScheduleView.swift */; };
 		7342071D2B06365B0030BA37 /* JoinScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7342071C2B06365B0030BA37 /* JoinScheduleView.swift */; };
@@ -49,6 +50,7 @@
 		730A00322B04C2D400D57D05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		730A00352B04C2D400D57D05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		730A00372B04C2D400D57D05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		73294D772B1854B500E5A0D1 /* SelectLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLocationView.swift; sourceTree = "<group>"; };
 		733C7F0C2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailActivitiesTableViewCell.swift; sourceTree = "<group>"; };
 		733C7F122B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailLocationNameTableViewCell.swift; sourceTree = "<group>"; };
 		733C7F142B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailButtonTableViewCell.swift; sourceTree = "<group>"; };
@@ -63,7 +65,7 @@
 		734207092B05D6340030BA37 /* CoreLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreLocationManager.swift; sourceTree = "<group>"; };
 		7342070B2B05FE6F0030BA37 /* MapManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapManager.swift; sourceTree = "<group>"; };
 		7342070D2B06080A0030BA37 /* LocationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDetailViewController.swift; sourceTree = "<group>"; };
-		734207162B0631E50030BA37 /* SelectLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLocationView.swift; sourceTree = "<group>"; };
+		734207162B0631E50030BA37 /* ShareScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareScheduleView.swift; sourceTree = "<group>"; };
 		734207182B06346C0030BA37 /* AddNewScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewScheduleView.swift; sourceTree = "<group>"; };
 		7342071A2B06352B0030BA37 /* SelectScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectScheduleView.swift; sourceTree = "<group>"; };
 		7342071C2B06365B0030BA37 /* JoinScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinScheduleView.swift; sourceTree = "<group>"; };
@@ -154,9 +156,10 @@
 			isa = PBXGroup;
 			children = (
 				7342071A2B06352B0030BA37 /* SelectScheduleView.swift */,
+				73294D772B1854B500E5A0D1 /* SelectLocationView.swift */,
 				7342071C2B06365B0030BA37 /* JoinScheduleView.swift */,
 				734207182B06346C0030BA37 /* AddNewScheduleView.swift */,
-				734207162B0631E50030BA37 /* SelectLocationView.swift */,
+				734207162B0631E50030BA37 /* ShareScheduleView.swift */,
 			);
 			path = MapHomeView;
 			sourceTree = "<group>";
@@ -341,13 +344,14 @@
 				733C7F0D2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift in Sources */,
 				730A002A2B04C2D300D57D05 /* AppDelegate.swift in Sources */,
 				7342070A2B05D6340030BA37 /* CoreLocationManager.swift in Sources */,
-				734207172B0631E50030BA37 /* SelectLocationView.swift in Sources */,
+				734207172B0631E50030BA37 /* ShareScheduleView.swift in Sources */,
 				7342070C2B05FE6F0030BA37 /* MapManager.swift in Sources */,
 				73BC5A6E2B07A16600DBB82B /* Model.swift in Sources */,
 				734207022B04F1010030BA37 /* MyScheduleViewController.swift in Sources */,
 				7342071D2B06365B0030BA37 /* JoinScheduleView.swift in Sources */,
 				733C7F152B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift in Sources */,
 				733C7F132B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift in Sources */,
+				73294D782B1854B500E5A0D1 /* SelectLocationView.swift in Sources */,
 				734207042B04F1290030BA37 /* CocktailViewController.swift in Sources */,
 				734207002B04F0ED0030BA37 /* ChatViewController.swift in Sources */,
 				734207062B04F15F0030BA37 /* PersonalViewController.swift in Sources */,

@@ -19,8 +19,10 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     let buttonLineView = UIView()
     let assembleButton = UIButton()
     let returnToCurrentLocationButton = UIButton()
+    let currentScheduleView = UIView()
     let currentScheduleLabel = UILabel()
     
+    let shareScheduleView = ShareScheduleView()
     let selectLocationView = SelectLocationView()
     let selectScheduleView = SelectScheduleView()
     let joinScheduleView = JoinScheduleView()
@@ -41,6 +43,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         joinScheduleView.delegate = self
         selectLocationView.delegate = self
         addNewScheduleView.delegate = self
+        shareScheduleView.delegate = self
         
         setupMapHomeViewUI()
         setupConstraints()
@@ -71,35 +74,47 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         
         // Setup CurrentScheduleLabel
        
-            currentScheduleLabel.isHidden = true
+            currentScheduleView.isHidden = true
         
-        currentScheduleLabel.backgroundColor = UIColor.black
+        currentScheduleView.backgroundColor = UIColor.black
+
+        currentScheduleView.layer.cornerRadius = 10
+        currentScheduleView.layer.borderColor = UIColor.steelPink.cgColor
+        currentScheduleView.layer.borderWidth = 3
+        
         currentScheduleLabel.textColor = UIColor.white
+        currentScheduleLabel.font = UIFont.boldSystemFont(ofSize: 22)
         currentScheduleLabel.textAlignment = .center
-//        currentScheduleLabel.layer.cornerRadius = 10
-        currentScheduleLabel.layer.borderColor = UIColor.steelPink.cgColor
-        currentScheduleLabel.layer.borderWidth = 3
+        currentScheduleLabel.translatesAutoresizingMaskIntoConstraints = false
+        currentScheduleView.addSubview(currentScheduleLabel)
+        NSLayoutConstraint.activate([
+            currentScheduleLabel.topAnchor.constraint(equalTo: currentScheduleView.topAnchor),
+            currentScheduleLabel.bottomAnchor.constraint(equalTo: currentScheduleView.bottomAnchor),
+            currentScheduleLabel.leadingAnchor.constraint(equalTo: currentScheduleView.leadingAnchor),
+            currentScheduleLabel.trailingAnchor.constraint(equalTo: currentScheduleView.trailingAnchor)
+        ])
         
         // Setup ButtonLineView
         buttonLineView.backgroundColor = UIColor.steelPink
         
         // Setup AssembleButton
         assembleButton.backgroundColor = UIColor.black
+        assembleButton.setBackgroundImage(UIImage(named: "Button"), for: .normal)
         assembleButton.layer.cornerRadius = 56
         assembleButton.addTarget(self, action: #selector(assembleButtonTapped), for: .touchUpInside)
         
-        let wineGlassImage = UIImage(named: "Button")
-        let wineGlassImageView = UIImageView(image: wineGlassImage)
-        wineGlassImageView.tintColor = UIColor.steelPink
-        wineGlassImageView.contentMode = .scaleAspectFill
-        wineGlassImageView.translatesAutoresizingMaskIntoConstraints = false
-        assembleButton.addSubview(wineGlassImageView)
-        NSLayoutConstraint.activate([
-            wineGlassImageView.topAnchor.constraint(equalTo: assembleButton.topAnchor, constant: 10),
-            wineGlassImageView.widthAnchor.constraint(equalTo: wineGlassImageView.heightAnchor),
-            wineGlassImageView.centerXAnchor.constraint(equalTo: assembleButton.centerXAnchor),
-            wineGlassImageView.bottomAnchor.constraint(equalTo: assembleButton.centerYAnchor)
-        ])
+//        let wineGlassImage = UIImage(named: "Button")
+//        let wineGlassImageView = UIImageView(image: wineGlassImage)
+//        wineGlassImageView.tintColor = UIColor.steelPink
+//        wineGlassImageView.contentMode = .scaleAspectFill
+//        wineGlassImageView.translatesAutoresizingMaskIntoConstraints = false
+//        assembleButton.addSubview(wineGlassImageView)
+//        NSLayoutConstraint.activate([
+//            wineGlassImageView.topAnchor.constraint(equalTo: assembleButton.topAnchor, constant: 10),
+//            wineGlassImageView.widthAnchor.constraint(equalTo: wineGlassImageView.heightAnchor),
+//            wineGlassImageView.centerXAnchor.constraint(equalTo: assembleButton.centerXAnchor),
+//            wineGlassImageView.bottomAnchor.constraint(equalTo: assembleButton.centerYAnchor)
+//        ])
         
         // Setup ReturnToCurrentLocationButton
         returnToCurrentLocationButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
@@ -114,9 +129,10 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         selectScheduleView.translatesAutoresizingMaskIntoConstraints = false
         addNewScheduleView.translatesAutoresizingMaskIntoConstraints = false
         joinScheduleView.translatesAutoresizingMaskIntoConstraints = false
+        shareScheduleView.translatesAutoresizingMaskIntoConstraints = false
         selectLocationView.translatesAutoresizingMaskIntoConstraints = false
         returnToCurrentLocationButton.translatesAutoresizingMaskIntoConstraints = false
-        currentScheduleLabel.translatesAutoresizingMaskIntoConstraints = false
+        currentScheduleView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(mapView)
         view.addSubview(buttonLineView)
@@ -124,9 +140,10 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         view.addSubview(selectScheduleView)
         view.addSubview(addNewScheduleView)
         view.addSubview(joinScheduleView)
+        view.addSubview(shareScheduleView)
         view.addSubview(selectLocationView)
         view.addSubview(returnToCurrentLocationButton)
-        view.addSubview(currentScheduleLabel)
+        view.addSubview(currentScheduleView)
         
         NSLayoutConstraint.activate([
             mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -134,20 +151,20 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             mapView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -22),
             
-            currentScheduleLabel.topAnchor.constraint(equalTo: mapView.topAnchor, constant: 20),
-            currentScheduleLabel.heightAnchor.constraint(equalToConstant: 30),
-            currentScheduleLabel.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: 50),
-            currentScheduleLabel.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -50),
+            currentScheduleView.topAnchor.constraint(equalTo: mapView.topAnchor, constant: 5),
+            currentScheduleView.heightAnchor.constraint(equalToConstant: 50),
+            currentScheduleView.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: 60),
+            currentScheduleView.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -60),
             
             buttonLineView.heightAnchor.constraint(equalToConstant: 5),
             buttonLineView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             buttonLineView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             buttonLineView.topAnchor.constraint(equalTo: mapView.bottomAnchor),
             
-            assembleButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1/3.5),
+            assembleButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1/4),
             assembleButton.heightAnchor.constraint(equalTo: assembleButton.widthAnchor),
             assembleButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            assembleButton.centerYAnchor.constraint(equalTo: buttonLineView.centerYAnchor),
+            assembleButton.bottomAnchor.constraint(equalTo: buttonLineView.centerYAnchor, constant: -10),
             
             selectScheduleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
             selectScheduleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
@@ -164,10 +181,15 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             joinScheduleView.heightAnchor.constraint(equalTo: joinScheduleView.widthAnchor, multiplier: 2/3),
             joinScheduleView.centerYAnchor.constraint(equalTo: mapView.centerYAnchor),
             
-            selectLocationView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            selectLocationView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
-            selectLocationView.heightAnchor.constraint(equalTo: selectLocationView.widthAnchor),
-            selectLocationView.centerYAnchor.constraint(equalTo: mapView.centerYAnchor),
+            shareScheduleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
+            shareScheduleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
+            shareScheduleView.heightAnchor.constraint(equalTo: mapView.heightAnchor, multiplier: 1/5),
+            shareScheduleView.centerYAnchor.constraint(equalTo: mapView.centerYAnchor),
+            
+            selectLocationView.widthAnchor.constraint(equalTo: mapView.widthAnchor, multiplier: 1/9),
+            selectLocationView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
+            selectLocationView.heightAnchor.constraint(equalTo: mapView.heightAnchor, multiplier: 1/5),
+            selectLocationView.topAnchor.constraint(equalTo: currentScheduleView.bottomAnchor),
             
             returnToCurrentLocationButton.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -5),
             returnToCurrentLocationButton.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: -5),
@@ -187,7 +209,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
     @objc private func updateCurrentScheduleLabel(_ notification: Notification) {
         currentScheduleLabel.text = DataManager.CurrentSchedule.currentScheduleName
-        currentScheduleLabel.isHidden = false
+        currentScheduleView.isHidden = false
     }
     
     @objc func assembleButtonTapped() {
@@ -239,6 +261,8 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             
         case .both:
             queries = ["bar", "convenience_store"]
+        case .none:
+            queries = [""]
         }
         
         searchForAndDisplayPlaces(queries: queries)
@@ -271,26 +295,28 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
     private func displayAnnotations(_ annotations: [MKPointAnnotation]) {
         
-        let dispatchGroup = DispatchGroup()
+        if DataManager.CurrentSchedule.currentLocations == nil {
+            
+            self.mapView.removeAnnotations(mapView.annotations)
         
-        dispatchGroup.enter()
-        let annotationsToRemove = mapView.annotations.filter { annotation in
-            guard let title = annotation.title else {
-                return false
-            }
-    
+        } else {
+            
+            let annotationsToRemove = mapView.annotations.filter { annotation in
+                guard let title = annotation.title else {
+                    return false
+                }
+                
                 return !(DataManager.CurrentSchedule.currentLocations!.contains(title!))
             }
-        
-        dispatchGroup.leave()
-        
-        dispatchGroup.notify(queue: .main) {
+            
             self.mapView.removeAnnotations(annotationsToRemove)
             
-            self.mapView.addAnnotations(annotations)
-//            
-//            self.addLocationAnnotation()
         }
+        
+        self.mapView.addAnnotations(annotations)
+        //
+        //            self.addLocationAnnotation()
+        
     }
     
     @objc private func showLocaitons() {
@@ -414,7 +440,25 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
 extension MapHomeViewController: SelectScheduleViewDelegate,
                                  JoinScheduleViewDelegate,
                                  SelectLocationViewDelegate,
-                                 AddNewScheduleViewDelegate {
+                                 AddNewScheduleViewDelegate,
+                                 ShareScheduleViewDelegate {
+    
+    func shareButtonTapped(scheduleId: String) {
+        
+        shareScheduleView.isHidden = true
+        
+        let sharingItems: [String] = [scheduleId]
+        
+        let activityViewController = UIActivityViewController(activityItems: sharingItems, applicationActivities: nil)
+
+        if let popoverController = activityViewController.popoverPresentationController {
+            popoverController.sourceView = view
+            popoverController.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
+            popoverController.permittedArrowDirections = []
+        }
+        
+        present(activityViewController, animated: true, completion: nil)
+    }
     
     func showAddNewScheduleView() {
         selectScheduleView.isHidden = true
@@ -442,7 +486,7 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
     
     func addNewScheduleButtonTapped(scheduleName: String) {
         addNewScheduleView.isHidden = true
-        selectLocationView.isHidden = false
+        shareScheduleView.isHidden = false
         
         dataManager.addNewSchedule(scheduleName: scheduleName) { documentID in
             if let documentID = documentID {
@@ -454,7 +498,7 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
     }
     
     func locationButtonTapped(type: LocationType) {
-        selectLocationView.isHidden = true
+        shareScheduleView.isHidden = true
         currentLocationType = type
         assembleButton.isUserInteractionEnabled = true
         
@@ -467,6 +511,8 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
             
         case .both:
             searchForAndDisplayPlaces(queries: ["convenience_store", "bar"])
+        case .none:
+            searchForAndDisplayPlaces(queries: [""])
         }
     }
     

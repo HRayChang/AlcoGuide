@@ -2,7 +2,7 @@
 //  SelectLocationView.swift
 //  Alco.Guide
 //
-//  Created by Ray Chang on 2023/11/16.
+//  Created by Ray Chang on 2023/11/30.
 //
 
 import UIKit
@@ -15,130 +15,162 @@ enum LocationType {
     case convenienceStore
     case bar
     case both
+    case none
 }
 
 class SelectLocationView: UIView {
     
-    let scheduleLabel = UILabel()
-    let scheduleIDLabel = UILabel()
     let searchConvenienceStoreButton = UIButton()
     let searchBarButton = UIButton()
-    let searchBothButton = UIButton()
+    let middleLine = UIView()
+    @objc let searchConvenienceStoreButtonTappedView = UIView()
+    @objc let searchBarButtonTappedView = UIView()
+    
+    var isSearchConvenienceStoreViewHidden: Bool = true {
+          didSet {
+              searchConvenienceStoreButtonTappedView.isHidden = isSearchConvenienceStoreViewHidden
+          }
+      }
+    
+    var isSearchBarViewHidden: Bool = true {
+        didSet {
+            searchBarButtonTappedView.isHidden = isSearchBarViewHidden
+        }
+    }
     
     weak var delegate: SelectLocationViewDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupSelectLocationView()
-        setupObservers()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupSelectLocationView()
-        setupObservers()
     }
-    
-    deinit {
-            NotificationCenter.default.removeObserver(self)
-        }
     
     // MARK: - Update schedule labels
-    private func setupObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(updateScheduleLabels(_:)), name: Notification.Name("CurrentSchedule"), object: nil)
-    }
+
     
-    @objc private func updateScheduleLabels(_ notification: Notification) {
-        if let userInfo = notification.userInfo,
-           let scheduleID = userInfo["scheduleID"] as? String,
-           let scheduleName = userInfo["scheduleName"] as? String {
-            scheduleLabel.text = scheduleName
-            scheduleIDLabel.text = scheduleID
-        }
-    }
     // MARK: Update schedule labels -
     
     private func setupSelectLocationView() {
         backgroundColor = UIColor.black
         layer.borderColor = UIColor.steelPink.cgColor
-        layer.borderWidth = 5
-        layer.cornerRadius = 30
-        isHidden = true
+        layer.borderWidth = 3
+        layer.cornerRadius = 10
         
-//        scheduleLabel.text = ScheduleInfo.scheduleID
-        scheduleLabel.textColor = UIColor.white
+        middleLine.backgroundColor = UIColor.steelPink
         
-//        scheduleIDLabel.text = ScheduleInfo.scheduleName
-        scheduleIDLabel.textColor = UIColor.white
+        searchConvenienceStoreButtonTappedView.backgroundColor = UIColor.lilac
+        searchConvenienceStoreButtonTappedView.layer.cornerRadius = 10
+        searchConvenienceStoreButtonTappedView.isHidden = isSearchConvenienceStoreViewHidden
         
-        setupButton(searchConvenienceStoreButton, title: "超商", action: #selector(locationButtonTapped))
-        setupButton(searchBarButton, title: "酒吧", action: #selector(locationButtonTapped))
-        setupButton(searchBothButton, title: "Both", action: #selector(locationButtonTapped))
+        searchBarButtonTappedView.backgroundColor = UIColor.lilac
+       searchBarButtonTappedView.layer.cornerRadius = 10
+        searchBarButtonTappedView.isHidden = isSearchBarViewHidden
         
-        scheduleLabel.translatesAutoresizingMaskIntoConstraints = false
-        scheduleIDLabel.translatesAutoresizingMaskIntoConstraints = false
+        setupButton(searchConvenienceStoreButton, action: #selector(searchConvenienceStoreButtonTapped), backgroundImage: UIImage(named: "basket"))
+        setupButton(searchBarButton, action: #selector(searchBarButtonTapped), backgroundImage: UIImage(named: "cocktail"))
+      
         searchConvenienceStoreButton.translatesAutoresizingMaskIntoConstraints = false
         searchBarButton.translatesAutoresizingMaskIntoConstraints = false
-        searchBothButton.translatesAutoresizingMaskIntoConstraints = false
+        middleLine.translatesAutoresizingMaskIntoConstraints = false
+        searchBarButtonTappedView.translatesAutoresizingMaskIntoConstraints = false
+        searchConvenienceStoreButtonTappedView.translatesAutoresizingMaskIntoConstraints = false
         
-        addSubview(scheduleLabel)
-        addSubview(scheduleIDLabel)
+        addSubview(searchBarButtonTappedView)
+        addSubview(searchConvenienceStoreButtonTappedView)
         addSubview(searchConvenienceStoreButton)
         addSubview(searchBarButton)
-        addSubview(searchBothButton)
+        addSubview(middleLine)
         
         NSLayoutConstraint.activate([
-            scheduleLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            scheduleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
-            scheduleLabel.widthAnchor.constraint(equalToConstant: 80),
-            scheduleLabel.heightAnchor.constraint(equalToConstant: 30),
             
-            scheduleIDLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            scheduleIDLabel.topAnchor.constraint(equalTo: scheduleLabel.bottomAnchor, constant: 10),
-            scheduleIDLabel.widthAnchor.constraint(equalToConstant: 80),
-            scheduleIDLabel.heightAnchor.constraint(equalToConstant: 30),
+            searchConvenienceStoreButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 7),
+            searchConvenienceStoreButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -7),
+            searchConvenienceStoreButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 30),
+            searchConvenienceStoreButton.heightAnchor.constraint(equalTo: searchConvenienceStoreButton.widthAnchor),
             
-            searchConvenienceStoreButton.trailingAnchor.constraint(equalTo: searchBarButton.leadingAnchor, constant: -10),
-            searchConvenienceStoreButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            searchConvenienceStoreButton.widthAnchor.constraint(equalToConstant: 80),
-            searchConvenienceStoreButton.heightAnchor.constraint(equalToConstant: 50),
+            searchConvenienceStoreButtonTappedView.topAnchor.constraint(equalTo: middleLine.centerYAnchor, constant: 5),
+            searchConvenienceStoreButtonTappedView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5),
+            searchConvenienceStoreButtonTappedView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
+            searchConvenienceStoreButtonTappedView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5),
+
+            searchBarButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -30),
+            searchBarButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 7),
+            searchBarButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -7),
+            searchBarButton.heightAnchor.constraint(equalTo: searchBarButton.widthAnchor),
             
-            searchBarButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            searchBarButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            searchBarButton.widthAnchor.constraint(equalToConstant: 80),
-            searchBarButton.heightAnchor.constraint(equalToConstant: 50),
+            searchBarButtonTappedView.bottomAnchor.constraint(equalTo: middleLine.centerYAnchor, constant: -5),
+            searchBarButtonTappedView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5),
+            searchBarButtonTappedView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
+            searchBarButtonTappedView.topAnchor.constraint(equalTo: self.topAnchor, constant: 5),
             
-            searchBothButton.leadingAnchor.constraint(equalTo: searchBarButton.trailingAnchor, constant: 10),
-            searchBothButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            searchBothButton.widthAnchor.constraint(equalToConstant: 80),
-            searchBothButton.heightAnchor.constraint(equalToConstant: 50)
+            middleLine.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            middleLine.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            middleLine.widthAnchor.constraint(equalTo: self.widthAnchor),
+            middleLine.heightAnchor.constraint(equalToConstant: 3)
+            
         ])
     }
     
-    private func setupButton(_ button: UIButton, title: String, action: Selector) {
-        button.backgroundColor = UIColor.black
-        button.layer.borderColor = UIColor.steelPink.cgColor
-        button.layer.borderWidth = 5
-        button.layer.cornerRadius = 20
-        button.setTitle(title, for: .normal)
+    private func setupButton(_ button: UIButton, action: Selector, backgroundImage: UIImage?) {
+        button.setBackgroundImage(backgroundImage, for: .normal)
+
         button.setTitleColor(UIColor.white, for: .normal)
         button.addTarget(self, action: action, for: .touchUpInside)
     }
     
-    @objc private func locationButtonTapped(_ sender: UIButton) {
+    @objc private func searchConvenienceStoreButtonTapped() {
+        
+        isSearchConvenienceStoreViewHidden = !(isSearchConvenienceStoreViewHidden)
+        
         var locationType: LocationType
         
-        switch sender {
-        case searchConvenienceStoreButton:
-            locationType = .convenienceStore
-        case searchBarButton:
-            locationType = .bar
-        case searchBothButton:
-            locationType = .both
-        default:
-            return
+        switch isSearchConvenienceStoreViewHidden {
+        case true:
+            switch isSearchBarViewHidden {
+            case true:
+                locationType = .none
+            case false:
+                locationType = .bar
+            }
+        case false:
+            switch isSearchBarViewHidden {
+            case true:
+                locationType = .convenienceStore
+            case false:
+                locationType = .both
+            }
         }
+      
+        delegate?.locationButtonTapped(type: locationType)
+    }
+    
+    @objc private func searchBarButtonTapped() {
         
+        isSearchBarViewHidden = !(isSearchBarViewHidden)
+        
+        var locationType: LocationType
+        
+        switch isSearchBarViewHidden {
+        case true:
+            switch isSearchConvenienceStoreViewHidden {
+            case true:
+                locationType = .none
+            case false:
+                locationType = .convenienceStore
+            }
+        case false:
+            switch isSearchConvenienceStoreViewHidden {
+            case true:
+                locationType = .bar
+            case false:
+                locationType = .both
+            }
+        }
         delegate?.locationButtonTapped(type: locationType)
     }
     
