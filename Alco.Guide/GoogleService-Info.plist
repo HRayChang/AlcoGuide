@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.302154455033-fbk54mb5n7pppui9kv7a2cjk0ufvskrk</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAuBo9pqpTtsWXRbiodvgw7ucDd7svNeBA</string>
 	<key>GCM_SENDER_ID</key>
@@ -15,15 +17,15 @@
 	<key>STORAGE_BUCKET</key>
 	<string>alcoguide-73db9.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:1091217510720:ios:086c4ade9f0d2a55b52aa5</string>
 </dict>
