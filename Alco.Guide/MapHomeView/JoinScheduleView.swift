@@ -8,10 +8,14 @@
 import UIKit
 
 protocol JoinScheduleViewDelegate: AnyObject {
-    func joinScheduleButtonTapped()
+    func joinScheduleButtonTapped(scheduleId: String)
+    func showAlert(message: String)
 }
 
 class JoinScheduleView: UIView {
+    
+    let joinScheduleViewTextField = UITextField()
+    let joinScheduleViewButton = UIButton()
 
     weak var delegate: JoinScheduleViewDelegate?
 
@@ -31,9 +35,6 @@ class JoinScheduleView: UIView {
         layer.borderWidth = 5
         layer.cornerRadius = 20
         isHidden = true
-
-        let joinScheduleViewTextField = UITextField()
-        let joinScheduleViewButton = UIButton()
 
         joinScheduleViewTextField.layer.borderColor = UIColor.steelPink.cgColor
         joinScheduleViewTextField.layer.borderWidth = 5
@@ -74,6 +75,12 @@ class JoinScheduleView: UIView {
     }
 
     @objc private func joinScheduleButtonTapped() {
-        delegate?.joinScheduleButtonTapped()
+        
+        if let scheduleId = joinScheduleViewTextField.text, !scheduleId.isEmpty {
+            joinScheduleViewTextField.text = ""
+            delegate?.joinScheduleButtonTapped(scheduleId: scheduleId)
+        } else {
+            delegate?.showAlert(message: "請輸入行程名稱")
+        }
     }
 }

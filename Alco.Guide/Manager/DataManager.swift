@@ -16,8 +16,6 @@ enum ArrayType {
 
 class DataManager {
     
-
-    
     static let shared = DataManager()
     
     private let database = Firestore.firestore()
@@ -271,64 +269,119 @@ class DataManager {
     }
     // MARK: Add activities to schedule's location -
     
+    func checkScheduleExit(scheduleId: String) {
+        let schedulesReference = database.collection(schedulesCollectionPath).document(scheduleId)
+        
+        schedulesReference.getDocument { (document, error) in
+            if let document = document, document.exists {
+                self.assignSchedulesToUser(documentId: scheduleId)
+            } else {
+                // 文档不存在或出现错误
+                if let error = error {
+                    print("Error getting document: \(error)")
+                }
+            }
+        }
+    }
+    
+    func assignSchedulesToUser(documentId: String) {
+        let myReference = database.collection("Schedules").document(documentId)
+
+        let documentReference = database.collection("Users").document("raychang861205@gmial.com")
+
+        documentReference.getDocument { (document, error) in
+            if let document = document, document.exists {
+
+                let data = document.data()
+
+                if var currentArray = data?["schedules"] as? [DocumentReference] {
+
+                    // Check if newData already exists in currentArray
+                    if !currentArray.contains(myReference) {
+                        currentArray.append(myReference)
+
+                        // Update the array in the document
+                        documentReference.setData(["schedules": currentArray], merge: true) { error in
+                            if let error = error {
+                                print("Error updating document: \(error)")
+                            } else {
+                                print("Document successfully updated")
+                            }
+                        }
+                    } else {
+                        print("Schedule already exists in the array")
+                    }
+                } else {
+                    print("Document does not exist")
+                }
+            }
+        }
+    }
+
+    
     // MARK: - Fetch Schedules info
     func fetchSchedules(completion: @escaping (Bool) -> Void) {
         
-        let schedulesReference = database.collection(schedulesCollectionPath)
+        let schedulesReference = database.collection("Users").document("raychang861205@gmial.com")
         
-        schedulesReference.getDocuments { [weak self] (querySnapshot, error) in
-            guard let self = self else { return }
+        schedulesReference.getDocument { (document, error) in
             
-            if let error = error {
+            if let document = document, document.exists {
                 
-                print("Error getting documents: \(error)")
-                completion(false)
+                let data = document.data()
                 
-            } else {
-                
-                for document in querySnapshot!.documents {
-
-                    let scheduleID = document.documentID
-                    let scheduleName = document.data()["scheduleName"] as? String ?? "Unknown"
-                    let isRunning = document.data()["isRunning"] as? Bool ?? false
-                    let locationsId = document.data()["locationsId"] as? [String] ?? []
-                    let users = document.data()["users"] as? [String] ?? []
-                    let activities = document.data()["activities"] as? [String: [String]] ?? [:]
+                if let fieldValue = data?["schedules"] as? [DocumentReference] {
                     
-                    self.runningSchedules.removeAll()
-                    self.finishedSchedules.removeAll()
-
-                    fetchLocationName(locationsId: locationsId) { updatedLocations in
-
-                        let scheduleInfo = ScheduleInfo(scheduleID: scheduleID,
-                                                        scheduleName: scheduleName,
-                                                        isRunning: isRunning,
-                                                        locations: updatedLocations,
-                                                        users: users,
-                                                        activities: activities,
-                                                        locationsId: locationsId)
-
-                        // Check if the scheduleID already exists
-                        if let index = self.runningSchedules.firstIndex(where: { $0.scheduleID == scheduleID }) {
-                            // If it exists, update the information
-                            self.runningSchedules[index] = scheduleInfo
-                            print("Running schedules: \(self.runningSchedules)")
-                        } else if let index = self.finishedSchedules.firstIndex(where: { $0.scheduleID == scheduleID }) {
-                            // If it exists, update the information
-                            self.finishedSchedules[index] = scheduleInfo
-                            print("Finished schedules: \(self.finishedSchedules)")
-                        } else {
-                            // If it doesn't exist, add it to the appropriate list
-                            if isRunning {
-                                self.runningSchedules.append(scheduleInfo)
-                                print("Running schedules: \(self.runningSchedules)")
-                            } else {
-                                self.finishedSchedules.append(scheduleInfo)
-                                print("Finished schedules: \(self.finishedSchedules)")
+                    for reference in fieldValue {
+                        
+                        reference.getDocument { (refDocument, refError) in
+                            
+                            if let refDocument = refDocument, refDocument.exists {
+                                
+                                let scheduleID = refDocument.documentID
+                                let scheduleName = refDocument.data()?["scheduleName"] as? String ?? "Unknown"
+                                let isRunning = refDocument.data()?["isRunning"] as? Bool ?? false
+                                let locationsId = refDocument.data()?["locationsId"] as? [String] ?? []
+                                let users = refDocument.data()?["users"] as? [String] ?? []
+                                let activities = refDocument.data()?["activities"] as? [String: [String]] ?? [:]
+                                
+                                self.runningSchedules.removeAll()
+                                self.finishedSchedules.removeAll()
+                                
+                                self.fetchLocationName(locationsId: locationsId) { updatedLocations in
+                                    
+                                    let scheduleInfo = ScheduleInfo(scheduleID: scheduleID,
+                                                                    scheduleName: scheduleName,
+                                                                    isRunning: isRunning,
+                                                                    locations: updatedLocations,
+                                                                    users: users,
+                                                                    activities: activities,
+                                                                    locationsId: locationsId)
+                                    
+                                    // Check if the scheduleID already exists
+                                    if let index = self.runningSchedules.firstIndex(where: { $0.scheduleID == scheduleID }) {
+                                        // If it exists, update the information
+                                        self.runningSchedules[index] = scheduleInfo
+                                        print("Running schedules: \(self.runningSchedules)")
+                                    } else if let index = self.finishedSchedules.firstIndex(where: { $0.scheduleID == scheduleID }) {
+                                        // If it exists, update the information
+                                        self.finishedSchedules[index] = scheduleInfo
+                                        print("Finished schedules: \(self.finishedSchedules)")
+                                    } else {
+                                        // If it doesn't exist, add it to the appropriate list
+                                        if isRunning {
+                                            self.runningSchedules.append(scheduleInfo)
+                                            print("Running schedules: \(self.runningSchedules)")
+                                        } else {
+                                            self.finishedSchedules.append(scheduleInfo)
+                                            print("Finished schedules: \(self.finishedSchedules)")
+                                        }
+                                    }
+                                    
+                                    completion(true)
+                                }
                             }
                         }
-
-                        completion(true)
                     }
                 }
             }

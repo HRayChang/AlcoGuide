@@ -476,12 +476,20 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
         self.navigationController?.pushViewController(MyScheduleViewController(), animated: true)
     }
     
-    func joinScheduleButtonTapped() {
+    func joinScheduleButtonTapped(scheduleId: String) {
         joinScheduleView.isHidden = true
         assembleButton.isUserInteractionEnabled = true
+        dataManager.checkScheduleExit(scheduleId: scheduleId)
         
-        self.navigationController?.pushViewController(MyScheduleViewController(), animated: true)
-
+        if let window = UIApplication.shared.windows.first {
+                // Type annotation for UIViewController
+                if let rootViewController = window.rootViewController,
+                   let tabBarController = rootViewController as? UITabBarController {
+                    // Set the selected tabBar index
+                    // Assuming you want to switch to the second tabBar item, index is 1
+                    tabBarController.selectedIndex = 1
+                }
+            }
     }
     
     func addNewScheduleButtonTapped(scheduleName: String) {

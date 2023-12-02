@@ -11,6 +11,7 @@ target 'Alco.Guide' do
   pod 'GooglePlaces'
   pod 'Alamofire'
   pod 'GoogleSignIn'
+  pod 'FirebaseAuth'
 
   post_install do |installer|
     installer.generated_projects.each do |project|
