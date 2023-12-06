@@ -133,37 +133,68 @@ class DataManager {
     
     // MARK: - Add Schedule to Schedules Collection
     func addNewSchedule(scheduleName: String, completion: @escaping (String?) -> Void) {
+        var scheduleId = ""
+
         let data: [String: Any] = [
             "scheduleName": scheduleName,
             "isRunning": true,
-            "users": [String](),
+            "users": ["raychang861205@gmail.com"],
             "locationsId": [String](),
             "activities": [String: [Any]]()
         ]
-        
+
         let scheduleReference = database.collection(schedulesCollectionPath).document()
-        
+
+        let dispatchGroup = DispatchGroup()
+
+        dispatchGroup.enter()
+
         scheduleReference.setData(data) { [self] error in
+            defer {
+                dispatchGroup.leave()
+            }
+            
             if let error = error {
                 print("Error adding document: \(error)")
                 completion(nil)
             } else {
                 print("New schedule added successfully")
-                
+
+                scheduleId = scheduleReference.documentID
+
                 CurrentSchedule.currentScheduleID = scheduleReference.documentID
                 CurrentSchedule.currentScheduleName = scheduleName
                 CurrentSchedule.currentLocations = []
                 CurrentSchedule.currentUsers = []
                 CurrentSchedule.currentActivities = [:]
                 CurrentSchedule.currentLocationsId = []
-                
+
                 completion(scheduleReference.documentID)
-                
+
                 postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
             }
         }
+
+        dispatchGroup.notify(queue: .main) {
+            let userRef = self.database.collection("Users").document("raychang861205@gmail.com")
+
+            let schedulesUpdate = [ "schedules": FieldValue.arrayUnion([self.database.collection("Schedules").document(scheduleId)]) ]
+
+            userRef.setData(schedulesUpdate, merge: true) { error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                } else {
+                    print("Document successfully updated")
+                }
+            }
+        }
     }
+
     // MARK: Add Schedule to Schedules Collection -
+    
+    func addScheduleToUser() {
+        
+    }
     
     // MARK: - Add location to schedule and Location Collection
     func addLocationToSchedule(locationName: String, locationId: String, locationCoordinate: LocationGeometry, scheduleID: String, completion: @escaping (Error?) -> Void) {
@@ -287,7 +318,7 @@ class DataManager {
     func assignSchedulesToUser(documentId: String) {
         let myReference = database.collection("Schedules").document(documentId)
 
-        let documentReference = database.collection("Users").document("raychang861205@gmial.com")
+        let documentReference = database.collection("Users").document("raychang861205@gmail.com")
 
         documentReference.getDocument { (document, error) in
             if let document = document, document.exists {
@@ -322,7 +353,7 @@ class DataManager {
     // MARK: - Fetch Schedules info
     func fetchSchedules(completion: @escaping (Bool) -> Void) {
         
-        let schedulesReference = database.collection("Users").document("raychang861205@gmial.com")
+        let schedulesReference = database.collection("Users").document("raychang861205@gmail.com")
         
         schedulesReference.getDocument { (document, error) in
             

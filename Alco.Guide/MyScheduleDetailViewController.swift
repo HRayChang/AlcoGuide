@@ -384,13 +384,9 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
             case .success:
                 print("Activities successfully updated in Firestore")
                 
-                if let indexPath = self.tableView.indexPath(for: cell), let scheduleID = DataManager.CurrentSchedule.currentScheduleID {
-                    // Add a new activity to the data source
-                    var newActivity = text
+                if let indexPath = self.tableView.indexPath(for: cell) {
                         DataManager.CurrentSchedule.currentActivities![cell.locationName!]?.append(text)
 
-                    
-                    // Update the tableView
                     self.tableView.insertRows(at: [IndexPath(row: indexPath.row, section: indexPath.section)], with: .automatic)
                     self.tableView.reloadData()
                 }
