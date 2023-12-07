@@ -385,10 +385,10 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
                 print("Activities successfully updated in Firestore")
                 
                 if let indexPath = self.tableView.indexPath(for: cell) {
-                        DataManager.CurrentSchedule.currentActivities![cell.locationName!]?.append(text)
-
+                    DataManager.CurrentSchedule.currentActivities![cell.locationName!]?.append(text)
+                    
+                    
                     self.tableView.insertRows(at: [IndexPath(row: indexPath.row, section: indexPath.section)], with: .automatic)
-                    self.tableView.reloadData()
                 }
             case .failure(let error):
                 print("Error updating activities in Firestore: \(error)")

@@ -28,7 +28,7 @@ class TabBarController: UITabBarController {
         mapHomeViewController.tabBarItem.image = UIImage(systemName: "heart")
         mapHomeViewController.tabBarItem.title = "Heart"
 
-        let personalViewController = createNavigationController(with: PersonalViewController())
+        let personalViewController = createNavigationController(with: ProfileViewController())
         personalViewController.tabBarItem.image = UIImage(systemName: "heart")
         personalViewController.tabBarItem.title = "Heart"
 

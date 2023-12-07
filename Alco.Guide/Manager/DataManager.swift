@@ -135,10 +135,12 @@ class DataManager {
     func addNewSchedule(scheduleName: String, completion: @escaping (String?) -> Void) {
         var scheduleId = ""
 
+        guard let userEmail = LoginViewController().userInfo?.email else { return }
+        
         let data: [String: Any] = [
             "scheduleName": scheduleName,
             "isRunning": true,
-            "users": ["raychang861205@gmail.com"],
+            "users": [userEmail],
             "locationsId": [String](),
             "activities": [String: [Any]]()
         ]
@@ -176,7 +178,10 @@ class DataManager {
         }
 
         dispatchGroup.notify(queue: .main) {
-            let userRef = self.database.collection("Users").document("raychang861205@gmail.com")
+            
+            guard let userUID = LoginViewController().userInfo?.userUID else { return }
+            
+            let userRef = self.database.collection("Users").document(userUID)
 
             let schedulesUpdate = [ "schedules": FieldValue.arrayUnion([self.database.collection("Schedules").document(scheduleId)]) ]
 
@@ -246,9 +251,7 @@ class DataManager {
                 print("Transaction succeeded!")
                 CurrentSchedule.currentLocations?.append(locationName)
                 CurrentSchedule.currentLocationsId?.append(locationId)
-                
                     NotificationCenter.default.post(name: Notification.Name("UpdateLocation"), object: nil, userInfo: nil)
-                
                 completion(nil)
             }
         }
@@ -318,7 +321,9 @@ class DataManager {
     func assignSchedulesToUser(documentId: String) {
         let myReference = database.collection("Schedules").document(documentId)
 
-        let documentReference = database.collection("Users").document("raychang861205@gmail.com")
+        guard let userUID = LoginViewController().userInfo?.userUID else { return }
+        
+        let documentReference = database.collection("Users").document(userUID)
 
         documentReference.getDocument { (document, error) in
             if let document = document, document.exists {
@@ -353,7 +358,9 @@ class DataManager {
     // MARK: - Fetch Schedules info
     func fetchSchedules(completion: @escaping (Bool) -> Void) {
         
-        let schedulesReference = database.collection("Users").document("raychang861205@gmail.com")
+        guard let userUID = LoginViewController().userInfo?.userUID else { return }
+        
+        let schedulesReference = database.collection("Users").document(userUID)
         
         schedulesReference.getDocument { (document, error) in
             

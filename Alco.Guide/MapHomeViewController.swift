@@ -8,6 +8,7 @@
 import UIKit
 import MapKit
 import FirebaseFirestore
+import FirebaseAuth
 
 class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
@@ -48,6 +49,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         setupMapHomeViewUI()
         setupConstraints()
         setupObservers()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
