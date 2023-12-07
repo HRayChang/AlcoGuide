@@ -16,6 +16,7 @@ enum Section: String, CaseIterable {
 class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let tableView = UITableView()
+    let backgroundImage = UIImageView()
     
     let dataManager = DataManager.shared
     
@@ -65,7 +66,10 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     func setupMyScheduleViewUI() {
         view.backgroundColor = UIColor.black
         
-        tableView.backgroundColor = UIColor.black
+        tableView.backgroundColor = .clear
+        
+        backgroundImage.image = UIImage(named: "schedulePageBackground")
+        backgroundImage.contentMode = .scaleAspectFill
         
         overrideUserInterfaceStyle = .dark
         
@@ -76,14 +80,22 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     func setupConstraints() {
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(tableView)
+        view.addSubview(backgroundImage)
+        view.sendSubviewToBack(backgroundImage)
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            backgroundImage.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/6),
+            backgroundImage.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
         
         tableView.register(MyScheduleTableViewCell.self, forCellReuseIdentifier: "cell")
@@ -91,19 +103,17 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @objc func editButtonTapped() {
         tableView.setEditing(!tableView.isEditing, animated: true)
-                             
-        if (!tableView.isEditing) {
-    
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "編輯", style: .plain, target: self, action: #selector(MyScheduleViewController.editButtonTapped))
-            
+        
+        if !tableView.isEditing {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(MyScheduleViewController.editButtonTapped))
+            self.navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.steelPink], for: .normal)
         } else {
-
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "完成", style: .plain, target: self, action: #selector(MyScheduleViewController.editButtonTapped))
-            
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(MyScheduleViewController.editButtonTapped))
+            self.navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.steelPink], for: .normal)
             self.view.endEditing(true)
-
         }
     }
+
     
 //    func postCurrentScheduleNotification(scheduleInfo: [String: Any]) {
 //            NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)

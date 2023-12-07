@@ -23,20 +23,10 @@ class SelectLocationView: UIView {
     let searchConvenienceStoreButton = UIButton()
     let searchBarButton = UIButton()
     let middleLine = UIView()
-    @objc let searchConvenienceStoreButtonTappedView = UIView()
-    @objc let searchBarButtonTappedView = UIView()
     
-    var isSearchConvenienceStoreViewHidden: Bool = true {
-          didSet {
-              searchConvenienceStoreButtonTappedView.isHidden = isSearchConvenienceStoreViewHidden
-          }
-      }
+    var isSearchConvenienceStoreViewHidden: Bool = true
     
-    var isSearchBarViewHidden: Bool = true {
-        didSet {
-            searchBarButtonTappedView.isHidden = isSearchBarViewHidden
-        }
-    }
+    var isSearchBarViewHidden: Bool = true
     
     weak var delegate: SelectLocationViewDelegate?
     
@@ -56,20 +46,20 @@ class SelectLocationView: UIView {
     // MARK: Update schedule labels -
     
     private func setupSelectLocationView() {
-        backgroundColor = UIColor.black
+        backgroundColor = UIColor.black.withAlphaComponent(0.8)
         layer.borderColor = UIColor.steelPink.cgColor
-        layer.borderWidth = 3
+        layer.borderWidth = 1
         layer.cornerRadius = 10
         
         middleLine.backgroundColor = UIColor.steelPink
         
-        searchConvenienceStoreButtonTappedView.backgroundColor = UIColor.lilac
-        searchConvenienceStoreButtonTappedView.layer.cornerRadius = 10
-        searchConvenienceStoreButtonTappedView.isHidden = isSearchConvenienceStoreViewHidden
+        searchConvenienceStoreButton.layer.shadowColor = UIColor.lilac.cgColor
+        searchConvenienceStoreButton.layer.shadowRadius = 5
+        searchConvenienceStoreButton.layer.shadowOffset = CGSize(width: 0, height: 0)
         
-        searchBarButtonTappedView.backgroundColor = UIColor.lilac
-       searchBarButtonTappedView.layer.cornerRadius = 10
-        searchBarButtonTappedView.isHidden = isSearchBarViewHidden
+        searchBarButton.layer.shadowColor = UIColor.lilac.cgColor
+        searchBarButton.layer.shadowRadius = 5
+        searchBarButton.layer.shadowOffset = CGSize(width: 0, height: 0)
         
         setupButton(searchConvenienceStoreButton, action: #selector(searchConvenienceStoreButtonTapped), backgroundImage: UIImage(named: "basket"))
         setupButton(searchBarButton, action: #selector(searchBarButtonTapped), backgroundImage: UIImage(named: "cocktail"))
@@ -77,11 +67,7 @@ class SelectLocationView: UIView {
         searchConvenienceStoreButton.translatesAutoresizingMaskIntoConstraints = false
         searchBarButton.translatesAutoresizingMaskIntoConstraints = false
         middleLine.translatesAutoresizingMaskIntoConstraints = false
-        searchBarButtonTappedView.translatesAutoresizingMaskIntoConstraints = false
-        searchConvenienceStoreButtonTappedView.translatesAutoresizingMaskIntoConstraints = false
         
-        addSubview(searchBarButtonTappedView)
-        addSubview(searchConvenienceStoreButtonTappedView)
         addSubview(searchConvenienceStoreButton)
         addSubview(searchBarButton)
         addSubview(middleLine)
@@ -92,26 +78,16 @@ class SelectLocationView: UIView {
             searchConvenienceStoreButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -7),
             searchConvenienceStoreButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 30),
             searchConvenienceStoreButton.heightAnchor.constraint(equalTo: searchConvenienceStoreButton.widthAnchor),
-            
-            searchConvenienceStoreButtonTappedView.topAnchor.constraint(equalTo: middleLine.centerYAnchor, constant: 5),
-            searchConvenienceStoreButtonTappedView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5),
-            searchConvenienceStoreButtonTappedView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
-            searchConvenienceStoreButtonTappedView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5),
 
             searchBarButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -30),
             searchBarButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 7),
             searchBarButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -7),
             searchBarButton.heightAnchor.constraint(equalTo: searchBarButton.widthAnchor),
             
-            searchBarButtonTappedView.bottomAnchor.constraint(equalTo: middleLine.centerYAnchor, constant: -5),
-            searchBarButtonTappedView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5),
-            searchBarButtonTappedView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
-            searchBarButtonTappedView.topAnchor.constraint(equalTo: self.topAnchor, constant: 5),
-            
             middleLine.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             middleLine.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             middleLine.widthAnchor.constraint(equalTo: self.widthAnchor),
-            middleLine.heightAnchor.constraint(equalToConstant: 3)
+            middleLine.heightAnchor.constraint(equalToConstant: 1)
             
         ])
     }
@@ -126,6 +102,12 @@ class SelectLocationView: UIView {
     @objc private func searchConvenienceStoreButtonTapped() {
         
         isSearchConvenienceStoreViewHidden = !(isSearchConvenienceStoreViewHidden)
+        
+        if isSearchConvenienceStoreViewHidden == false {
+            searchConvenienceStoreButton.layer.shadowOpacity = 1
+        } else {
+            searchConvenienceStoreButton.layer.shadowOpacity = 0
+        }
         
         var locationType: LocationType
         
@@ -152,6 +134,14 @@ class SelectLocationView: UIView {
     @objc private func searchBarButtonTapped() {
         
         isSearchBarViewHidden = !(isSearchBarViewHidden)
+        
+        if isSearchBarViewHidden == false {
+            searchBarButton.layer.shadowOpacity = 1
+        } else {
+            searchBarButton.layer.shadowOpacity = 0
+        }
+        
+       
         
         var locationType: LocationType
         

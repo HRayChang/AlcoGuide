@@ -12,6 +12,8 @@ class MyScheduleTableViewCell: UITableViewCell {
     let idLabel = UILabel()
     let nameLabel = UILabel()
     let frameView = UIView()
+    let cellBackgroundImageView = UIImageView()
+  
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -26,25 +28,37 @@ class MyScheduleTableViewCell: UITableViewCell {
     
     private func setupMyScheduleTableViewCellUI() {
         
-        contentView.backgroundColor = UIColor.black
+        contentView.backgroundColor = UIColor.clear
+        self.backgroundColor = .clear
         
-        nameLabel.textColor = UIColor.white
+        nameLabel.textColor = UIColor.white.withAlphaComponent(0.9)
         nameLabel.font = UIFont.boldSystemFont(ofSize: 25)
         
-        idLabel.textColor = UIColor.white
+        idLabel.textColor = UIColor.eminence
         idLabel.font = UIFont.boldSystemFont(ofSize: 16)
         
         frameView.layer.borderColor = UIColor.steelPink.cgColor
-        frameView.layer.borderWidth = 5
         frameView.layer.cornerRadius = 10
+        frameView.backgroundColor = UIColor.black.withAlphaComponent(0.9)
+        frameView.layer.shadowColor = UIColor.steelPink.cgColor
+        frameView.layer.shadowOpacity = 1
+        frameView.layer.shadowRadius = 5.0
+        frameView.layer.shadowOffset = CGSize(width: 0, height: 0)
         
+        cellBackgroundImageView.image = UIImage(named: "schedulCellBackground")
+        cellBackgroundImageView.contentMode = .scaleAspectFill
+        cellBackgroundImageView.clipsToBounds = true
+        cellBackgroundImageView.layer.cornerRadius = 10
+        
+        contentView.addSubview(frameView)
+        contentView.addSubview(cellBackgroundImageView)
         contentView.addSubview(idLabel)
         contentView.addSubview(nameLabel)
-        contentView.addSubview(frameView)
 
         idLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         frameView.translatesAutoresizingMaskIntoConstraints = false
+        cellBackgroundImageView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
             
@@ -58,8 +72,12 @@ class MyScheduleTableViewCell: UITableViewCell {
             frameView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             frameView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             frameView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            frameView.heightAnchor.constraint(equalToConstant: 100)
+            frameView.heightAnchor.constraint(equalToConstant: 100),
             
+            cellBackgroundImageView.topAnchor.constraint(equalTo: frameView.topAnchor),
+            cellBackgroundImageView.bottomAnchor.constraint(equalTo: frameView.bottomAnchor),
+            cellBackgroundImageView.trailingAnchor.constraint(equalTo: frameView.trailingAnchor),
+            cellBackgroundImageView.widthAnchor.constraint(equalTo: frameView.widthAnchor, multiplier: 1/3)
         ])
     }
 

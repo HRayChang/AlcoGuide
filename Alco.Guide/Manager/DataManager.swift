@@ -135,12 +135,12 @@ class DataManager {
     func addNewSchedule(scheduleName: String, completion: @escaping (String?) -> Void) {
         var scheduleId = ""
 
-        guard let userEmail = LoginViewController().userInfo?.email else { return }
+        guard let userUID = LoginManager.shared.userInfo?.userUID else { return }
         
         let data: [String: Any] = [
             "scheduleName": scheduleName,
             "isRunning": true,
-            "users": [userEmail],
+            "users": [userUID],
             "locationsId": [String](),
             "activities": [String: [Any]]()
         ]
@@ -179,7 +179,7 @@ class DataManager {
 
         dispatchGroup.notify(queue: .main) {
             
-            guard let userUID = LoginViewController().userInfo?.userUID else { return }
+            guard let userUID = LoginManager.shared.userInfo?.userUID else { return }
             
             let userRef = self.database.collection("Users").document(userUID)
 
@@ -321,7 +321,7 @@ class DataManager {
     func assignSchedulesToUser(documentId: String) {
         let myReference = database.collection("Schedules").document(documentId)
 
-        guard let userUID = LoginViewController().userInfo?.userUID else { return }
+        guard let userUID = LoginManager.shared.userInfo?.userUID else { return }
         
         let documentReference = database.collection("Users").document(userUID)
 
@@ -358,7 +358,7 @@ class DataManager {
     // MARK: - Fetch Schedules info
     func fetchSchedules(completion: @escaping (Bool) -> Void) {
         
-        guard let userUID = LoginViewController().userInfo?.userUID else { return }
+        guard let userUID = LoginManager.shared.userInfo?.userUID else { return }
         
         let schedulesReference = database.collection("Users").document(userUID)
         

@@ -26,18 +26,22 @@ class MyScheduleDetailActivitiesTableViewCell: UITableViewCell {
         
         contentView.backgroundColor = UIColor.black
         
-        activityLabel.textColor = UIColor.white
+        activityLabel.textColor = UIColor.lilac.withAlphaComponent(0.8
+        )
         activityLabel.font = UIFont.systemFont(ofSize: 20)
-        
-        frameView.layer.borderColor = UIColor.steelPink.cgColor
-        frameView.layer.borderWidth = 4
+   
         frameView.layer.cornerRadius = 10
+        frameView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        frameView.layer.shadowColor = UIColor.eminence.cgColor
+        frameView.layer.shadowOpacity = 1
+        frameView.layer.shadowRadius = 9.0
+        frameView.layer.shadowOffset = CGSize(width: 0, height: 0)
         
         activityLabel.translatesAutoresizingMaskIntoConstraints = false
         frameView.translatesAutoresizingMaskIntoConstraints = false
         
-        contentView.addSubview(activityLabel)
         contentView.addSubview(frameView)
+        contentView.addSubview(activityLabel)
         
         NSLayoutConstraint.activate([
             activityLabel.leadingAnchor.constraint(equalTo: frameView.leadingAnchor, constant: 20),

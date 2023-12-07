@@ -55,6 +55,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         returnToCurrentLocation()
+        addBreathingAnimation(to: assembleButton)
     }
     
     // MARK: - Setup UI
@@ -74,15 +75,23 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             mapView.overrideUserInterfaceStyle = .dark
         }
         
+        selectLocationView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        selectLocationView.layer.shadowColor = UIColor.steelPink.cgColor
+        selectLocationView.layer.shadowOpacity = 1
+        selectLocationView.layer.shadowRadius = 10.0
         // Setup CurrentScheduleLabel
        
-            currentScheduleView.isHidden = true
+        currentScheduleView.isHidden = true
+        currentScheduleView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        currentScheduleView.layer.shadowColor = UIColor.steelPink.cgColor
+        currentScheduleView.layer.shadowOpacity = 1
+        currentScheduleView.layer.shadowRadius = 10.0
         
-        currentScheduleView.backgroundColor = UIColor.black
+        currentScheduleView.backgroundColor = UIColor.black.withAlphaComponent(0.8)
 
         currentScheduleView.layer.cornerRadius = 10
         currentScheduleView.layer.borderColor = UIColor.steelPink.cgColor
-        currentScheduleView.layer.borderWidth = 3
+        currentScheduleView.layer.borderWidth = 1
         
         currentScheduleLabel.textColor = UIColor.white
         currentScheduleLabel.font = UIFont.boldSystemFont(ofSize: 22)
@@ -98,30 +107,39 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         
         // Setup ButtonLineView
         buttonLineView.backgroundColor = UIColor.steelPink
+        buttonLineView.layer.shadowColor = UIColor.steelPink.cgColor
+        buttonLineView.layer.shadowOpacity = 1
+        buttonLineView.layer.shadowRadius = 5
+        buttonLineView.layer.shadowOffset = CGSize(width: 0, height: 0)
+
+        
         
         // Setup AssembleButton
         assembleButton.backgroundColor = UIColor.black
         assembleButton.setBackgroundImage(UIImage(named: "Button"), for: .normal)
-        assembleButton.layer.cornerRadius = 56
         assembleButton.addTarget(self, action: #selector(assembleButtonTapped), for: .touchUpInside)
-        
-//        let wineGlassImage = UIImage(named: "Button")
-//        let wineGlassImageView = UIImageView(image: wineGlassImage)
-//        wineGlassImageView.tintColor = UIColor.steelPink
-//        wineGlassImageView.contentMode = .scaleAspectFill
-//        wineGlassImageView.translatesAutoresizingMaskIntoConstraints = false
-//        assembleButton.addSubview(wineGlassImageView)
-//        NSLayoutConstraint.activate([
-//            wineGlassImageView.topAnchor.constraint(equalTo: assembleButton.topAnchor, constant: 10),
-//            wineGlassImageView.widthAnchor.constraint(equalTo: wineGlassImageView.heightAnchor),
-//            wineGlassImageView.centerXAnchor.constraint(equalTo: assembleButton.centerXAnchor),
-//            wineGlassImageView.bottomAnchor.constraint(equalTo: assembleButton.centerYAnchor)
-//        ])
+        assembleButton.layer.cornerRadius = view.frame.size.width/8
+        assembleButton.layer.borderWidth = 2
+        assembleButton.layer.borderColor = UIColor.steelPink.cgColor
+        assembleButton.layer.shadowColor = UIColor.steelPink.cgColor
+        assembleButton.layer.shadowOpacity = 1
+        assembleButton.layer.shadowRadius = 10.0
+        assembleButton.layer.shadowOffset = CGSize(width: 0, height: 0)
         
         // Setup ReturnToCurrentLocationButton
         returnToCurrentLocationButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
         returnToCurrentLocationButton.tintColor = .white
         returnToCurrentLocationButton.addTarget(self, action: #selector(returnToCurrentLocation), for: .touchUpInside)
+    }
+    
+    func addBreathingAnimation(to view: UIView) {
+        let breathingAnimation = CABasicAnimation(keyPath: "shadowRadius")
+        breathingAnimation.fromValue = 10
+        breathingAnimation.toValue = 50
+        breathingAnimation.autoreverses = true
+        breathingAnimation.duration = 1
+        breathingAnimation.repeatCount = .infinity
+        view.layer.add(breathingAnimation, forKey: "breathingAnimation")
     }
     
     func setupConstraints() {
@@ -135,7 +153,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         selectLocationView.translatesAutoresizingMaskIntoConstraints = false
         returnToCurrentLocationButton.translatesAutoresizingMaskIntoConstraints = false
         currentScheduleView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         view.addSubview(mapView)
         view.addSubview(buttonLineView)
         view.addSubview(assembleButton)
@@ -158,7 +176,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             currentScheduleView.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: 60),
             currentScheduleView.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -60),
             
-            buttonLineView.heightAnchor.constraint(equalToConstant: 5),
+            buttonLineView.heightAnchor.constraint(equalToConstant: 2),
             buttonLineView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             buttonLineView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             buttonLineView.topAnchor.constraint(equalTo: mapView.bottomAnchor),
@@ -166,7 +184,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             assembleButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1/4),
             assembleButton.heightAnchor.constraint(equalTo: assembleButton.widthAnchor),
             assembleButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            assembleButton.bottomAnchor.constraint(equalTo: buttonLineView.centerYAnchor, constant: -10),
+            assembleButton.centerYAnchor.constraint(equalTo: buttonLineView.centerYAnchor),
             
             selectScheduleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
             selectScheduleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
@@ -196,7 +214,8 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
             returnToCurrentLocationButton.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -5),
             returnToCurrentLocationButton.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: -5),
             returnToCurrentLocationButton.widthAnchor.constraint(equalToConstant: 40),
-            returnToCurrentLocationButton.heightAnchor.constraint(equalTo: returnToCurrentLocationButton.widthAnchor)
+            returnToCurrentLocationButton.heightAnchor.constraint(equalTo: returnToCurrentLocationButton.widthAnchor),
+  
         ])
     }
     // MARK: Setup UI -

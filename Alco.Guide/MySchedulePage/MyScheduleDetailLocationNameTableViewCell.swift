@@ -26,18 +26,21 @@ class MyScheduleDetailLocationNameTableViewCell: UITableViewCell {
         
         contentView.backgroundColor = UIColor.black
         
-        locationNameLabel.textColor = UIColor.white
+        locationNameLabel.textColor = UIColor.lilac
         locationNameLabel.font = UIFont.boldSystemFont(ofSize: 25)
         
-        frameView.layer.borderColor = UIColor.steelPink.cgColor
-        frameView.layer.borderWidth = 5
         frameView.layer.cornerRadius = 10
+        frameView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        frameView.layer.shadowColor = UIColor.steelPink.cgColor
+        frameView.layer.shadowOpacity = 1
+        frameView.layer.shadowRadius = 10.0
+        frameView.layer.shadowOffset = CGSize(width: 0, height: 0)
         
         locationNameLabel.translatesAutoresizingMaskIntoConstraints = false
         frameView.translatesAutoresizingMaskIntoConstraints = false
         
-        contentView.addSubview(locationNameLabel)
         contentView.addSubview(frameView)
+        contentView.addSubview(locationNameLabel)
         
         NSLayoutConstraint.activate([
             locationNameLabel.leadingAnchor.constraint(equalTo: frameView.leadingAnchor, constant: 20),
