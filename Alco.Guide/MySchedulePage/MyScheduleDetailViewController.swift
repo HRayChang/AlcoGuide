@@ -55,12 +55,13 @@ class MyScheduleDetailViewController: UIViewController, UITableViewDelegate, UIT
         view.backgroundColor = UIColor.black
         
         tableView.backgroundColor = UIColor.black
+        tableView.separatorStyle = .none
         
         overrideUserInterfaceStyle = .dark
         
         navigationItem.title = DataManager.CurrentSchedule.currentScheduleName
         
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.lilac]
         self.navigationController?.navigationBar.barTintColor = UIColor.black
         
     }

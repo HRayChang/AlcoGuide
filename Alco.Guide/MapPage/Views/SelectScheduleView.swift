@@ -17,6 +17,10 @@ class SelectScheduleView: UIView {
     
     weak var delegate: SelectScheduleViewDelegate?
 
+    let newScheduleButton = UIButton()
+    let addScheduleButton = UIButton()
+    let myScheduleButton = UIButton()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupSelectScheduleView()
@@ -26,17 +30,74 @@ class SelectScheduleView: UIView {
         super.init(coder: coder)
         setupSelectScheduleView()
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let newScheduleButtonGradientLayer = CAGradientLayer()
+        newScheduleButtonGradientLayer.colors = [UIColor.eminence.cgColor, UIColor.steelPink.cgColor]
+        newScheduleButtonGradientLayer.locations = [0.0, 1.0]
+        newScheduleButtonGradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+        newScheduleButtonGradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        newScheduleButtonGradientLayer.frame = newScheduleButton.bounds
+        newScheduleButtonGradientLayer.cornerRadius = 10
+        newScheduleButton.layer.insertSublayer(newScheduleButtonGradientLayer, at: 0)
+        
+        let addScheduleButtonGradientLayer = CAGradientLayer()
+        addScheduleButtonGradientLayer.colors = [UIColor.eminence.cgColor, UIColor.steelPink.cgColor]
+        addScheduleButtonGradientLayer.locations = [0.0, 1.0]
+        addScheduleButtonGradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+        addScheduleButtonGradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        addScheduleButtonGradientLayer.frame = addScheduleButton.bounds
+        addScheduleButtonGradientLayer.cornerRadius = 10
+        addScheduleButton.layer.insertSublayer(addScheduleButtonGradientLayer, at: 0)
+        
+        let myScheduleButtonGradientLayer = CAGradientLayer()
+        myScheduleButtonGradientLayer.colors = [UIColor.eminence.cgColor, UIColor.steelPink.cgColor]
+        myScheduleButtonGradientLayer.locations = [0.0, 1.0]
+        myScheduleButtonGradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+        myScheduleButtonGradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        myScheduleButtonGradientLayer.frame = myScheduleButton.bounds
+        myScheduleButtonGradientLayer.cornerRadius = 10
+        myScheduleButton.layer.insertSublayer(myScheduleButtonGradientLayer, at: 0)
+    }
 
     private func setupSelectScheduleView() {
-        backgroundColor = UIColor.black
-        layer.borderColor = UIColor.steelPink.cgColor
-        layer.borderWidth = 5
-        layer.cornerRadius = 30
+        
+        backgroundColor = UIColor.black.withAlphaComponent(0.9)
+        layer.shadowColor = UIColor.lightPink.cgColor
+        layer.shadowOpacity = 1
+        layer.shadowRadius = 10.0
+        layer.shadowOffset = CGSize(width: 0, height: 0)
+        layer.cornerRadius = 10
         isHidden = true
-
-        let newScheduleButton = createButton(title: "新增行程", action: #selector(showAddNewScheduleView))
-        let addScheduleButton = createButton(title: "加入行程", action: #selector(showJoinScheduleView))
-        let myScheduleButton = createButton(title: "我的行程", action: #selector(showMyScheduleView))
+        
+        newScheduleButton.layer.cornerRadius = 20
+        newScheduleButton.setTitle("New Schedule", for: .normal)
+        newScheduleButton.setTitleColor(.lilac, for: .normal)
+        newScheduleButton.addTarget(self, action: #selector(showAddNewScheduleView), for: .touchUpInside)
+        newScheduleButton.layer.shadowColor = UIColor.steelPink.cgColor
+        newScheduleButton.layer.shadowOpacity = 1
+        newScheduleButton.layer.shadowRadius = 5.0
+        newScheduleButton.layer.shadowOffset = CGSize(width: 0, height: 0)
+      
+        addScheduleButton.layer.cornerRadius = 20
+        addScheduleButton.setTitle("Join Schedule", for: .normal)
+        addScheduleButton.setTitleColor(.lilac, for: .normal)
+        addScheduleButton.addTarget(self, action: #selector(showJoinScheduleView), for: .touchUpInside)
+        addScheduleButton.layer.shadowColor = UIColor.steelPink.cgColor
+        addScheduleButton.layer.shadowOpacity = 1
+        addScheduleButton.layer.shadowRadius = 5.0
+        addScheduleButton.layer.shadowOffset = CGSize(width: 0, height: 0)
+        
+        myScheduleButton.layer.cornerRadius = 20
+        myScheduleButton.setTitle("My Schedule", for: .normal)
+        myScheduleButton.setTitleColor(.lilac, for: .normal)
+        myScheduleButton.addTarget(self, action: #selector(showMyScheduleView), for: .touchUpInside)
+        myScheduleButton.layer.shadowColor = UIColor.steelPink.cgColor
+        myScheduleButton.layer.shadowOpacity = 1
+        myScheduleButton.layer.shadowRadius = 5.0
+        myScheduleButton.layer.shadowOffset = CGSize(width: 0, height: 0)
 
         newScheduleButton.translatesAutoresizingMaskIntoConstraints = false
         addScheduleButton.translatesAutoresizingMaskIntoConstraints = false
@@ -62,18 +123,6 @@ class SelectScheduleView: UIView {
             myScheduleButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 70),
             myScheduleButton.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 1/7)
         ])
-    }
-
-    private func createButton(title: String, action: Selector) -> UIButton {
-        let button = UIButton()
-        button.backgroundColor = UIColor.black
-        button.layer.borderColor = UIColor.steelPink.cgColor
-        button.layer.borderWidth = 5
-        button.layer.cornerRadius = 20
-        button.setTitle(title, for: .normal)
-        button.setTitleColor(UIColor.white, for: .normal)
-        button.addTarget(self, action: action, for: .touchUpInside)
-        return button
     }
 
     @objc private func showAddNewScheduleView() {

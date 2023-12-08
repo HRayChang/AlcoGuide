@@ -16,6 +16,10 @@ extension UIColor {
         return UIColor(hex: 0xC40DC4) //  C40DC4  A13E97
     }
     
+    static var lightPink: UIColor {
+        return UIColor(hex: 0xFF75FF) //  C40DC4  A13E97
+    }
+    
     static var eminence: UIColor {
         return UIColor(hex: 0x632A7E)
     }

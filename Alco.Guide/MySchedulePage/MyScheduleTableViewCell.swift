@@ -9,7 +9,7 @@ import UIKit
 
 class MyScheduleTableViewCell: UITableViewCell {
     
-    let idLabel = UILabel()
+//    let idLabel = UILabel()
     let nameLabel = UILabel()
     let frameView = UIView()
     let cellBackgroundImageView = UIImageView()
@@ -31,16 +31,16 @@ class MyScheduleTableViewCell: UITableViewCell {
         contentView.backgroundColor = UIColor.clear
         self.backgroundColor = .clear
         
-        nameLabel.textColor = UIColor.white.withAlphaComponent(0.9)
-        nameLabel.font = UIFont.boldSystemFont(ofSize: 25)
-        
-        idLabel.textColor = UIColor.eminence
-        idLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        nameLabel.textColor = UIColor.lilac
+        nameLabel.font = UIFont.boldSystemFont(ofSize: 35)
+
+//        idLabel.textColor = UIColor.eminence
+//        idLabel.font = UIFont.boldSystemFont(ofSize: 16)
         
         frameView.layer.borderColor = UIColor.steelPink.cgColor
         frameView.layer.cornerRadius = 10
         frameView.backgroundColor = UIColor.black.withAlphaComponent(0.9)
-        frameView.layer.shadowColor = UIColor.steelPink.cgColor
+        frameView.layer.shadowColor = UIColor.lightPink.cgColor
         frameView.layer.shadowOpacity = 1
         frameView.layer.shadowRadius = 5.0
         frameView.layer.shadowOffset = CGSize(width: 0, height: 0)
@@ -52,21 +52,21 @@ class MyScheduleTableViewCell: UITableViewCell {
         
         contentView.addSubview(frameView)
         contentView.addSubview(cellBackgroundImageView)
-        contentView.addSubview(idLabel)
+//        contentView.addSubview(idLabel)
         contentView.addSubview(nameLabel)
 
-        idLabel.translatesAutoresizingMaskIntoConstraints = false
+//        idLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         frameView.translatesAutoresizingMaskIntoConstraints = false
         cellBackgroundImageView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
             
-            nameLabel.bottomAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 5),
+            nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             nameLabel.leadingAnchor.constraint(equalTo: frameView.leadingAnchor, constant: 20),
-            
-            idLabel.topAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 5),
-            idLabel.leadingAnchor.constraint(equalTo: frameView.leadingAnchor, constant: 20),
+//            
+//            idLabel.topAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 5),
+//            idLabel.leadingAnchor.constraint(equalTo: frameView.leadingAnchor, constant: 20),
             
             frameView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             frameView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
@@ -84,8 +84,8 @@ class MyScheduleTableViewCell: UITableViewCell {
     func configureCell(with scheduleData: [ScheduleInfo], at index: Int) {
         let scheduleID = scheduleData[index].scheduleID
         let scheduleName = scheduleData[index].scheduleName
-        idLabel.text = "ID: \(scheduleID)"
-        nameLabel.text = "Name: \(scheduleName)"
+//        idLabel.text = "ID: \(scheduleID)"
+        nameLabel.text = scheduleName
         
     }
 }

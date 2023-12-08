@@ -28,30 +28,43 @@ class JoinScheduleView: UIView {
         super.init(coder: coder)
         setupView()
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [UIColor.eminence.cgColor, UIColor.steelPink.cgColor]
+        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        gradientLayer.frame = joinScheduleViewButton.bounds
+        gradientLayer.cornerRadius = 20
+        joinScheduleViewButton.layer.insertSublayer(gradientLayer, at: 0)
+    }
 
     private func setupView() {
-        backgroundColor = UIColor.black
-        layer.borderColor = UIColor.steelPink.cgColor
-        layer.borderWidth = 5
+        backgroundColor = UIColor.black.withAlphaComponent(0.9)
+        layer.shadowColor = UIColor.lightPink.cgColor
+        layer.shadowOpacity = 1
+        layer.shadowRadius = 10.0
+        layer.shadowOffset = CGSize(width: 0, height: 0)
         layer.cornerRadius = 20
         isHidden = true
 
+        joinScheduleViewTextField.layer.borderWidth = 2
         joinScheduleViewTextField.layer.borderColor = UIColor.steelPink.cgColor
-        joinScheduleViewTextField.layer.borderWidth = 5
-        joinScheduleViewTextField.layer.cornerRadius = 20
+        joinScheduleViewTextField.layer.cornerRadius = 10
         joinScheduleViewTextField.textAlignment = .center
-        joinScheduleViewTextField.textColor = UIColor.white
+        joinScheduleViewTextField.textColor = .lilac
         joinScheduleViewTextField.attributedPlaceholder = NSAttributedString(
-            string: "請輸入行程編號",
-            attributes: [NSAttributedString.Key.foregroundColor: UIColor.white]
+            string: "Enter Schedule Id",
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.lilac]
         )
 
-        joinScheduleViewButton.backgroundColor = UIColor.black
-        joinScheduleViewButton.layer.borderColor = UIColor.steelPink.cgColor
-        joinScheduleViewButton.layer.borderWidth = 5
         joinScheduleViewButton.layer.cornerRadius = 20
-        joinScheduleViewButton.setTitle("加入行程", for: .normal)
-        joinScheduleViewButton.setTitleColor(UIColor.white, for: .normal)
+        joinScheduleViewButton.setTitle("Join", for: .normal)
+        joinScheduleViewButton.setTitleColor(.lilac, for: .normal)
+        joinScheduleViewButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         joinScheduleViewButton.addTarget(self, action: #selector(joinScheduleButtonTapped), for: .touchUpInside)
 
         joinScheduleViewButton.translatesAutoresizingMaskIntoConstraints = false
@@ -66,10 +79,10 @@ class JoinScheduleView: UIView {
             joinScheduleViewTextField.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -30),
             joinScheduleViewTextField.heightAnchor.constraint(equalToConstant: 50),
 
-            joinScheduleViewButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 50),
-            joinScheduleViewButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -50),
+            joinScheduleViewButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             joinScheduleViewButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 30),
-            joinScheduleViewButton.heightAnchor.constraint(equalToConstant: 50)
+            joinScheduleViewButton.heightAnchor.constraint(equalToConstant: 40),
+            joinScheduleViewButton.widthAnchor.constraint(equalToConstant: 100),
         ])
 
     }

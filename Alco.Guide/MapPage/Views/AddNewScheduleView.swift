@@ -29,29 +29,42 @@ class AddNewScheduleView: UIView {
         setupView()
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [UIColor.eminence.cgColor, UIColor.steelPink.cgColor]
+        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        gradientLayer.frame = addNewScheduleViewButton.bounds
+        gradientLayer.cornerRadius = 20
+        addNewScheduleViewButton.layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
     private func setupView() {
-        backgroundColor = UIColor.black
-        layer.borderColor = UIColor.steelPink.cgColor
-        layer.borderWidth = 5
-        layer.cornerRadius = 20
+        backgroundColor = UIColor.black.withAlphaComponent(0.9)
+        layer.shadowColor = UIColor.lightPink.cgColor
+        layer.shadowOpacity = 1
+        layer.shadowRadius = 10.0
+        layer.shadowOffset = CGSize(width: 0, height: 0)
+        layer.cornerRadius = 10
         isHidden = true
         
+        addNewScheduleViewTextField.layer.borderWidth = 2
         addNewScheduleViewTextField.layer.borderColor = UIColor.steelPink.cgColor
-        addNewScheduleViewTextField.layer.borderWidth = 5
-        addNewScheduleViewTextField.layer.cornerRadius = 20
+        addNewScheduleViewTextField.layer.cornerRadius = 10
         addNewScheduleViewTextField.textAlignment = .center
-        addNewScheduleViewTextField.textColor = UIColor.white
+        addNewScheduleViewTextField.textColor = .lilac
         addNewScheduleViewTextField.attributedPlaceholder = NSAttributedString(
-            string: "請輸入行程名稱",
-            attributes: [NSAttributedString.Key.foregroundColor: UIColor.white]
+            string: "Enter Schedule Name",
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.lilac]
         )
         
-        addNewScheduleViewButton.backgroundColor = UIColor.black
-        addNewScheduleViewButton.layer.borderColor = UIColor.steelPink.cgColor
-        addNewScheduleViewButton.layer.borderWidth = 5
         addNewScheduleViewButton.layer.cornerRadius = 20
-        addNewScheduleViewButton.setTitle("新增行程", for: .normal)
-        addNewScheduleViewButton.setTitleColor(UIColor.white, for: .normal)
+        addNewScheduleViewButton.setTitle("Add Schedule", for: .normal)
+        addNewScheduleViewButton.setTitleColor(.lilac, for: .normal)
+        addNewScheduleViewButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         addNewScheduleViewButton.addTarget(self, action: #selector(addNewScheduleButtonTapped), for: .touchUpInside)
         
         addNewScheduleViewButton.translatesAutoresizingMaskIntoConstraints = false
@@ -65,10 +78,11 @@ class AddNewScheduleView: UIView {
             addNewScheduleViewTextField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -50),
             addNewScheduleViewTextField.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -30),
             addNewScheduleViewTextField.heightAnchor.constraint(equalToConstant: 50),
-            addNewScheduleViewButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 50),
-            addNewScheduleViewButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -50),
+            
+            addNewScheduleViewButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             addNewScheduleViewButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 30),
-            addNewScheduleViewButton.heightAnchor.constraint(equalToConstant: 50)
+            addNewScheduleViewButton.heightAnchor.constraint(equalToConstant: 40),
+            addNewScheduleViewButton.widthAnchor.constraint(equalToConstant: 150),
         ])
     }
     

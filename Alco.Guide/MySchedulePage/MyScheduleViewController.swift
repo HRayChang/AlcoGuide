@@ -67,6 +67,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         view.backgroundColor = UIColor.black
         
         tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
         
         backgroundImage.image = UIImage(named: "schedulePageBackground")
         backgroundImage.contentMode = .scaleAspectFill

@@ -31,11 +31,13 @@ class MyScheduleDetailActivitiesTableViewCell: UITableViewCell {
         activityLabel.font = UIFont.systemFont(ofSize: 20)
    
         frameView.layer.cornerRadius = 10
-        frameView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        frameView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         frameView.layer.shadowColor = UIColor.eminence.cgColor
         frameView.layer.shadowOpacity = 1
-        frameView.layer.shadowRadius = 9.0
+        frameView.layer.shadowRadius = 5
         frameView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        frameView.layer.borderColor = UIColor.eminence.withAlphaComponent(0.5).cgColor
+        frameView.layer.borderWidth = 0.8
         
         activityLabel.translatesAutoresizingMaskIntoConstraints = false
         frameView.translatesAutoresizingMaskIntoConstraints = false

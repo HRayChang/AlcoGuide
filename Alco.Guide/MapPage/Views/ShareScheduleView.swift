@@ -51,18 +51,20 @@ class ShareScheduleView: UIView {
     // MARK: Update schedule labels -
     
     private func setupSelectLocationView() {
-        backgroundColor = UIColor.black
-        layer.borderColor = UIColor.steelPink.cgColor
-        layer.borderWidth = 5
-        layer.cornerRadius = 30
+        backgroundColor = UIColor.black.withAlphaComponent(0.9)
+        layer.shadowColor = UIColor.lightPink.cgColor
+        layer.shadowOpacity = 1
+        layer.shadowRadius = 10.0
+        layer.shadowOffset = CGSize(width: 0, height: 0)
+        layer.cornerRadius = 10
         isHidden = true
 
-        scheduleLabel.textColor = UIColor.white
+        scheduleLabel.textColor = UIColor.lilac
         scheduleLabel.font = UIFont.boldSystemFont(ofSize: 30)
         scheduleLabel.numberOfLines = 0
         scheduleLabel.textAlignment = .center
         
-        scheduleIDLabel.textColor = UIColor.white
+        scheduleIDLabel.textColor = UIColor.lilac
         scheduleIDLabel.textAlignment = .center
         scheduleIDLabel.font = UIFont.boldSystemFont(ofSize: 16)
         

@@ -35,9 +35,14 @@ class MyScheduleDetailButtonTableViewCell: UITableViewCell {
         addActivityButton.setTitle("Add Activity", for: .normal)
         addActivityButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         addActivityButton.setTitleColor(.lilac, for: .normal)
+//        addActivityButton.layer.shadowColor = UIColor.steelPink.cgColor
+//        addActivityButton.layer.shadowOpacity = 1
+//        addActivityButton.layer.shadowRadius = 5.0
+//        addActivityButton.layer.shadowOffset = CGSize(width: 0, height: 0)
+        addActivityButton.backgroundColor = UIColor.black.withAlphaComponent(0.7)
         addActivityButton.layer.shadowColor = UIColor.steelPink.cgColor
         addActivityButton.layer.shadowOpacity = 1
-        addActivityButton.layer.shadowRadius = 5.0
+        addActivityButton.layer.shadowRadius = 10.0
         addActivityButton.layer.shadowOffset = CGSize(width: 0, height: 0)
         addActivityButton.layer.cornerRadius = 10
         
@@ -55,9 +60,14 @@ class MyScheduleDetailButtonTableViewCell: UITableViewCell {
         sendButton.setTitle("Add", for: .normal)
         sendButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         sendButton.setTitleColor(.lilac, for: .normal)
+//        sendButton.layer.shadowColor = UIColor.steelPink.cgColor
+//        sendButton.layer.shadowOpacity = 1
+//        sendButton.layer.shadowRadius = 5
+//        sendButton.layer.shadowOffset = CGSize(width: 0, height: 0)
+        sendButton.backgroundColor = UIColor.black.withAlphaComponent(0.7)
         sendButton.layer.shadowColor = UIColor.steelPink.cgColor
         sendButton.layer.shadowOpacity = 1
-        sendButton.layer.shadowRadius = 5
+        sendButton.layer.shadowRadius = 10.0
         sendButton.layer.shadowOffset = CGSize(width: 0, height: 0)
         sendButton.layer.cornerRadius = 10
         sendButton.isHidden = true
@@ -89,27 +99,27 @@ class MyScheduleDetailButtonTableViewCell: UITableViewCell {
         sendButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        let addActivityButtonGradientLayer = CAGradientLayer()
-        addActivityButtonGradientLayer.colors = [UIColor.eminence.cgColor, UIColor.steelPink.cgColor]
-        addActivityButtonGradientLayer.locations = [0.0, 1.0]
-        addActivityButtonGradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
-        addActivityButtonGradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
-        addActivityButtonGradientLayer.frame = addActivityButton.bounds
-        addActivityButtonGradientLayer.cornerRadius = 10
-            addActivityButton.layer.insertSublayer(addActivityButtonGradientLayer, at: 0)
-        
-        let sendButtonGradientLayer = CAGradientLayer()
-        sendButtonGradientLayer.colors = [UIColor.steelPink.cgColor, UIColor.eminence.cgColor]
-        sendButtonGradientLayer.locations = [0.0, 1.0]
-        sendButtonGradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
-        sendButtonGradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
-        sendButtonGradientLayer.frame = sendButton.bounds
-        sendButtonGradientLayer.cornerRadius = 10
-            sendButton.layer.insertSublayer(sendButtonGradientLayer, at: 0)
-    }
+//    override func layoutSubviews() {
+//        super.layoutSubviews()
+//
+//        let addActivityButtonGradientLayer = CAGradientLayer()
+//        addActivityButtonGradientLayer.colors = [UIColor.eminence.cgColor, UIColor.steelPink.cgColor]
+//        addActivityButtonGradientLayer.locations = [0.0, 1.0]
+//        addActivityButtonGradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+//        addActivityButtonGradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+//        addActivityButtonGradientLayer.frame = addActivityButton.bounds
+//        addActivityButtonGradientLayer.cornerRadius = 10
+//            addActivityButton.layer.insertSublayer(addActivityButtonGradientLayer, at: 0)
+//        
+//        let sendButtonGradientLayer = CAGradientLayer()
+//        sendButtonGradientLayer.colors = [UIColor.steelPink.cgColor, UIColor.eminence.cgColor]
+//        sendButtonGradientLayer.locations = [0.0, 1.0]
+//        sendButtonGradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+//        sendButtonGradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+//        sendButtonGradientLayer.frame = sendButton.bounds
+//        sendButtonGradientLayer.cornerRadius = 10
+//            sendButton.layer.insertSublayer(sendButtonGradientLayer, at: 0)
+//    }
     
     @objc private func buttonTapped() {
         

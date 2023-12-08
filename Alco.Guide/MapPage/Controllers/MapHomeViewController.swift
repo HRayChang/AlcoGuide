@@ -93,7 +93,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         currentScheduleView.layer.borderColor = UIColor.steelPink.cgColor
         currentScheduleView.layer.borderWidth = 1
         
-        currentScheduleLabel.textColor = UIColor.white
+        currentScheduleLabel.textColor = UIColor.lilac
         currentScheduleLabel.font = UIFont.boldSystemFont(ofSize: 22)
         currentScheduleLabel.textAlignment = .center
         currentScheduleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -128,7 +128,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         
         // Setup ReturnToCurrentLocationButton
         returnToCurrentLocationButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
-        returnToCurrentLocationButton.tintColor = .white
+        returnToCurrentLocationButton.tintColor = .lilac
         returnToCurrentLocationButton.addTarget(self, action: #selector(returnToCurrentLocation), for: .touchUpInside)
     }
     

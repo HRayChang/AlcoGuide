@@ -293,7 +293,6 @@
 			isa = PBXGroup;
 			children = (
 				73B912C32B218F74003C6242 /* Controllers */,
-				730A002D2B04C2D300D57D05 /* MapHomeViewController.swift */,
 				734207152B0631C70030BA37 /* Views */,
 			);
 			path = MapPage;
@@ -302,6 +301,7 @@
 		73B912C32B218F74003C6242 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				730A002D2B04C2D300D57D05 /* MapHomeViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
