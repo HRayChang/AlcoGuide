@@ -27,6 +27,14 @@ class LoginViewController: UIViewController {
     
     func setupLoginViewUI() {
         
+        let gradientLayer = CAGradientLayer()
+           gradientLayer.frame = view.bounds
+        gradientLayer.colors = [UIColor.black.cgColor, UIColor.eminence.cgColor, UIColor.steelPink.cgColor, UIColor.lilac.cgColor]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+
+           view.layer.insertSublayer(gradientLayer, at: 0)
+        
         logo.text = "Alco.Guide"
         logo.textColor = UIColor.steelPink
         logo.font = UIFont.systemFont(ofSize: 70)
@@ -53,7 +61,7 @@ class LoginViewController: UIViewController {
         NSLayoutConstraint.activate([
             
             googleLoginButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            googleLoginButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            googleLoginButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 200),
             googleLoginButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1/2),
             
             loginButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),

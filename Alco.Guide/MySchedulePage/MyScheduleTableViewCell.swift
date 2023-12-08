@@ -40,7 +40,7 @@ class MyScheduleTableViewCell: UITableViewCell {
         frameView.layer.borderColor = UIColor.steelPink.cgColor
         frameView.layer.cornerRadius = 10
         frameView.backgroundColor = UIColor.black.withAlphaComponent(0.9)
-        frameView.layer.shadowColor = UIColor.lightPink.cgColor
+        frameView.layer.shadowColor = UIColor.steelPink.cgColor
         frameView.layer.shadowOpacity = 1
         frameView.layer.shadowRadius = 5.0
         frameView.layer.shadowOffset = CGSize(width: 0, height: 0)

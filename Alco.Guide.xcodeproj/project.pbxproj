@@ -63,6 +63,7 @@
 		73B912BD2B209D60003C6242 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 73B912BC2B209D60003C6242 /* GoogleService-Info.plist */; };
 		73B912BF2B20AC9F003C6242 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B912BE2B20AC9F003C6242 /* UserInfo.swift */; };
 		73B912C72B21B455003C6242 /* LoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B912C62B21B455003C6242 /* LoginManager.swift */; };
+		73B912CB2B2332EF003C6242 /* SendTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B912CA2B2332EF003C6242 /* SendTextView.swift */; };
 		73BC5A6E2B07A16600DBB82B /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A6D2B07A16600DBB82B /* Model.swift */; };
 		73BC5A702B08B25500DBB82B /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A6F2B08B25500DBB82B /* DataManager.swift */; };
 		73BC5A732B08C96D00DBB82B /* MyScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A722B08C96D00DBB82B /* MyScheduleCell.swift */; };
@@ -101,6 +102,7 @@
 		73B912BC2B209D60003C6242 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		73B912BE2B20AC9F003C6242 /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		73B912C62B21B455003C6242 /* LoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginManager.swift; sourceTree = "<group>"; };
+		73B912CA2B2332EF003C6242 /* SendTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTextView.swift; sourceTree = "<group>"; };
 		73BC5A6D2B07A16600DBB82B /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		73BC5A6F2B08B25500DBB82B /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		73BC5A722B08C96D00DBB82B /* MyScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleCell.swift; sourceTree = "<group>"; };
@@ -186,8 +188,8 @@
 				730A00292B04C2D300D57D05 /* AppDelegate.swift */,
 				730A002B2B04C2D300D57D05 /* SceneDelegate.swift */,
 				734206FD2B04EE230030BA37 /* TabBarController.swift */,
-				7342070D2B06080A0030BA37 /* LocationDetailViewController.swift */,
 				734207032B04F1290030BA37 /* CocktailViewController.swift */,
+				73B912C92B22FCC3003C6242 /* LocationDetailPage */,
 				73B912C22B218F34003C6242 /* MapPage */,
 				73B9124A2B2052FA003C6242 /* LoginPage */,
 				73B9124B2B205398003C6242 /* ProfilePage */,
@@ -204,7 +206,7 @@
 			path = Alco.Guide;
 			sourceTree = "<group>";
 		};
-		734207152B0631C70030BA37 /* Views */ = {
+		734207152B0631C70030BA37 /* View */ = {
 			isa = PBXGroup;
 			children = (
 				73294D772B1854B500E5A0D1 /* SelectLocationView.swift */,
@@ -213,7 +215,7 @@
 				734207182B06346C0030BA37 /* AddNewScheduleView.swift */,
 				734207162B0631E50030BA37 /* ShareScheduleView.swift */,
 			);
-			path = Views;
+			path = View;
 			sourceTree = "<group>";
 		};
 		73B912442B205162003C6242 /* ChatPage */ = {
@@ -238,6 +240,7 @@
 		73B912462B2051BF003C6242 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				73B912CA2B2332EF003C6242 /* SendTextView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -292,18 +295,18 @@
 		73B912C22B218F34003C6242 /* MapPage */ = {
 			isa = PBXGroup;
 			children = (
-				73B912C32B218F74003C6242 /* Controllers */,
-				734207152B0631C70030BA37 /* Views */,
+				73B912C32B218F74003C6242 /* Controller */,
+				734207152B0631C70030BA37 /* View */,
 			);
 			path = MapPage;
 			sourceTree = "<group>";
 		};
-		73B912C32B218F74003C6242 /* Controllers */ = {
+		73B912C32B218F74003C6242 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
 				730A002D2B04C2D300D57D05 /* MapHomeViewController.swift */,
 			);
-			path = Controllers;
+			path = Controller;
 			sourceTree = "<group>";
 		};
 		73B912C82B221CBF003C6242 /* MySchedulePage */ = {
@@ -317,6 +320,14 @@
 				733C7F142B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift */,
 			);
 			path = MySchedulePage;
+			sourceTree = "<group>";
+		};
+		73B912C92B22FCC3003C6242 /* LocationDetailPage */ = {
+			isa = PBXGroup;
+			children = (
+				7342070D2B06080A0030BA37 /* LocationDetailViewController.swift */,
+			);
+			path = LocationDetailPage;
 			sourceTree = "<group>";
 		};
 		73BC5A712B08B78100DBB82B /* Manager */ = {
@@ -535,6 +546,7 @@
 				734207172B0631E50030BA37 /* ShareScheduleView.swift in Sources */,
 				73B912C72B21B455003C6242 /* LoginManager.swift in Sources */,
 				7342070C2B05FE6F0030BA37 /* MapManager.swift in Sources */,
+				73B912CB2B2332EF003C6242 /* SendTextView.swift in Sources */,
 				73BC5A6E2B07A16600DBB82B /* Model.swift in Sources */,
 				734207022B04F1010030BA37 /* MyScheduleViewController.swift in Sources */,
 				7342071D2B06365B0030BA37 /* JoinScheduleView.swift in Sources */,
