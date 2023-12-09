@@ -108,7 +108,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
             let randomDuration = Double.random(in: 1.0...3.0)
 
             UIView.animate(withDuration: randomDuration) {
-                self.backgroundImage.alpha = 0.5
+                self.backgroundImage.alpha = 0.7
             } completion: { _ in
                 let randomDelay = Double.random(in: 0.0...2.0)
                 UIView.animate(withDuration: randomDuration, delay: randomDelay, options: []) {
@@ -194,6 +194,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         
         present(myScheduleDetailViewController, animated: true, completion: nil)
         
+        MessageManager.shared.fetchMessage(scheduleId: DataManager.CurrentSchedule.currentScheduleID!)
 //        postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
     }
     

@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "DALL_E_2023-11-13_17.52.39_-_Design_an_app_logo_featuring_a_hand_holding_a_cocktail__with_a_theme_of_fluorescent_pink._The_logo_should_be_vibrant_and_eye-catching__with_the_cockta_copy-removebg-previe-2.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

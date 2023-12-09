@@ -17,11 +17,11 @@ class ChatMessageCell: UITableViewCell {
     
     var chatMessage: ChatMessage! {
         didSet {
-            bubbleBackground.layer.shadowColor = chatMessage.isIncoming ? UIColor.steelPink.cgColor : UIColor.lightPink.cgColor
+            bubbleBackground.layer.shadowColor = chatMessage.userUID == LoginManager.shared.userInfo?.userUID ? UIColor.steelPink.cgColor : UIColor.lightPink.cgColor
             
-            messageLabel.text = chatMessage.text
+            messageLabel.text = chatMessage.content
             
-            if chatMessage.isIncoming {
+            if chatMessage.userUID != LoginManager.shared.userInfo?.userUID {
                 leadingConstraint.isActive = true
                 trailingConstraint.isActive = false
             } else {

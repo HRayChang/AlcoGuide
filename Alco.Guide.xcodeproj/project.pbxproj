@@ -18,6 +18,8 @@
 		733C7F0D2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F0C2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift */; };
 		733C7F132B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F122B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift */; };
 		733C7F152B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F142B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift */; };
+		734158AA2B24986600F870B2 /* MessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158A92B24986600F870B2 /* MessageManager.swift */; };
+		734158AC2B24C82200F870B2 /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158AB2B24C82200F870B2 /* MessageModel.swift */; };
 		734206FA2B04D8190030BA37 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206F92B04D8190030BA37 /* LoginViewController.swift */; };
 		734206FC2B04D99D0030BA37 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */; };
 		734206FE2B04EE230030BA37 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206FD2B04EE230030BA37 /* TabBarController.swift */; };
@@ -85,6 +87,8 @@
 		733C7F0C2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailActivitiesTableViewCell.swift; sourceTree = "<group>"; };
 		733C7F122B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailLocationNameTableViewCell.swift; sourceTree = "<group>"; };
 		733C7F142B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailButtonTableViewCell.swift; sourceTree = "<group>"; };
+		734158A92B24986600F870B2 /* MessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageManager.swift; sourceTree = "<group>"; };
+		734158AB2B24C82200F870B2 /* MessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
 		734206F92B04D8190030BA37 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		734206FD2B04EE230030BA37 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -250,6 +254,7 @@
 		73B912472B2051C8003C6242 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				734158AB2B24C82200F870B2 /* MessageModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -332,6 +337,7 @@
 				734207092B05D6340030BA37 /* CoreLocationManager.swift */,
 				73BC5A6F2B08B25500DBB82B /* DataManager.swift */,
 				73B912C62B21B455003C6242 /* LoginManager.swift */,
+				734158A92B24986600F870B2 /* MessageManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -533,9 +539,11 @@
 				7342070E2B06080A0030BA37 /* LocationDetailViewController.swift in Sources */,
 				734206FA2B04D8190030BA37 /* LoginViewController.swift in Sources */,
 				73BC5A732B08C96D00DBB82B /* MyScheduleCell.swift in Sources */,
+				734158AC2B24C82200F870B2 /* MessageModel.swift in Sources */,
 				73BC5A752B08EDE200DBB82B /* MyScheduleTableViewCell.swift in Sources */,
 				730A002E2B04C2D300D57D05 /* MapHomeViewController.swift in Sources */,
 				733C7F0D2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift in Sources */,
+				734158AA2B24986600F870B2 /* MessageManager.swift in Sources */,
 				730A002A2B04C2D300D57D05 /* AppDelegate.swift in Sources */,
 				7342070A2B05D6340030BA37 /* CoreLocationManager.swift in Sources */,
 				734207172B0631E50030BA37 /* ShareScheduleView.swift in Sources */,

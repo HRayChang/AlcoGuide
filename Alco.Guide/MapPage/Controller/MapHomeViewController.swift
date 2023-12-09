@@ -465,7 +465,7 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
                                  ShareScheduleViewDelegate {
     
     func shareButtonTapped(scheduleId: String) {
-        
+        assembleButton.isUserInteractionEnabled = true
         shareScheduleView.isHidden = true
         
         let sharingItems: [String] = [scheduleId]
@@ -523,9 +523,7 @@ extension MapHomeViewController: SelectScheduleViewDelegate,
     }
     
     func locationButtonTapped(type: LocationType) {
-        shareScheduleView.isHidden = true
         currentLocationType = type
-        assembleButton.isUserInteractionEnabled = true
         
         switch type {
         case .convenienceStore:

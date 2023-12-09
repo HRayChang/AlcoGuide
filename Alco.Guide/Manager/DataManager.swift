@@ -67,6 +67,7 @@ class DataManager {
                     
                 }
             }
+            MessageManager.shared.fetchMessage(scheduleId: currentScheduleID!)
         }
         
         // Example function to update current index and array type
@@ -196,10 +197,6 @@ class DataManager {
     }
 
     // MARK: Add Schedule to Schedules Collection -
-    
-    func addScheduleToUser() {
-        
-    }
     
     // MARK: - Add location to schedule and Location Collection
     func addLocationToSchedule(locationName: String, locationId: String, locationCoordinate: LocationGeometry, scheduleID: String, completion: @escaping (Error?) -> Void) {

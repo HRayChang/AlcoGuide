@@ -90,6 +90,7 @@ class AddNewScheduleView: UIView {
         
         if let scheduleName = addNewScheduleViewTextField.text, !scheduleName.isEmpty {
             delegate?.addNewScheduleButtonTapped(scheduleName: scheduleName)
+            addNewScheduleViewTextField.text = ""
         } else {
             delegate?.showAlert(message: "請輸入行程名稱")
         }

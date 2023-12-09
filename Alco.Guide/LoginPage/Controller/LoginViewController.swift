@@ -36,8 +36,12 @@ class LoginViewController: UIViewController {
            view.layer.insertSublayer(gradientLayer, at: 0)
         
         logo.text = "Alco.Guide"
-        logo.textColor = UIColor.steelPink
-        logo.font = UIFont.systemFont(ofSize: 70)
+        logo.textColor = UIColor.lightPink
+        logo.font = UIFont.systemFont(ofSize: 55)
+        logo.layer.shadowColor = UIColor.black.cgColor
+        logo.layer.shadowOpacity = 1
+        logo.layer.shadowRadius = 3.0
+        logo.layer.shadowOffset = CGSize(width: 0, height: 0)
         
         loginButton.setTitle("Login", for: .normal)
         loginButton.layer.borderWidth = 3.0
@@ -69,7 +73,7 @@ class LoginViewController: UIViewController {
             loginButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1/3),
             
             logo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            logo.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -80),
+            logo.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -90),
             
         ])
     }

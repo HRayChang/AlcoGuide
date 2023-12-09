@@ -7,44 +7,11 @@
 
 import UIKit
 
-struct ChatMessage {
-    let text: String
-    let isIncoming: Bool
-    let date: Date
-}
-
 class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SendTextViewDelegate {
 
     let backgroundView = UIView()
     let chatTableView = UITableView()
     let sendTextView = SendTextView()
-    
-    var chatMessages = [
-    [
-        ChatMessage(text: "ajofijdsifjids", isIncoming: true, date: Date()),
-    ChatMessage(text: "ajofijdsifjids", isIncoming: true, date: Date()),
-        ],
-    [
-    ChatMessage(text: "ajofijdsifjids", isIncoming: false, date: Date()),
-    ChatMessage(text: "ajofijdsifjids", isIncoming: true, date: Date()),
-    ChatMessage(text: "ajofijdsifjids", isIncoming: true, date: Date()),
-    ],
-    [
-    ChatMessage(text: "ajofijdsifjids", isIncoming: false, date: Date()),
-    ChatMessage(text: "ajofijdsifjids", isIncoming: true, date: Date()),
-    ChatMessage(text: "ajofijdsifjids", isIncoming: true, date: Date()),
-    ],
-//    [
-//    ChatMessage(text: "ajofijdsifjids", isIncoming: false, date: Date()),
-//    ChatMessage(text: "ajofijdsifjids", isIncoming: true, date: Date()),
-//    ChatMessage(text: "ajofijdsifjids", isIncoming: true, date: Date()),
-//    ],
-//    [
-//    ChatMessage(text: "ajofijdsifjids", isIncoming: false, date: Date()),
-//    ChatMessage(text: "ajofijdsifjids", isIncoming: true, date: Date()),
-//    ChatMessage(text: "ajofijdsifjids", isIncoming: true, date: Date()),
-//    ]
-    ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,8 +45,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
          view.backgroundColor = UIColor.black
         let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.steelPink]
         navigationController?.navigationBar.titleTextAttributes = textAttributes
-        navigationItem.title = "Message"
-//        navigationItem.title = DataManager.CurrentSchedule.currentScheduleName
+//        navigationItem.title = "Message"
+        navigationItem.title = DataManager.CurrentSchedule.currentScheduleName ?? "Message"
 
         
         chatTableView.backgroundColor = .clear
@@ -116,7 +83,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return chatMessages.count
+        return MessageManager.shared.chatMessages.count
     }
     
     class DateHeaderLabel: UILabel {
@@ -150,11 +117,11 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         headerView.transform = CGAffineTransform(rotationAngle: (-.pi))
         
-        if let firstMessageInSection = chatMessages[section].first {
+        if let firstMessageInSection = MessageManager.shared.chatMessages[section].first {
             let
             dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "MM/dd/yyyy"
-            let dateString = dateFormatter.string(from: firstMessageInSection.date)
+            let dateString = dateFormatter.string(from: firstMessageInSection.time)
             
             headerLabel.text = dateString
                 headerLabel.font = UIFont.boldSystemFont(ofSize: 14)
@@ -181,7 +148,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return chatMessages[section].count
+        return MessageManager.shared.chatMessages[section].count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -191,7 +158,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         cell.transform = CGAffineTransform(rotationAngle: (-.pi))
         
-        let chatMessage = chatMessages[indexPath.section][indexPath.row]
+        let chatMessage = MessageManager.shared.chatMessages[indexPath.section][indexPath.row]
         
 //        cell.messageLabel.text = chatMessage.text
 //        cell.isIncoming = chatMessage.isIncoming
@@ -208,9 +175,23 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func didTapSendButton(withText text: String) {
-        let newMessage = ChatMessage(text: text, isIncoming: false, date: Date())
-            chatMessages[0].insert(newMessage, at: 0)
-            chatTableView.reloadData()
+        let newMessage: ChatMessage = {
+            let userName = LoginManager.shared.userInfo?.name ?? ""
+            let userUID = LoginManager.shared.userInfo?.userUID ?? ""
+            let userImage = LoginManager.shared.userInfo?.image
+            let time = Date()
+
+            return ChatMessage(content: text, userName: userName, userUID: userUID, userImage: userImage!, time: time)
+        }()
+
+        MessageManager.shared.chatMessages[0].insert(newMessage, at: 0)
+        
+        let indexPath = IndexPath(row: 0, section: 0)
+        chatTableView.beginUpdates()
+        chatTableView.insertRows(at: [indexPath], with: .automatic)
+        chatTableView.endUpdates()
+        
+        MessageManager.shared.sendMessage(content: text)
     }
 
 }
