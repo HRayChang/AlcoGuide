@@ -64,6 +64,7 @@
 		73B912BF2B20AC9F003C6242 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B912BE2B20AC9F003C6242 /* UserInfo.swift */; };
 		73B912C72B21B455003C6242 /* LoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B912C62B21B455003C6242 /* LoginManager.swift */; };
 		73B912CB2B2332EF003C6242 /* SendTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B912CA2B2332EF003C6242 /* SendTextView.swift */; };
+		73B912CD2B234A21003C6242 /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B912CC2B234A21003C6242 /* ChatMessageCell.swift */; };
 		73BC5A6E2B07A16600DBB82B /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A6D2B07A16600DBB82B /* Model.swift */; };
 		73BC5A702B08B25500DBB82B /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A6F2B08B25500DBB82B /* DataManager.swift */; };
 		73BC5A732B08C96D00DBB82B /* MyScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A722B08C96D00DBB82B /* MyScheduleCell.swift */; };
@@ -103,6 +104,7 @@
 		73B912BE2B20AC9F003C6242 /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		73B912C62B21B455003C6242 /* LoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginManager.swift; sourceTree = "<group>"; };
 		73B912CA2B2332EF003C6242 /* SendTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTextView.swift; sourceTree = "<group>"; };
+		73B912CC2B234A21003C6242 /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
 		73BC5A6D2B07A16600DBB82B /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		73BC5A6F2B08B25500DBB82B /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		73BC5A722B08C96D00DBB82B /* MyScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleCell.swift; sourceTree = "<group>"; };
@@ -221,10 +223,10 @@
 		73B912442B205162003C6242 /* ChatPage */ = {
 			isa = PBXGroup;
 			children = (
-				73B912482B2051D1003C6242 /* ViewModels */,
 				73B912472B2051C8003C6242 /* Models */,
 				73B912462B2051BF003C6242 /* Views */,
 				73B912452B20518C003C6242 /* Controllers */,
+				73B912CC2B234A21003C6242 /* ChatMessageCell.swift */,
 			);
 			path = ChatPage;
 			sourceTree = "<group>";
@@ -250,13 +252,6 @@
 			children = (
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		73B912482B2051D1003C6242 /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		73B9124A2B2052FA003C6242 /* LoginPage */ = {
@@ -556,6 +551,7 @@
 				73B912BF2B20AC9F003C6242 /* UserInfo.swift in Sources */,
 				734207042B04F1290030BA37 /* CocktailViewController.swift in Sources */,
 				734207002B04F0ED0030BA37 /* ChatViewController.swift in Sources */,
+				73B912CD2B234A21003C6242 /* ChatMessageCell.swift in Sources */,
 				734207062B04F15F0030BA37 /* ProfileViewController.swift in Sources */,
 				7342071B2B06352B0030BA37 /* SelectScheduleView.swift in Sources */,
 				73BC5A702B08B25500DBB82B /* DataManager.swift in Sources */,

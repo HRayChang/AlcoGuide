@@ -69,8 +69,10 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
         
-        backgroundImage.image = UIImage(named: "schedulePageBackground")
+        backgroundImage.image = UIImage(named: "BG")
         backgroundImage.contentMode = .scaleAspectFill
+        backgroundImage.alpha = 0.4
+        animateFadeInAndOut()
         
         overrideUserInterfaceStyle = .dark
         
@@ -101,6 +103,22 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         
         tableView.register(MyScheduleTableViewCell.self, forCellReuseIdentifier: "cell")
     }
+    
+    func animateFadeInAndOut() {
+            let randomDuration = Double.random(in: 1.0...3.0)
+
+            UIView.animate(withDuration: randomDuration) {
+                self.backgroundImage.alpha = 0.5
+            } completion: { _ in
+                let randomDelay = Double.random(in: 0.0...2.0)
+                UIView.animate(withDuration: randomDuration, delay: randomDelay, options: []) {
+                    self.backgroundImage.alpha = 0.2
+                } completion: { _ in
+                    // Recursive call to repeat the animation
+                    self.animateFadeInAndOut()
+                }
+            }
+        }
     
     @objc func editButtonTapped() {
         tableView.setEditing(!tableView.isEditing, animated: true)

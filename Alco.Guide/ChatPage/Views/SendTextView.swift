@@ -8,7 +8,13 @@
 import Foundation
 import UIKit
 
+protocol SendTextViewDelegate: AnyObject {
+    func didTapSendButton(withText text: String)
+}
+
 class SendTextView: UIView {
+    
+    weak var delegate: SendTextViewDelegate?
 
     let sendButton = UIButton()
     let textField = UITextField()
@@ -37,10 +43,11 @@ class SendTextView: UIView {
     
     private func setupSendTextView() {
         backgroundColor = UIColor.black.withAlphaComponent(0.7)
-        layer.shadowColor = UIColor.eminence.cgColor
+        layer.shadowColor = UIColor.steelPink.withAlphaComponent(0.45).cgColor
         layer.shadowOpacity = 1
-        layer.shadowRadius = 5.0
-        layer.shadowOffset = CGSize(width: 0, height: -10)
+        layer.shadowRadius = 40.0
+        layer.shadowOffset = CGSize(width: 0, height: -40)
+        addBreathingAnimation(to: self)
         
         textField.backgroundColor = UIColor.black.withAlphaComponent(0.7)
         textField.layer.borderWidth = 2
@@ -63,8 +70,7 @@ class SendTextView: UIView {
         sendButton.layer.shadowRadius = 5
         sendButton.layer.shadowOffset = CGSize(width: 0, height: 0)
 
-//        sendButton.addTarget(self, action: #selector(joinScheduleButtonTapped), for: .touchUpInside)
-        
+        sendButton.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
         
         textField.translatesAutoresizingMaskIntoConstraints = false
         sendButton.translatesAutoresizingMaskIntoConstraints = false
@@ -86,5 +92,26 @@ class SendTextView: UIView {
             
             ])
     }
+    
+    func addBreathingAnimation(to view: UIView) {
+        let breathingAnimation = CABasicAnimation(keyPath: "shadowRadius")
+        breathingAnimation.fromValue = 5
+        breathingAnimation.toValue = 20
+        breathingAnimation.autoreverses = true
+        breathingAnimation.duration = 1
+        breathingAnimation.repeatCount = .infinity
+        view.layer.add(breathingAnimation, forKey: "breathingAnimation")
+    }
+    
+    @objc func sendButtonTapped() {
+           guard let messageText = textField.text, !messageText.isEmpty else {
+               return
+           }
+
+           delegate?.didTapSendButton(withText: messageText)
+
+           textField.text = ""
+       }
+    
 }
 
