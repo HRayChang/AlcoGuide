@@ -67,7 +67,6 @@ class DataManager {
                     
                 }
             }
-            MessageManager.shared.fetchMessage(scheduleId: currentScheduleID!)
         }
         
         // Example function to update current index and array type

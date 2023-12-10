@@ -166,6 +166,17 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         case .finished:
             cell.configureCell(with: dataManager.finishedSchedules, at: indexPath.row)
         }
+        
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [UIColor.eminence.cgColor, UIColor.black.withAlphaComponent(0.5).cgColor]
+        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 1)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0)
+        gradientLayer.frame = cell.frameView.bounds
+        gradientLayer.cornerRadius = 10
+        cell.frameView.layer.insertSublayer(gradientLayer, at: 0)
+        
+        
         return cell
     }
     

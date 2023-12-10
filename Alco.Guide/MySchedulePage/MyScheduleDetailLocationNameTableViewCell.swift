@@ -53,6 +53,7 @@ class MyScheduleDetailLocationNameTableViewCell: UITableViewCell {
             frameView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             frameView.heightAnchor.constraint(equalToConstant: 50)
         ])
+    
     }
     
     override func layoutSubviews() {

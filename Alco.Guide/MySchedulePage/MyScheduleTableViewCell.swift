@@ -32,7 +32,7 @@ class MyScheduleTableViewCell: UITableViewCell {
         self.backgroundColor = .clear
         
         nameLabel.textColor = UIColor.lilac
-        nameLabel.font = UIFont.boldSystemFont(ofSize: 35)
+        nameLabel.font = UIFont.boldSystemFont(ofSize: 30)
 
 //        idLabel.textColor = UIColor.eminence
 //        idLabel.font = UIFont.boldSystemFont(ofSize: 16)
@@ -42,11 +42,13 @@ class MyScheduleTableViewCell: UITableViewCell {
         frameView.backgroundColor = UIColor.black.withAlphaComponent(0.9)
         frameView.layer.shadowColor = UIColor.steelPink.cgColor
         frameView.layer.shadowOpacity = 1
-        frameView.layer.shadowRadius = 5.0
+        frameView.layer.shadowRadius = 10.0
         frameView.layer.shadowOffset = CGSize(width: 0, height: 0)
         
-        cellBackgroundImageView.image = UIImage(named: "schedulCellBackground")
-        cellBackgroundImageView.contentMode = .scaleAspectFill
+        var imageNames = ["1", "2", "3", "4", "5", "6", "7"]
+        let randomIndex = Int.random(in: 0..<imageNames.count)
+        cellBackgroundImageView.image = UIImage(named: imageNames[randomIndex])
+        cellBackgroundImageView.contentMode = .scaleAspectFit
         cellBackgroundImageView.clipsToBounds = true
         cellBackgroundImageView.layer.cornerRadius = 10
         
@@ -88,4 +90,6 @@ class MyScheduleTableViewCell: UITableViewCell {
         nameLabel.text = scheduleName
         
     }
+    
+    
 }

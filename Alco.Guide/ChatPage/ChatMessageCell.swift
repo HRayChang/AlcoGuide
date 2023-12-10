@@ -17,7 +17,7 @@ class ChatMessageCell: UITableViewCell {
     
     var chatMessage: ChatMessage! {
         didSet {
-            bubbleBackground.layer.shadowColor = chatMessage.userUID == LoginManager.shared.userInfo?.userUID ? UIColor.steelPink.cgColor : UIColor.lightPink.cgColor
+            bubbleBackground.layer.shadowColor = chatMessage.userUID == LoginManager.shared.userInfo?.userUID ? UIColor.lightPink.cgColor : UIColor.steelPink.cgColor
             
             messageLabel.text = chatMessage.content
             

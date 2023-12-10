@@ -20,6 +20,7 @@
 		733C7F152B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F142B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift */; };
 		734158AA2B24986600F870B2 /* MessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158A92B24986600F870B2 /* MessageManager.swift */; };
 		734158AC2B24C82200F870B2 /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158AB2B24C82200F870B2 /* MessageModel.swift */; };
+		734158AE2B25EAB200F870B2 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158AD2B25EAB200F870B2 /* Date+Extension.swift */; };
 		734206FA2B04D8190030BA37 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206F92B04D8190030BA37 /* LoginViewController.swift */; };
 		734206FC2B04D99D0030BA37 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */; };
 		734206FE2B04EE230030BA37 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206FD2B04EE230030BA37 /* TabBarController.swift */; };
@@ -89,6 +90,7 @@
 		733C7F142B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailButtonTableViewCell.swift; sourceTree = "<group>"; };
 		734158A92B24986600F870B2 /* MessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageManager.swift; sourceTree = "<group>"; };
 		734158AB2B24C82200F870B2 /* MessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
+		734158AD2B25EAB200F870B2 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		734206F92B04D8190030BA37 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		734206FD2B04EE230030BA37 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -201,8 +203,8 @@
 				73B9124B2B205398003C6242 /* ProfilePage */,
 				73B912442B205162003C6242 /* ChatPage */,
 				73BC5A712B08B78100DBB82B /* Manager */,
-				734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */,
 				73BC5A6D2B07A16600DBB82B /* Model.swift */,
+				734158AF2B25EAD500F870B2 /* Extension */,
 				730A002F2B04C2D300D57D05 /* Main.storyboard */,
 				730A00322B04C2D400D57D05 /* Assets.xcassets */,
 				730A00342B04C2D400D57D05 /* LaunchScreen.storyboard */,
@@ -210,6 +212,15 @@
 				73B912BC2B209D60003C6242 /* GoogleService-Info.plist */,
 			);
 			path = Alco.Guide;
+			sourceTree = "<group>";
+		};
+		734158AF2B25EAD500F870B2 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */,
+				734158AD2B25EAB200F870B2 /* Date+Extension.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		734207152B0631C70030BA37 /* View */ = {
@@ -559,6 +570,7 @@
 				73B912BF2B20AC9F003C6242 /* UserInfo.swift in Sources */,
 				734207042B04F1290030BA37 /* CocktailViewController.swift in Sources */,
 				734207002B04F0ED0030BA37 /* ChatViewController.swift in Sources */,
+				734158AE2B25EAB200F870B2 /* Date+Extension.swift in Sources */,
 				73B912CD2B234A21003C6242 /* ChatMessageCell.swift in Sources */,
 				734207062B04F15F0030BA37 /* ProfileViewController.swift in Sources */,
 				7342071B2B06352B0030BA37 /* SelectScheduleView.swift in Sources */,

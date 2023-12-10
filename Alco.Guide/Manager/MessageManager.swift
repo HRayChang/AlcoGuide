@@ -14,8 +14,8 @@ class MessageManager {
     static let shared = MessageManager()
     
     private let database = Firestore.firestore()
-    
-    var chatMessages = [[ChatMessage]]()
+
+    var chatMessagesFromServer = [ChatMessage]()
     
     private init() {}
     
@@ -23,12 +23,13 @@ class MessageManager {
         // 参考 "Messages" 集合中 "message" 子集合的路径
         let messagesCollectionRef = database.collection("Messages").document(scheduleId).collection("message")
 
-        // 获取子集合中所有文档的数据
+       
+        chatMessagesFromServer.removeAll()
         messagesCollectionRef.getDocuments { (querySnapshot, error) in
             if let error = error {
                 print("Error fetching documents: \(error)")
             } else {
-                // 遍历所有文档
+               
                 for document in querySnapshot!.documents {
                     
                     let content = document["content"] as? String ?? ""
@@ -36,27 +37,29 @@ class MessageManager {
                     let userUID = document["userUID"] as? String ?? ""
                     guard let image = document["userImage"] as? String else { return }
                     let userImage = URL(string: image)!
-                    let time = document["time"] as? Date
+                    let time = document["time"] as? Timestamp 
                     
-                    var chatMessage = ChatMessage(content: content, userName: userName, userUID: userUID, userImage: userImage, time: time ?? Date())
+                    var chatMessage = ChatMessage(content: content, userName: userName, userUID: userUID, userImage: userImage, time: time?.dateValue() ?? Date())
+                    
+                   
+                    
+                    self.chatMessagesFromServer.append(chatMessage)
+                    print(self.chatMessagesFromServer)
                     
                 }
+        
             }
         }
     }
     
-    func sendMessage(content: String) {
-        
-        guard let userInfo = LoginManager.shared.userInfo else {
-            return
-        }
+    func sendMessage(newMessage: ChatMessage) {
 
         let data: [String: Any] = [
-            "content": content,
-            "userName": userInfo.name,
-            "userUID": userInfo.userUID,
-            "userImage": "\(userInfo.image)",
-            "time": Date()
+            "content": newMessage.content,
+            "userName": newMessage.userName,
+            "userUID": newMessage.userUID,
+            "userImage": "\(newMessage.userImage)",
+            "time": newMessage.time
         ]
 
         let messagesCollectionRef = database.collection("Messages").document(DataManager.CurrentSchedule.currentScheduleID!).collection("message")
