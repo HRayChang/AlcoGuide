@@ -21,6 +21,9 @@
 		734158AA2B24986600F870B2 /* MessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158A92B24986600F870B2 /* MessageManager.swift */; };
 		734158AC2B24C82200F870B2 /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158AB2B24C82200F870B2 /* MessageModel.swift */; };
 		734158AE2B25EAB200F870B2 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158AD2B25EAB200F870B2 /* Date+Extension.swift */; };
+		734158BA2B26E97E00F870B2 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158B92B26E97E00F870B2 /* ButtonView.swift */; };
+		734158BC2B26F6DF00F870B2 /* CocktailCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158BB2B26F6DF00F870B2 /* CocktailCollectionViewCell.swift */; };
+		734158C02B2716DA00F870B2 /* CocktailDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158BF2B2716DA00F870B2 /* CocktailDetailViewController.swift */; };
 		734206FA2B04D8190030BA37 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206F92B04D8190030BA37 /* LoginViewController.swift */; };
 		734206FC2B04D99D0030BA37 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */; };
 		734206FE2B04EE230030BA37 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734206FD2B04EE230030BA37 /* TabBarController.swift */; };
@@ -91,6 +94,9 @@
 		734158A92B24986600F870B2 /* MessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageManager.swift; sourceTree = "<group>"; };
 		734158AB2B24C82200F870B2 /* MessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
 		734158AD2B25EAB200F870B2 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
+		734158B92B26E97E00F870B2 /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
+		734158BB2B26F6DF00F870B2 /* CocktailCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CocktailCollectionViewCell.swift; sourceTree = "<group>"; };
+		734158BF2B2716DA00F870B2 /* CocktailDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CocktailDetailViewController.swift; sourceTree = "<group>"; };
 		734206F92B04D8190030BA37 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		734206FB2B04D99D0030BA37 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		734206FD2B04EE230030BA37 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -196,11 +202,11 @@
 				730A00292B04C2D300D57D05 /* AppDelegate.swift */,
 				730A002B2B04C2D300D57D05 /* SceneDelegate.swift */,
 				734206FD2B04EE230030BA37 /* TabBarController.swift */,
-				734207032B04F1290030BA37 /* CocktailViewController.swift */,
 				73B912C92B22FCC3003C6242 /* LocationDetailPage */,
 				73B912C22B218F34003C6242 /* MapPage */,
 				73B9124A2B2052FA003C6242 /* LoginPage */,
 				73B9124B2B205398003C6242 /* ProfilePage */,
+				734158B02B26DF9F00F870B2 /* CocktailPage */,
 				73B912442B205162003C6242 /* ChatPage */,
 				73BC5A712B08B78100DBB82B /* Manager */,
 				73BC5A6D2B07A16600DBB82B /* Model.swift */,
@@ -221,6 +227,33 @@
 				734158AD2B25EAB200F870B2 /* Date+Extension.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		734158B02B26DF9F00F870B2 /* CocktailPage */ = {
+			isa = PBXGroup;
+			children = (
+				734158B82B26E96C00F870B2 /* View */,
+				734158B12B26DFC100F870B2 /* Controller */,
+				734207032B04F1290030BA37 /* CocktailViewController.swift */,
+				734158BB2B26F6DF00F870B2 /* CocktailCollectionViewCell.swift */,
+			);
+			path = CocktailPage;
+			sourceTree = "<group>";
+		};
+		734158B12B26DFC100F870B2 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				734158BF2B2716DA00F870B2 /* CocktailDetailViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		734158B82B26E96C00F870B2 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				734158B92B26E97E00F870B2 /* ButtonView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		734207152B0631C70030BA37 /* View */ = {
@@ -551,6 +584,7 @@
 				734206FA2B04D8190030BA37 /* LoginViewController.swift in Sources */,
 				73BC5A732B08C96D00DBB82B /* MyScheduleCell.swift in Sources */,
 				734158AC2B24C82200F870B2 /* MessageModel.swift in Sources */,
+				734158BA2B26E97E00F870B2 /* ButtonView.swift in Sources */,
 				73BC5A752B08EDE200DBB82B /* MyScheduleTableViewCell.swift in Sources */,
 				730A002E2B04C2D300D57D05 /* MapHomeViewController.swift in Sources */,
 				733C7F0D2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift in Sources */,
@@ -563,6 +597,7 @@
 				73B912CB2B2332EF003C6242 /* SendTextView.swift in Sources */,
 				73BC5A6E2B07A16600DBB82B /* Model.swift in Sources */,
 				734207022B04F1010030BA37 /* MyScheduleViewController.swift in Sources */,
+				734158C02B2716DA00F870B2 /* CocktailDetailViewController.swift in Sources */,
 				7342071D2B06365B0030BA37 /* JoinScheduleView.swift in Sources */,
 				733C7F152B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift in Sources */,
 				733C7F132B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift in Sources */,
@@ -578,6 +613,7 @@
 				734206FE2B04EE230030BA37 /* TabBarController.swift in Sources */,
 				734207192B06346C0030BA37 /* AddNewScheduleView.swift in Sources */,
 				730A002C2B04C2D300D57D05 /* SceneDelegate.swift in Sources */,
+				734158BC2B26F6DF00F870B2 /* CocktailCollectionViewCell.swift in Sources */,
 				73BC5A772B08EEED00DBB82B /* MyScheduleDetailViewController.swift in Sources */,
 				734206FC2B04D99D0030BA37 /* UIColor+Extension.swift in Sources */,
 			);

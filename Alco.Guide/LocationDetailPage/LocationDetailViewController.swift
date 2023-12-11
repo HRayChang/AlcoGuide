@@ -61,8 +61,6 @@ class LocationDetailViewController: UIViewController {
         gradientLayer.colors = [UIColor.black.cgColor, UIColor.steelPink.cgColor] // 使用你想要的顏色
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
-
-           // Insert the gradient layer at the bottom of the view's layer hierarchy
            view.layer.insertSublayer(gradientLayer, at: 0)
         
         nameLabel.textColor = .lilac
