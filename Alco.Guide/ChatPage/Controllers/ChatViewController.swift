@@ -7,13 +7,11 @@
 
 import UIKit
 
-class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SendTextViewDelegate {
+class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SendTextViewDelegate, MessageManagerDelegate {
 
     let backgroundView = UIView()
     let chatTableView = UITableView()
     let sendTextView = SendTextView()
-    
-    var chatMessages = [[ChatMessage]]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +20,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         chatTableView.dataSource = self
 
         sendTextView.delegate = self
+        MessageManager.shared.delegate = self
         
         chatTableView.register(ChatMessageCell.self, forCellReuseIdentifier: "id")
 
@@ -31,13 +30,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        chatMessages.removeAll()
-        attemptToAssembleGroupedMessages()
+        MessageManager.shared.messagesObserver()
         chatTableView.reloadData()
         navigationItem.title = DataManager.CurrentSchedule.currentScheduleName ?? "Message"
 
     }
-
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -52,11 +50,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func setupChatViewUI() {
         
          view.backgroundColor = UIColor.black
-        let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.steelPink]
+        let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.lilac]
         navigationController?.navigationBar.titleTextAttributes = textAttributes
-//        navigationItem.title = "Message"
-       
-
         
         chatTableView.backgroundColor = .clear
         chatTableView.separatorStyle = .none
@@ -90,25 +85,10 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             sendTextView.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
-    
-    fileprivate func attemptToAssembleGroupedMessages() {
-        let messages = MessageManager.shared.chatMessagesFromServer
 
-        let groupedMessages = Dictionary(grouping: messages) { (element) -> Date in
-            return element.time.reduceToMonthDayYear()
-        }
-
-        let sortedKeys = groupedMessages.keys.sorted()
-
-        sortedKeys.forEach { (key) in
-            var content = groupedMessages[key] ?? []
-            content.sort { $0.time > $1.time }
-            chatMessages.insert(content, at: 0)
-        }
-    }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return chatMessages.count
+        return MessageManager.shared.chatMessages.count
     }
     
     class DateHeaderLabel: UILabel {
@@ -142,7 +122,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         headerView.transform = CGAffineTransform(rotationAngle: (-.pi))
         
-        if let firstMessageInSection = chatMessages[section].first {
+        if let firstMessageInSection = MessageManager.shared.chatMessages[section].first {
             let
             dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "MM/dd/yyyy"
@@ -173,7 +153,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return chatMessages[section].count
+        return MessageManager.shared.chatMessages[section].count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -183,7 +163,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         cell.transform = CGAffineTransform(rotationAngle: (-.pi))
         
-        let chatMessage = chatMessages[indexPath.section][indexPath.row]
+        let chatMessage = MessageManager.shared.chatMessages[indexPath.section][indexPath.row]
         
 //        cell.messageLabel.text = chatMessage.text
 //        cell.isIncoming = chatMessage.isIncoming
@@ -211,25 +191,43 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         MessageManager.shared.sendMessage(newMessage: newMessage)
         
-        if chatMessages.isEmpty {
-            chatMessages.append([ChatMessage]())
-        }
-
-        chatMessages[0].insert(newMessage, at: 0)
+//        if MessageManager.shared.chatMessages.isEmpty {
+//            MessageManager.shared.chatMessages.append([ChatMessage]())
+//        }
+//
+//        MessageManager.shared.chatMessages[0].insert(newMessage, at: 0)
         
-        chatTableView.beginUpdates()
-        
-        if chatTableView.numberOfSections == 0 {
-            chatTableView.insertSections(IndexSet(integer: 0), with: .none)
-        }
-        
-        let indexPath = IndexPath(row: 0, section: 0)
-        
-        chatTableView.insertRows(at: [indexPath], with: .automatic)
-        chatTableView.endUpdates()
+//        chatTableView.beginUpdates()
+//        
+//        if chatTableView.numberOfSections == 0 {
+//            chatTableView.insertSections(IndexSet(integer: 0), with: .none)
+//        }
+//        
+//        let indexPath = IndexPath(row: 0, section: 0)
+//        
+//        chatTableView.insertRows(at: [indexPath], with: .automatic)
+//        chatTableView.endUpdates()
 
        
     }
+    
+    func messageManager(_ manager: MessageManager, didAddNewMessage newMessage: ChatMessage) {
+//             Call your updateTableView function or perform any actions needed when a new message is added
+//        chatTableView.beginUpdates()
+//
+//               if MessageManager.shared.chatMessages.isEmpty {
+//                   MessageManager.shared.chatMessages.append([ChatMessage]())
+//                   chatTableView.insertSections(IndexSet(integer: 0), with: .none)
+//               }
+//
+//               MessageManager.shared.chatMessages[0].insert(newMessage, at: 0)
+//
+//               let indexPath = IndexPath(row: 0, section: 0)
+//               chatTableView.insertRows(at: [indexPath], with: .automatic)
+//
+//               chatTableView.endUpdates()
+        chatTableView.reloadData()
+        }
 
 }
 

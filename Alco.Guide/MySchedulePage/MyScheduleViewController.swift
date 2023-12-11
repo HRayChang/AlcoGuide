@@ -205,7 +205,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         
         present(myScheduleDetailViewController, animated: true, completion: nil)
         
-        MessageManager.shared.fetchMessage(scheduleId: DataManager.CurrentSchedule.currentScheduleID!)
+//        MessageManager.shared.fetchMessage(scheduleId: DataManager.CurrentSchedule.currentScheduleID!)
 //        postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
     }
     
