@@ -50,10 +50,12 @@ class CocktailDetailViewController: UIViewController {
                     var font: UIFont
                     if index % 2 == 0 {
                         // 使用 "New Times Roman" 字体
-                        font = UIFont(name: "TimesNewRomanPS-BoldMT", size: 20.0) ?? UIFont.systemFont(ofSize: 20.0)
+                        font = UIFont(name: "Bradley Hand", size: 20.0) ?? UIFont.systemFont(ofSize: 20.0)
                     } else {
                         // 使用系统默认字体
-                        font = UIFont.systemFont(ofSize: 14.0)
+                        
+                        font = UIFont(name: "Noteworthy", size: 20.0) ?? UIFont.systemFont(ofSize: 20.0)
+    
                     }
 
                     // 为每一行设置字体
@@ -69,7 +71,7 @@ class CocktailDetailViewController: UIViewController {
                recipe.attributedText = attributedString
         recipe.textColor = .lilac
         recipe.numberOfLines = 0
-        recipe.textAlignment = .left
+        recipe.textAlignment = .right
               
         
         imageView.image = UIImage(named: "11")
@@ -96,10 +98,10 @@ class CocktailDetailViewController: UIViewController {
             name.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
             name.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            recipe.topAnchor.constraint(equalTo: name.bottomAnchor),
+            recipe.topAnchor.constraint(equalTo: name.bottomAnchor, constant: -20),
          
-            recipe.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            recipe.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            recipe.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            recipe.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
         
             imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

@@ -14,18 +14,18 @@ class TabBarController: UITabBarController {
 
         let cocktailViewController = createNavigationController(with: CocktailViewController())
         cocktailViewController.tabBarItem.image = UIImage(systemName: "wineglass")
-        cocktailViewController.tabBarItem.selectedImage = UIImage(systemName: "face.smiling")
+        cocktailViewController.tabBarItem.selectedImage = UIImage(named: "party")
         cocktailViewController.tabBarItem.title = "Alcohol"
         
 
         let scheduleViewController = createNavigationController(with: MyScheduleViewController())
         scheduleViewController.tabBarItem.image = UIImage(systemName: "list.bullet")
-        scheduleViewController.tabBarItem.selectedImage = UIImage(systemName: "list.bullet.indent")
+        scheduleViewController.tabBarItem.selectedImage = UIImage(named: "drunk02")
         scheduleViewController.tabBarItem.title = "Schedule"
 
         let chatViewController = createNavigationController(with: ChatViewController())
         chatViewController.tabBarItem.image = UIImage(systemName: "message")
-        chatViewController.tabBarItem.selectedImage = UIImage(systemName: "ellipsis.message.fill")
+        chatViewController.tabBarItem.selectedImage = UIImage(named: "drunk01")
         chatViewController.tabBarItem.title = "Message"
 
         let mapHomeViewController = createNavigationController(with: MapHomeViewController())
@@ -35,7 +35,7 @@ class TabBarController: UITabBarController {
 
         let personalViewController = createNavigationController(with: ProfileViewController())
         personalViewController.tabBarItem.image = UIImage(systemName: "person")
-        personalViewController.tabBarItem.selectedImage = UIImage(systemName: "person.fill")
+        personalViewController.tabBarItem.selectedImage = UIImage(named: "drunk03")
         personalViewController.tabBarItem.title = "Profile"
 
         viewControllers = [chatViewController,
