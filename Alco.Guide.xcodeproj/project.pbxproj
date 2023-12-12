@@ -234,7 +234,6 @@
 			children = (
 				734158B82B26E96C00F870B2 /* View */,
 				734158B12B26DFC100F870B2 /* Controller */,
-				734207032B04F1290030BA37 /* CocktailViewController.swift */,
 				734158BB2B26F6DF00F870B2 /* CocktailCollectionViewCell.swift */,
 			);
 			path = CocktailPage;
@@ -243,6 +242,7 @@
 		734158B12B26DFC100F870B2 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				734207032B04F1290030BA37 /* CocktailViewController.swift */,
 				734158BF2B2716DA00F870B2 /* CocktailDetailViewController.swift */,
 			);
 			path = Controller;

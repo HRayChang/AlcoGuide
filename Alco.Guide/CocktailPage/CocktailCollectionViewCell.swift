@@ -43,7 +43,7 @@ class CocktailCollectionViewCell: UICollectionViewCell {
         
         
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             imageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.8),

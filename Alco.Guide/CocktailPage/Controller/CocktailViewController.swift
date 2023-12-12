@@ -34,7 +34,7 @@ class CocktailViewController: UIViewController, UICollectionViewDataSource, UICo
         
         collectionView.register(CocktailCollectionViewCell.self, forCellWithReuseIdentifier: "CellIdentifier")
         
-        setupChatViewUI()
+        setupViewUI()
         setupConstraints()
     }
     
@@ -50,7 +50,7 @@ class CocktailViewController: UIViewController, UICollectionViewDataSource, UICo
 //        backgroundView.layer.insertSublayer(gradientLayer, at: 0)
 //    }
     
-    func setupChatViewUI() {
+    func setupViewUI() {
         
         view.backgroundColor = UIColor.black
         
@@ -119,5 +119,13 @@ class CocktailViewController: UIViewController, UICollectionViewDataSource, UICo
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+         let selectedCocktailName = cocktailsNames[indexPath.item]
+         let detailViewController = CocktailDetailViewController()
+
+         // Present the detail view controller modally
+         present(detailViewController, animated: true, completion: nil)
+     }
     
 }

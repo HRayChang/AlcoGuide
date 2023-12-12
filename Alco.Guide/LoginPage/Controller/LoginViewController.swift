@@ -95,7 +95,6 @@ class LoginViewController: UIViewController {
                     print("Error signing in with Google: \(error.localizedDescription)")
                     // Handle the error as needed
                 } else  {
-                    // Continue with any additional logic after successful login
                     let tabBarController = TabBarController()
                     
                     tabBarController.selectedIndex = 2
