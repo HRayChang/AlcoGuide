@@ -119,4 +119,5 @@ class ProfileViewController: UIViewController {
             
             view.layer.add(animation, forKey: "shadowColorAnimation")
         }
+    
 }

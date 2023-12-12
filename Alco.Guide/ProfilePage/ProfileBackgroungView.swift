@@ -9,7 +9,7 @@ import UIKit
 
 class ConcaveView: UIView {
     
-    let circleView = UIView()
+    let circleView = UIImageView()
     
     var breathingAnimationCount = 0
     
@@ -48,9 +48,12 @@ class ConcaveView: UIView {
     }
     
     func setupViewUI() {
+        
         let circleRadius: CGFloat = 80.0
         circleView.layer.cornerRadius = circleRadius
-        circleView.backgroundColor = UIColor.black
+        circleView.image = UIImage(named: "ray")
+        circleView.contentMode = .scaleAspectFill
+        circleView.alpha = 0.7
         
         circleView.layer.shadowColor = UIColor.green.cgColor
         circleView.layer.shadowOpacity = 1
