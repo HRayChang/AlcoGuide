@@ -7,19 +7,27 @@
 
 import Foundation
 import UIKit
+import CoreMotion
 
 class ShakeView: UIView {
     
     let shakerImageView = UIImageView()
     let shakeLabel = UILabel()
     
+    let motionManager = CMMotionManager()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        startMotionUpdates()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        stopMotionUpdates()
     }
     
     
@@ -47,15 +55,16 @@ class ShakeView: UIView {
         addSubview(shakerImageView)
         
         NSLayoutConstraint.activate([
-        shakerImageView.topAnchor.constraint(equalTo: self.topAnchor),
-        shakerImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-        shakerImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-        shakerImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-        
-        shakeLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: -270),
-        shakeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-        shakeLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-        
+            shakerImageView.topAnchor.constraint(equalTo: self.topAnchor),
+            shakerImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            shakerImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            shakerImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            shakeLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: -200),
+            shakeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            shakeLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            
         ])
     }
     
@@ -68,4 +77,42 @@ class ShakeView: UIView {
         breathingAnimation.repeatCount = .infinity
         view.layer.add(breathingAnimation, forKey: "breathingAnimation")
     }
+    
+    func startMotionUpdates() {
+        if motionManager.isDeviceMotionAvailable {
+            motionManager.deviceMotionUpdateInterval = 0.1
+            motionManager.startDeviceMotionUpdates(to: .main) { [weak self] (motion, error) in
+                guard let self = self, let motion = motion else { return }
+                self.handleMotionUpdate(motion)
+            }
+        }
+    }
+    
+    func handleMotionUpdate(_ motion: CMDeviceMotion) {
+        let gravity = motion.gravity
+        let gravityX = gravity.x
+        let gravityY = gravity.y
+        let angle = atan2(gravityY, gravityX)
+        let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .unknown
+        
+        var transform = CGAffineTransform.identity
+        
+        switch orientation {
+        case .portrait:
+            transform = CGAffineTransform(translationX: 0, y: gravityY * 100)
+        case .portraitUpsideDown:
+            transform = CGAffineTransform(translationX: 0, y: -gravityY * 100)
+        default:
+            break
+        }
+        
+        UIView.animate(withDuration: 0.1) {
+            self.shakeLabel.transform = transform
+        }
+    }
+    
+    func stopMotionUpdates() {
+        motionManager.stopGyroUpdates()
+    }
+    
 }
