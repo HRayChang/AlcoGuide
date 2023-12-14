@@ -82,6 +82,8 @@ class MessageManager {
     }
     
     func messagesObserver() {
+        
+        
         let messagesCollectionRef = database.collection("Messages").document(DataManager.CurrentSchedule.currentScheduleID!).collection("message")
             .order(by: "time", descending: true)
         

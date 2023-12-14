@@ -45,21 +45,21 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         dataManager.fetchSchedules { [weak self] success in
             guard let self = self, success else { return }
             self.tableView.reloadData()
-           
+            
         }
     }
     
     private func setupObservers() {
-//        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("CurrentSchedule"), object: nil)
+        //        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("CurrentSchedule"), object: nil)
         
-//        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("UpdateLocationOrder"), object: nil)
+        //        NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("UpdateLocationOrder"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("UpdateActivity"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("DeletedLocation"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("DeletedActivite"), object: nil)
-//        
+        //        
         NotificationCenter.default.addObserver(self, selector: #selector(fetchSchedules), name: Notification.Name("Updatefirestore"), object: nil)
     }
     
@@ -105,20 +105,20 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func animateFadeInAndOut() {
-            let randomDuration = Double.random(in: 1.0...3.0)
-
-            UIView.animate(withDuration: randomDuration) {
-                self.backgroundImage.alpha = 0.7
+        let randomDuration = Double.random(in: 1.0...3.0)
+        
+        UIView.animate(withDuration: randomDuration) {
+            self.backgroundImage.alpha = 0.7
+        } completion: { _ in
+            let randomDelay = Double.random(in: 0.0...2.0)
+            UIView.animate(withDuration: randomDuration, delay: randomDelay, options: []) {
+                self.backgroundImage.alpha = 0.2
             } completion: { _ in
-                let randomDelay = Double.random(in: 0.0...2.0)
-                UIView.animate(withDuration: randomDuration, delay: randomDelay, options: []) {
-                    self.backgroundImage.alpha = 0.2
-                } completion: { _ in
-                    // Recursive call to repeat the animation
-                    self.animateFadeInAndOut()
-                }
+                // Recursive call to repeat the animation
+                self.animateFadeInAndOut()
             }
         }
+    }
     
     @objc func editButtonTapped() {
         tableView.setEditing(!tableView.isEditing, animated: true)
@@ -132,11 +132,11 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
             self.view.endEditing(true)
         }
     }
-
     
-//    func postCurrentScheduleNotification(scheduleInfo: [String: Any]) {
-//            NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)
-//    }
+    
+    //    func postCurrentScheduleNotification(scheduleInfo: [String: Any]) {
+    //            NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: scheduleInfo)
+    //    }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return Section.allCases.count
@@ -182,7 +182,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-      
+        
         
         switch Section.allCases[indexPath.section] {
         case .running:
@@ -193,20 +193,20 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         NotificationCenter.default.post(name: Notification.Name("CurrentSchedule"), object: nil, userInfo: nil)
         
-//        dataManager.fetchLocationCoordinate(locationsId: CurrentSchedule.currentLocationsId!) { coordinates in
-//        
-//            self.postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
-//        }
+        //        dataManager.fetchLocationCoordinate(locationsId: CurrentSchedule.currentLocationsId!) { coordinates in
+        //        
+        //            self.postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
+        //        }
         NotificationCenter.default.post(name: Notification.Name("CurrentLocationsCoordinate"), object: nil, userInfo: nil)
         NotificationCenter.default.post(name: Notification.Name("UpdateLocation"), object: nil, userInfo: nil)
         
         let myScheduleDetailViewController = UINavigationController(rootViewController: MyScheduleDetailViewController())
-
+        
         
         present(myScheduleDetailViewController, animated: true, completion: nil)
         
-//        MessageManager.shared.fetchMessage(scheduleId: DataManager.CurrentSchedule.currentScheduleID!)
-//        postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
+        //        MessageManager.shared.fetchMessage(scheduleId: DataManager.CurrentSchedule.currentScheduleID!)
+        //        postCurrentScheduleNotification(scheduleInfo: ["scheduleID": CurrentSchedule.currentScheduleID!, "scheduleName": CurrentSchedule.currentScheduleName!])
     }
     
     
@@ -252,7 +252,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let scheduleIDToMove = dataManager.runningSchedules.remove(at: sourceIndexPath.row)
-
+        
         if sourceIndexPath.section == destinationIndexPath.section {
             
             dataManager.runningSchedules.insert(scheduleIDToMove, at: destinationIndexPath.row)
@@ -261,7 +261,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
             
             dataManager.finishedSchedules.insert(scheduleIDToMove, at: destinationIndexPath.row)
             
-           let scheduleID = scheduleIDToMove.scheduleID
+            let scheduleID = scheduleIDToMove.scheduleID
             dataManager.finishSchedule(for: scheduleID, isRunning: destinationIndexPath.section == 0) { error in
                 if let error = error {
                     print("Error updating Firestore document: \(error.localizedDescription)")
@@ -270,7 +270,7 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
             }
         }
-
+        
         fetchSchedules()
         
         tableView.reloadData()

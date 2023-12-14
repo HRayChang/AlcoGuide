@@ -43,6 +43,10 @@ class ButtonView: UIView {
         modernCocktailsButton.setTitle("Modern", for: .normal)
         modernCocktailsButton.setTitleColor(.eminence, for: .normal)
         
+//        classicCocktailsButton.addTarget(self, action: #selector(classicCocktailsButtonTapped), for: .touchUpInside)
+//        modernCocktailsButton.addTarget(self, action: #selector(modernCocktailsButtonTapped), for: .touchUpInside)
+
+        
         selectedButtonLine.translatesAutoresizingMaskIntoConstraints = false
         buttonLine.translatesAutoresizingMaskIntoConstraints = false
         classicCocktailsButton.translatesAutoresizingMaskIntoConstraints = false

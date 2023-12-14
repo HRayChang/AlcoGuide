@@ -53,9 +53,8 @@ class ConcaveView: UIView {
         circleView.layer.cornerRadius = circleRadius
         circleView.image = UIImage(named: "ray")
         circleView.contentMode = .scaleAspectFill
-        circleView.alpha = 0.7
+        circleView.alpha = 1
         
-        circleView.layer.shadowColor = UIColor.green.cgColor
         circleView.layer.shadowOpacity = 1
         circleView.layer.shadowRadius = 10.0
         circleView.layer.shadowOffset = CGSize(width: 0, height: 0)
@@ -71,5 +70,5 @@ class ConcaveView: UIView {
         ])
     }
     
-
+    
 }

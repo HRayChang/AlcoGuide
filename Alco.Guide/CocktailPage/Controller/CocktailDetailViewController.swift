@@ -54,7 +54,7 @@ class CocktailDetailViewController: UIViewController {
                     } else {
                         // 使用系统默认字体
                         
-                        font = UIFont(name: "Noteworthy", size: 20.0) ?? UIFont.systemFont(ofSize: 20.0)
+                        font = UIFont(name: "Noteworthy", size: 15.0) ?? UIFont.systemFont(ofSize: 15.0)
     
                     }
 
@@ -64,7 +64,7 @@ class CocktailDetailViewController: UIViewController {
 
                     // 设置行与行之间的上面间距
                     let paragraphStyle = NSMutableParagraphStyle()
-                    paragraphStyle.lineSpacing = index % 2 == 0 ? 3.0 : 5
+                    paragraphStyle.lineSpacing = index % 2 == 0 ? 3 : 2
                     attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: range)
                 }
 

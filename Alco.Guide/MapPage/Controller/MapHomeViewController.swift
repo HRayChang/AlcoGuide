@@ -22,6 +22,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     let returnToCurrentLocationButton = UIButton()
     let currentScheduleView = UIView()
     let currentScheduleLabel = UILabel()
+//    let shadowView = UIView()
     
     let shareScheduleView = ShareScheduleView()
     let selectLocationView = SelectLocationView()
@@ -56,6 +57,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         super.viewWillAppear(animated)
         returnToCurrentLocation()
         addBreathingAnimation(to: assembleButton)
+        
     }
     
     // MARK: - Setup UI
@@ -126,6 +128,13 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         assembleButton.layer.shadowRadius = 10.0
         assembleButton.layer.shadowOffset = CGSize(width: 0, height: 0)
         
+//        shadowView.layer.cornerRadius = view.frame.size.width/8
+//        shadowView.layer.bounds = assembleButton.bounds
+//        shadowView.layer.shadowColor = UIColor.green.cgColor
+//        shadowView.layer.shadowOpacity = 1
+//        shadowView.layer.shadowRadius = 10.0
+//        shadowView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        
         // Setup ReturnToCurrentLocationButton
         returnToCurrentLocationButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
         returnToCurrentLocationButton.tintColor = .lilac
@@ -164,6 +173,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         view.addSubview(selectLocationView)
         view.addSubview(returnToCurrentLocationButton)
         view.addSubview(currentScheduleView)
+//        view.addSubview(shadowView)
         
         NSLayoutConstraint.activate([
             mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),

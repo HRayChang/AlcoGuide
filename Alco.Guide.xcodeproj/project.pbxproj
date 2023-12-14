@@ -40,6 +40,8 @@
 		734207192B06346C0030BA37 /* AddNewScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734207182B06346C0030BA37 /* AddNewScheduleView.swift */; };
 		7342071B2B06352B0030BA37 /* SelectScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7342071A2B06352B0030BA37 /* SelectScheduleView.swift */; };
 		7342071D2B06365B0030BA37 /* JoinScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7342071C2B06365B0030BA37 /* JoinScheduleView.swift */; };
+		7355D8CF2B29B205004A361D /* shakesound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7355D8CE2B29B205004A361D /* shakesound.mp3 */; };
+		7355D8D12B2A96CC004A361D /* shakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7355D8D02B2A96CC004A361D /* shakeView.swift */; };
 		73B912872B206F02003C6242 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 73B912862B206F02003C6242 /* FirebaseAnalytics */; };
 		73B912892B206F02003C6242 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 73B912882B206F02003C6242 /* FirebaseAnalyticsOnDeviceConversion */; };
 		73B9128B2B206F02003C6242 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 73B9128A2B206F02003C6242 /* FirebaseAnalyticsSwift */; };
@@ -114,6 +116,8 @@
 		734207182B06346C0030BA37 /* AddNewScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewScheduleView.swift; sourceTree = "<group>"; };
 		7342071A2B06352B0030BA37 /* SelectScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectScheduleView.swift; sourceTree = "<group>"; };
 		7342071C2B06365B0030BA37 /* JoinScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinScheduleView.swift; sourceTree = "<group>"; };
+		7355D8CE2B29B205004A361D /* shakesound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = shakesound.mp3; sourceTree = "<group>"; };
+		7355D8D02B2A96CC004A361D /* shakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = shakeView.swift; sourceTree = "<group>"; };
 		73B912BC2B209D60003C6242 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		73B912BE2B20AC9F003C6242 /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		73B912C62B21B455003C6242 /* LoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginManager.swift; sourceTree = "<group>"; };
@@ -246,6 +250,7 @@
 			children = (
 				734207032B04F1290030BA37 /* CocktailViewController.swift */,
 				734158BF2B2716DA00F870B2 /* CocktailDetailViewController.swift */,
+				7355D8CE2B29B205004A361D /* shakesound.mp3 */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -254,6 +259,7 @@
 			isa = PBXGroup;
 			children = (
 				734158B92B26E97E00F870B2 /* ButtonView.swift */,
+				7355D8D02B2A96CC004A361D /* shakeView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -494,6 +500,7 @@
 			files = (
 				730A00362B04C2D400D57D05 /* LaunchScreen.storyboard in Resources */,
 				73B912BD2B209D60003C6242 /* GoogleService-Info.plist in Resources */,
+				7355D8CF2B29B205004A361D /* shakesound.mp3 in Resources */,
 				730A00332B04C2D400D57D05 /* Assets.xcassets in Resources */,
 				730A00312B04C2D300D57D05 /* Main.storyboard in Resources */,
 			);
@@ -612,6 +619,7 @@
 				73B912CD2B234A21003C6242 /* ChatMessageCell.swift in Sources */,
 				734207062B04F15F0030BA37 /* ProfileViewController.swift in Sources */,
 				7342071B2B06352B0030BA37 /* SelectScheduleView.swift in Sources */,
+				7355D8D12B2A96CC004A361D /* shakeView.swift in Sources */,
 				73BC5A702B08B25500DBB82B /* DataManager.swift in Sources */,
 				734206FE2B04EE230030BA37 /* TabBarController.swift in Sources */,
 				734207192B06346C0030BA37 /* AddNewScheduleView.swift in Sources */,
@@ -790,9 +798,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.raychang.Alco-Guide";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -822,9 +833,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.raychang.Alco-Guide";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

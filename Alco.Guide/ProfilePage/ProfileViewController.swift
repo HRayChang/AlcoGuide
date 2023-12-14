@@ -14,6 +14,9 @@ class ProfileViewController: UIViewController {
     let gameButton = UIButton()
     let sosButton = UIButton()
     let logoutButton = UIButton()
+    let logoutLabel = UILabel()
+    let commingSoonLabel = UILabel()
+    let commingSoonLabel1 = UILabel()
 
 
     override func viewDidLoad() {
@@ -34,11 +37,20 @@ class ProfileViewController: UIViewController {
         nameLabel.text = "Ray Chang"
         nameLabel.textColor = .lilac
         nameLabel.textAlignment = .right
-        nameLabel.font = UIFont(name: "Marker Felt Wide", size: 50)
+        nameLabel.font = UIFont(name: "Marker Felt Thin", size: 50)
         nameLabel.layer.shadowColor = UIColor.black.cgColor
         nameLabel.layer.shadowOpacity = 1
         nameLabel.layer.shadowRadius = 5.0
         nameLabel.layer.shadowOffset = CGSize(width: 5, height: 5)
+        
+        logoutLabel.text = "Logout"
+        logoutLabel.textColor = .steelPink
+        
+        commingSoonLabel.text = "SOS"
+        commingSoonLabel.textColor = .steelPink
+        
+        commingSoonLabel1.text = "Comming Soon"
+        commingSoonLabel1.textColor = .steelPink
         
         gameButton.setBackgroundImage(UIImage(named: "poker"), for: .normal)
         sosButton.setBackgroundImage(UIImage(named: "sos"), for: .normal)
@@ -66,12 +78,18 @@ class ProfileViewController: UIViewController {
         gameButton.translatesAutoresizingMaskIntoConstraints = false
         sosButton.translatesAutoresizingMaskIntoConstraints = false
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
-
+        logoutLabel.translatesAutoresizingMaskIntoConstraints = false
+        commingSoonLabel.translatesAutoresizingMaskIntoConstraints = false
+        commingSoonLabel1.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addSubview(backgroundView)
         view.addSubview(nameLabel)
         view.addSubview(gameButton)
         view.addSubview(sosButton)
         view.addSubview(logoutButton)
+        view.addSubview(logoutLabel)
+        view.addSubview(commingSoonLabel)
+        view.addSubview(commingSoonLabel1)
 
         NSLayoutConstraint.activate([
             
@@ -92,9 +110,16 @@ class ProfileViewController: UIViewController {
             logoutButton.centerYAnchor.constraint(equalTo: sosButton.centerYAnchor),
             
             gameButton.trailingAnchor.constraint(equalTo: sosButton.leadingAnchor, constant: -40),
-            gameButton.centerYAnchor.constraint(equalTo: sosButton.centerYAnchor)
+            gameButton.centerYAnchor.constraint(equalTo: sosButton.centerYAnchor),
             
-
+            logoutLabel.centerXAnchor.constraint(equalTo: logoutButton.centerXAnchor),
+            logoutLabel.topAnchor.constraint(equalTo: logoutButton.bottomAnchor),
+            
+            commingSoonLabel.centerXAnchor.constraint(equalTo: sosButton.centerXAnchor),
+            commingSoonLabel.topAnchor.constraint(equalTo: sosButton.bottomAnchor),
+            
+            commingSoonLabel1.centerXAnchor.constraint(equalTo: gameButton.centerXAnchor),
+            commingSoonLabel1.topAnchor.constraint(equalTo: gameButton.bottomAnchor),
         ])
     }
     
@@ -103,7 +128,7 @@ class ProfileViewController: UIViewController {
         breathingAnimation.fromValue = 10
         breathingAnimation.toValue = 30
         breathingAnimation.autoreverses = true
-        breathingAnimation.duration = 3
+        breathingAnimation.duration = 1
         breathingAnimation.repeatCount = .infinity
         view.layer.add(breathingAnimation, forKey: "breathingAnimation")
     }
@@ -113,7 +138,7 @@ class ProfileViewController: UIViewController {
             let animation = CABasicAnimation(keyPath: "shadowColor")
             animation.fromValue = UIColor.steelPink.cgColor
         animation.toValue = UIColor.lilac.cgColor
-            animation.duration = 6.0 // Set the duration of the animation
+            animation.duration = 2.0 // Set the duration of the animation
             animation.autoreverses = true // Make the animation reverse (optional)
             animation.repeatCount = .infinity // Repeat the animation indefinitely (optional)
             
