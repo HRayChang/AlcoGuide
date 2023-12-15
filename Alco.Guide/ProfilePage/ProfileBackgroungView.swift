@@ -10,12 +10,12 @@ import UIKit
 class ConcaveView: UIView {
     
     let circleView = UIImageView()
-    
     var breathingAnimationCount = 0
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViewUI()
+        startBreathingAnimation()
     }
     
     required init?(coder: NSCoder) {
@@ -25,30 +25,30 @@ class ConcaveView: UIView {
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         
-        
         let path = UIBezierPath()
         
-        // 左上角
+        // Calculate dynamic control points for vertical movement
+        let controlPoint1Y = 450 + sin(CGFloat(breathingAnimationCount) * 0.1) * -100
+        let controlPoint2Y = 300 + sin(CGFloat(breathingAnimationCount) * 0.1) * 100
+        
+        // Left top corner
         path.move(to: CGPoint(x: 0, y: 280))
         
-        
         path.addCurve(to: CGPoint(x: rect.width, y: 300),
-                      
-                      controlPoint1: CGPoint(x: rect.width/3, y: 500),
-                      controlPoint2: CGPoint(x: rect.width * 2/3, y: 300))
+                      controlPoint1: CGPoint(x: rect.width/3, y: controlPoint1Y),
+                      controlPoint2: CGPoint(x: rect.width * 2/3, y: controlPoint2Y))
         
-        // 底邊
+        // Bottom edge
         path.addLine(to: CGPoint(x: rect.width, y: rect.height))
         path.addLine(to: CGPoint(x: 0, y: rect.height))
         path.close()
         
-        // 設置填充色
+        // Set fill color
         UIColor.black.withAlphaComponent(0.4).setFill()
         path.fill()
     }
     
     func setupViewUI() {
-        
         let circleRadius: CGFloat = 80.0
         circleView.layer.cornerRadius = circleRadius
         circleView.image = UIImage(named: "ray")
@@ -70,5 +70,11 @@ class ConcaveView: UIView {
         ])
     }
     
-    
+    func startBreathingAnimation() {
+        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            self.breathingAnimationCount += 1
+            self.setNeedsDisplay()
+        }
+    }
 }

@@ -23,13 +23,12 @@ class CocktailCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupUI() {
-        //        backgroundColor = .black.withAlphaComponent(0.7)
-        backgroundColor = .clear
+        layer.cornerRadius = 10
+                backgroundColor = .black.withAlphaComponent(0.7)
+        
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.shadowColor = UIColor.black.cgColor
-        imageView.layer.shadowOpacity = 1
-        imageView.layer.shadowRadius = 10.0
-        imageView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 10
         
         titleLabel.textColor = UIColor.lilac
         titleLabel.textAlignment = .center

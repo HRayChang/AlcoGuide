@@ -8,7 +8,13 @@
 import Foundation
 import UIKit
 
+protocol ButtonViewDelegate: AnyObject {
+    func buttonView(_ buttonView: ButtonView, didSelectCategory category: String)
+}
+
 class ButtonView: UIView {
+    
+    weak var delegate: ButtonViewDelegate?
     
     let classicCocktailsButton = UIButton()
     let modernCocktailsButton = UIButton()
@@ -31,7 +37,7 @@ class ButtonView: UIView {
         selectedButtonLine.layer.shadowColor = UIColor.steelPink.cgColor
         selectedButtonLine.layer.shadowOpacity = 1
         selectedButtonLine.layer.shadowRadius = 3
-        selectedButtonLine.layer.shadowOffset = CGSize(width: 0, height: 3)
+        selectedButtonLine.layer.shadowOffset = CGSize(width: 0, height: -3)
         
         buttonLine.backgroundColor = UIColor.eminence.withAlphaComponent(0.7)
         
@@ -43,8 +49,8 @@ class ButtonView: UIView {
         modernCocktailsButton.setTitle("Modern", for: .normal)
         modernCocktailsButton.setTitleColor(.eminence, for: .normal)
         
-//        classicCocktailsButton.addTarget(self, action: #selector(classicCocktailsButtonTapped), for: .touchUpInside)
-//        modernCocktailsButton.addTarget(self, action: #selector(modernCocktailsButtonTapped), for: .touchUpInside)
+        classicCocktailsButton.addTarget(self, action: #selector(classicCocktailsButtonTapped), for: .touchUpInside)
+        modernCocktailsButton.addTarget(self, action: #selector(modernCocktailsButtonTapped), for: .touchUpInside)
 
         
         selectedButtonLine.translatesAutoresizingMaskIntoConstraints = false
@@ -68,6 +74,7 @@ class ButtonView: UIView {
             
             selectedButtonLine.bottomAnchor.constraint(equalTo: classicCocktailsButton.bottomAnchor),
             selectedButtonLine.widthAnchor.constraint(equalTo: classicCocktailsButton.widthAnchor),
+//            selectedButtonLine.centerXAnchor.constraint(equalTo: classicCocktailsButton.centerXAnchor),
             selectedButtonLine.heightAnchor.constraint(equalToConstant: 3),
             
             buttonLine.bottomAnchor.constraint(equalTo: classicCocktailsButton.bottomAnchor),
@@ -75,5 +82,23 @@ class ButtonView: UIView {
             buttonLine.heightAnchor.constraint(equalToConstant: 3),
         ])
     }
+    
+    @objc private func classicCocktailsButtonTapped(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.3) { [self] in
+            selectedButtonLine.center.x = sender.center.x
+        }
+           delegate?.buttonView(self, didSelectCategory: "classic")
+        classicCocktailsButton.setTitleColor(.steelPink, for: .normal)
+        modernCocktailsButton.setTitleColor(.eminence, for: .normal)
+       }
+
+       @objc private func modernCocktailsButtonTapped(_ sender: UIButton) {
+           UIView.animate(withDuration: 0.3) { [self] in
+               selectedButtonLine.center.x = sender.center.x
+           }
+           delegate?.buttonView(self, didSelectCategory: "modern")
+           modernCocktailsButton.setTitleColor(.steelPink, for: .normal)
+           classicCocktailsButton.setTitleColor(.eminence, for: .normal)
+       }
     
 }

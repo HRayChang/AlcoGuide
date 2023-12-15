@@ -10,10 +10,14 @@ import UIKit
 
 class CocktailDetailViewController: UIViewController {
     
+    var isClassicCocktail: Bool?
+    
     var imageView = UIImageView()
     var name = UILabel()
     var recipe = UILabel()
     var introduction = UILabel()
+    
+    var selectedCocktailData: [String: String] = [:]
     
     let text = "Light Rum\n2 ounces\nLime Juice\n1 ounce\nDemerara Sugar Syrup\n3/4 ounce"
     
@@ -27,18 +31,18 @@ class CocktailDetailViewController: UIViewController {
         
         view.backgroundColor = UIColor.black
         
-        let gradientLayer = CAGradientLayer()
-           gradientLayer.frame = view.bounds
-        gradientLayer.colors = [UIColor.black.cgColor, UIColor.eminence.cgColor, UIColor.steelPink.cgColor,]
-        gradientLayer.locations = [0.5, 0.8, 1]
-        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
-        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
-           view.layer.insertSublayer(gradientLayer, at: 0)
+//        let gradientLayer = CAGradientLayer()
+//           gradientLayer.frame = view.bounds
+//        gradientLayer.colors = [UIColor.black.cgColor, UIColor.eminence.cgColor]
+//        gradientLayer.locations = [0.6, 1]
+//        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
+//        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
+//           view.layer.insertSublayer(gradientLayer, at: 0)
         
-        name.text = "Daiquiri"
+        name.text = selectedCocktailData.keys.first
         name.textColor = .lilac
         name.textAlignment = .left
-        name.numberOfLines = 1
+        name.numberOfLines = 0
         name.font = UIFont(name: "Zapfino", size: 30.0)
         
         let attributedString = NSMutableAttributedString(string: text)
@@ -64,7 +68,7 @@ class CocktailDetailViewController: UIViewController {
 
                     // 设置行与行之间的上面间距
                     let paragraphStyle = NSMutableParagraphStyle()
-                    paragraphStyle.lineSpacing = index % 2 == 0 ? 3 : 2
+                    paragraphStyle.lineSpacing = index % 2 == 0 ? 2 : 0
                     attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: range)
                 }
 
@@ -74,8 +78,17 @@ class CocktailDetailViewController: UIViewController {
         recipe.textAlignment = .right
               
         
-        imageView.image = UIImage(named: "11")
-        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(named: selectedCocktailData.values.first ?? "")
+        
+        switch isClassicCocktail! {
+        case true:
+            recipe.isHidden = false
+            imageView.contentMode = .scaleAspectFill
+        case false:
+            recipe.isHidden = true
+            imageView.contentMode = .scaleAspectFit
+        }
+        
 
     }
     
@@ -103,6 +116,7 @@ class CocktailDetailViewController: UIViewController {
             recipe.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             recipe.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
         
+            imageView.topAnchor.constraint(equalTo: name.bottomAnchor),
             imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
