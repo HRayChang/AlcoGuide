@@ -18,6 +18,7 @@
 		733C7F0D2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F0C2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift */; };
 		733C7F132B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F122B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift */; };
 		733C7F152B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733C7F142B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift */; };
+		7340A0372B2DBED700F8AF05 /* SnowFlakeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7340A0362B2DBED600F8AF05 /* SnowFlakeManager.swift */; };
 		734158AA2B24986600F870B2 /* MessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158A92B24986600F870B2 /* MessageManager.swift */; };
 		734158AC2B24C82200F870B2 /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158AB2B24C82200F870B2 /* MessageModel.swift */; };
 		734158AE2B25EAB200F870B2 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734158AD2B25EAB200F870B2 /* Date+Extension.swift */; };
@@ -76,7 +77,6 @@
 		73B912CD2B234A21003C6242 /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B912CC2B234A21003C6242 /* ChatMessageCell.swift */; };
 		73BC5A6E2B07A16600DBB82B /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A6D2B07A16600DBB82B /* Model.swift */; };
 		73BC5A702B08B25500DBB82B /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A6F2B08B25500DBB82B /* DataManager.swift */; };
-		73BC5A732B08C96D00DBB82B /* MyScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A722B08C96D00DBB82B /* MyScheduleCell.swift */; };
 		73BC5A752B08EDE200DBB82B /* MyScheduleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A742B08EDE200DBB82B /* MyScheduleTableViewCell.swift */; };
 		73BC5A772B08EEED00DBB82B /* MyScheduleDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BC5A762B08EEED00DBB82B /* MyScheduleDetailViewController.swift */; };
 /* End PBXBuildFile section */
@@ -94,6 +94,7 @@
 		733C7F0C2B0A42F00097EAB1 /* MyScheduleDetailActivitiesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailActivitiesTableViewCell.swift; sourceTree = "<group>"; };
 		733C7F122B0B60490097EAB1 /* MyScheduleDetailLocationNameTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailLocationNameTableViewCell.swift; sourceTree = "<group>"; };
 		733C7F142B0B749B0097EAB1 /* MyScheduleDetailButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailButtonTableViewCell.swift; sourceTree = "<group>"; };
+		7340A0362B2DBED600F8AF05 /* SnowFlakeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SnowFlakeManager.swift; path = ../../../../Documents/SnowFlakeManager.swift; sourceTree = "<group>"; };
 		734158A92B24986600F870B2 /* MessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageManager.swift; sourceTree = "<group>"; };
 		734158AB2B24C82200F870B2 /* MessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
 		734158AD2B25EAB200F870B2 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
@@ -125,7 +126,6 @@
 		73B912CC2B234A21003C6242 /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
 		73BC5A6D2B07A16600DBB82B /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		73BC5A6F2B08B25500DBB82B /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
-		73BC5A722B08C96D00DBB82B /* MyScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleCell.swift; sourceTree = "<group>"; };
 		73BC5A742B08EDE200DBB82B /* MyScheduleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleTableViewCell.swift; sourceTree = "<group>"; };
 		73BC5A762B08EEED00DBB82B /* MyScheduleDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyScheduleDetailViewController.swift; sourceTree = "<group>"; };
 		A70542C8FB22292566ABD1D2 /* Pods-Alco.Guide.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Alco.Guide.release.xcconfig"; path = "Target Support Files/Pods-Alco.Guide/Pods-Alco.Guide.release.xcconfig"; sourceTree = "<group>"; };
@@ -203,7 +203,6 @@
 		730A00282B04C2D300D57D05 /* Alco.Guide */ = {
 			isa = PBXGroup;
 			children = (
-				73BC5A722B08C96D00DBB82B /* MyScheduleCell.swift */,
 				73B912C82B221CBF003C6242 /* MySchedulePage */,
 				730A00292B04C2D300D57D05 /* AppDelegate.swift */,
 				730A002B2B04C2D300D57D05 /* SceneDelegate.swift */,
@@ -391,6 +390,7 @@
 				73BC5A6F2B08B25500DBB82B /* DataManager.swift */,
 				73B912C62B21B455003C6242 /* LoginManager.swift */,
 				734158A92B24986600F870B2 /* MessageManager.swift */,
+				7340A0362B2DBED600F8AF05 /* SnowFlakeManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -592,7 +592,6 @@
 			files = (
 				7342070E2B06080A0030BA37 /* LocationDetailViewController.swift in Sources */,
 				734206FA2B04D8190030BA37 /* LoginViewController.swift in Sources */,
-				73BC5A732B08C96D00DBB82B /* MyScheduleCell.swift in Sources */,
 				734158AC2B24C82200F870B2 /* MessageModel.swift in Sources */,
 				734158BA2B26E97E00F870B2 /* ButtonView.swift in Sources */,
 				73BC5A752B08EDE200DBB82B /* MyScheduleTableViewCell.swift in Sources */,
@@ -615,6 +614,7 @@
 				73B912BF2B20AC9F003C6242 /* UserInfo.swift in Sources */,
 				734207042B04F1290030BA37 /* CocktailViewController.swift in Sources */,
 				734207002B04F0ED0030BA37 /* ChatViewController.swift in Sources */,
+				7340A0372B2DBED700F8AF05 /* SnowFlakeManager.swift in Sources */,
 				734158AE2B25EAB200F870B2 /* Date+Extension.swift in Sources */,
 				73B912CD2B234A21003C6242 /* ChatMessageCell.swift in Sources */,
 				734207062B04F15F0030BA37 /* ProfileViewController.swift in Sources */,

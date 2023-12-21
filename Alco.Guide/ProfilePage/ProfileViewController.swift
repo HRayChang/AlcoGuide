@@ -58,7 +58,7 @@ class ProfileViewController: UIViewController {
         
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = view.bounds
-        gradientLayer.colors = [UIColor.steelPink.cgColor, UIColor.eminence.cgColor, UIColor.black.cgColor]
+        gradientLayer.colors = [UIColor.steelPink.withAlphaComponent(0.5).cgColor, UIColor.eminence.cgColor, UIColor.black.cgColor]
         gradientLayer.locations = [0, 0.4, 0.8]
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)

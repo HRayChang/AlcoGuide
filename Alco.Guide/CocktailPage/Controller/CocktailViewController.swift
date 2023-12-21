@@ -20,14 +20,12 @@ class CocktailViewController: UIViewController, UICollectionViewDataSource, UICo
     
     let classicCocktails = ["Tom Collins": "01", "Manhattan": "02", "Negroni": "03", "Dunlop": "04", "The French Negroni": "05", "Dram Queen": "06", "Passion Fruit Daiquiri": "07", "Daiquiri": "08"]
     
-    let modernCocktails = ["Tom Collins": "12",
-                           "Tom Collins1": "13",
-                           "Tom Collins2": "12",
-                                                  "Tom Collins3": "13",
-                           "Tom Collins4": "12",
-                                                  "Tom Collins5": "13",
-                           "Tom Collins6": "12",
-                                                  "Tom Collins7": "13"]
+    let modernCocktails = ["Tropical Fusion": "17",
+                           "FORMANSA": "16",
+                           "Honey Lemon Gin": "15",
+                           "Bonny Tea": "14",
+                           "Don Whiskey": "13",
+                           "Purple Dream": "12"]
     
     var isClassicCocktail: Bool = true
     
@@ -60,24 +58,28 @@ class CocktailViewController: UIViewController, UICollectionViewDataSource, UICo
         collectionView.reloadData()
         
         self.becomeFirstResponder()
+        
+       
     }
     
-        override func viewDidLayoutSubviews() {
-            super.viewDidLayoutSubviews()
-    
-            switch isClassicCocktail {
-            case true:
-                backgroundView.layer.sublayers?.removeAll(where: { $0 is CAGradientLayer })
-            case false:
-                let gradientLayer = CAGradientLayer()
-                gradientLayer.frame = backgroundView.bounds
-                gradientLayer.colors = [UIColor.black.cgColor, UIColor.steelPink.cgColor, UIColor.eminence.cgColor, UIColor.black.cgColor]
-                gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
-                gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
-                backgroundView.layer.insertSublayer(gradientLayer, at: 0)
-            }
-           
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        switch isClassicCocktail {
+        case true:
+            backgroundView.layer.sublayers?.removeAll(where: { $0 is CAGradientLayer })
+        
+        case false:
+            let gradientLayer = CAGradientLayer()
+            gradientLayer.frame = backgroundView.bounds
+            gradientLayer.colors = [UIColor.black.cgColor, /*UIColor.black.cgColor,  UIColor.steelPink.cgColor,*/ UIColor.eminence.cgColor, UIColor.black.cgColor]
+            gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
+            gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
+            backgroundView.layer.insertSublayer(gradientLayer, at: 0)
+         
         }
+        
+    }
     
     override var canBecomeFirstResponder: Bool {
         get {
@@ -87,7 +89,7 @@ class CocktailViewController: UIViewController, UICollectionViewDataSource, UICo
     
     func setupViewUI() {
         
-//        view.backgroundColor = .black
+        //        view.backgroundColor = .black
         
         navigationItem.title = "Wine List"
         let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.lilac]
@@ -123,6 +125,8 @@ class CocktailViewController: UIViewController, UICollectionViewDataSource, UICo
     
     func setupConstraints() {
         
+        let cellSpace = (UIScreen.main.bounds.width - floor(UIScreen.main.bounds.width / 2 - 20)*2)/3
+        
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         buttonView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -146,10 +150,10 @@ class CocktailViewController: UIViewController, UICollectionViewDataSource, UICo
             buttonView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             buttonView.heightAnchor.constraint(equalToConstant: 30),
             
-            collectionView.topAnchor.constraint(equalTo: buttonView.bottomAnchor, constant: 10),
+            collectionView.topAnchor.constraint(equalTo: buttonView.bottomAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: cellSpace),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -cellSpace),
             
             shakerView.topAnchor.constraint(equalTo: view.topAnchor, constant: -100),
             shakerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 100),
@@ -179,7 +183,20 @@ class CocktailViewController: UIViewController, UICollectionViewDataSource, UICo
         let image = UIImage(named: cocktailsImages)
         let name = cocktailsNames
         cell.configure(with: image, title: name)
-       
+        cell.layer.shadowOpacity = 1
+        cell.layer.shadowRadius = 4
+        cell.layer.shadowOffset = CGSize(width: 0, height: 0)
+     
+        
+        switch isClassicCocktail {
+        case true:
+            cell.layer.shadowColor = UIColor.black.cgColor
+           
+        case false:
+            cell.layer.shadowColor = UIColor.steelPink.cgColor
+            
+        }
+   
         return cell
     }
     
@@ -190,17 +207,31 @@ class CocktailViewController: UIViewController, UICollectionViewDataSource, UICo
         let selectedCocktailName = cocktailsArray[indexPath.item]
         
         guard let selectedCocktailData = selectedCategory[selectedCocktailName] else {
-               // Handle the case where the selected cocktail data is not found
-               print("Error: Selected cocktail data not found")
-               return
-           }
+            // Handle the case where the selected cocktail data is not found
+            print("Error: Selected cocktail data not found")
+            return
+        }
         
         let selectedCocktailDictionary: [String: String] = [selectedCocktailName: selectedCocktailData]
         
         detailViewController.isClassicCocktail = isClassicCocktail
         detailViewController.selectedCocktailData = selectedCocktailDictionary
         // Present the detail view controller modally
-        present(detailViewController, animated: true, completion: nil)
+
+        switch isClassicCocktail {
+        case true:
+            present(detailViewController, animated: true, completion: nil)
+        case false:
+            if let sheetPresentationController = detailViewController.sheetPresentationController {
+                sheetPresentationController.largestUndimmedDetentIdentifier = .medium
+                sheetPresentationController.detents = [
+                    .custom(resolver: { context in
+                        context.maximumDetentValue * 0.95
+                    }),
+                ]
+            }
+            present(detailViewController, animated: true, completion: nil)
+        }
     }
     
     @objc func shakerButtonTapped() {
@@ -218,10 +249,15 @@ class CocktailViewController: UIViewController, UICollectionViewDataSource, UICo
             
             shake(to: shakerView.shakerImageView)
             vibrate(duration: 1.5)
-     
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 let detailViewController = CocktailDetailViewController()
+       
                 
+                let selectedCocktailDictionary: [String: String] = ["Daiquiri": "08"]
+            
+                detailViewController.isClassicCocktail = self.isClassicCocktail
+                detailViewController.selectedCocktailData = selectedCocktailDictionary
                 // Present the detail view controller modally
                 self.present(detailViewController, animated: true, completion: nil)
                 self.shakerView.isHidden = true
@@ -289,27 +325,29 @@ class CocktailViewController: UIViewController, UICollectionViewDataSource, UICo
         }
     }
     func playShakeSound() {
-            guard let url = Bundle.main.url(forResource: "shakesound", withExtension: "mp3") else {
-                return
-            }
-
-            do {
-                audioPlayer = try AVAudioPlayer(contentsOf: url)
-                audioPlayer?.play()
-            } catch {
-                print("Error playing sound: \(error.localizedDescription)")
-            }
+        guard let url = Bundle.main.url(forResource: "shakesound", withExtension: "mp3") else {
+            return
         }
+        
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.play()
+        } catch {
+            print("Error playing sound: \(error.localizedDescription)")
+        }
+    }
     
     func buttonView(_ buttonView: ButtonView, didSelectCategory category: String) {
-           if category == "classic" {
-               selectedCategory = classicCocktails
-               isClassicCocktail = true
-           } else if category == "modern" {
-               selectedCategory = modernCocktails
-               isClassicCocktail = false
-           }
-
-           collectionView.reloadData()
-       }
+        if category == "classic" {
+            selectedCategory = classicCocktails
+            isClassicCocktail = true
+        } else if category == "modern" {
+            selectedCategory = modernCocktails
+            isClassicCocktail = false
+        }
+        
+        collectionView.reloadData()
+    }
+    
+   
 }

@@ -15,12 +15,14 @@ PODS:
     - AppAuth/Core (~> 1.6)
     - GTMSessionFetcher/Core (< 4.0, >= 1.5)
   - GTMSessionFetcher/Core (3.2.0)
+  - IQKeyboardManagerSwift (6.5.15)
   - SwiftLint (0.54.0)
 
 DEPENDENCIES:
   - Alamofire
   - GooglePlaces
   - GoogleSignIn
+  - IQKeyboardManagerSwift
   - SwiftLint
 
 SPEC REPOS:
@@ -31,6 +33,7 @@ SPEC REPOS:
     - GoogleSignIn
     - GTMAppAuth
     - GTMSessionFetcher
+    - IQKeyboardManagerSwift
     - SwiftLint
 
 SPEC CHECKSUMS:
@@ -40,8 +43,9 @@ SPEC CHECKSUMS:
   GoogleSignIn: b232380cf495a429b8095d3178a8d5855b42e842
   GTMAppAuth: 99fb010047ba3973b7026e45393f51f27ab965ae
   GTMSessionFetcher: 41b9ef0b4c08a6db4b7eb51a21ae5183ec99a2c8
+  IQKeyboardManagerSwift: 79fab21f451441935788dc5d80ded21c32685904
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
 
-PODFILE CHECKSUM: 9963ec489ccfb741124b2ef584585dc05527376e
+PODFILE CHECKSUM: 7f5f84925f37eb482f1f94a9e5e4c6bc5fc787b5
 
 COCOAPODS: 1.11.3

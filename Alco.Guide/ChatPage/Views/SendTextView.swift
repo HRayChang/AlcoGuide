@@ -65,7 +65,7 @@ class SendTextView: UIView {
         
         sendButton.setBackgroundImage(UIImage(systemName: "paperplane.circle.fill"), for: .normal)
         sendButton.tintColor = UIColor.steelPink
-        sendButton.layer.shadowColor = UIColor.black.cgColor
+        sendButton.layer.shadowColor = UIColor.steelPink.cgColor
         sendButton.layer.shadowOpacity = 1
         sendButton.layer.shadowRadius = 5
         sendButton.layer.shadowOffset = CGSize(width: 0, height: 0)

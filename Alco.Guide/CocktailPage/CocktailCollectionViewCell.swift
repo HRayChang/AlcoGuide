@@ -24,7 +24,9 @@ class CocktailCollectionViewCell: UICollectionViewCell {
     
     private func setupUI() {
         layer.cornerRadius = 10
-                backgroundColor = .black.withAlphaComponent(0.7)
+//        backgroundColor = .black.withAlphaComponent(0.5)
+        backgroundColor = .clear
+
         
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true

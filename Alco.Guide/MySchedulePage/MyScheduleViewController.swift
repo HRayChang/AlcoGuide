@@ -18,6 +18,9 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
     let tableView = UITableView()
     let backgroundImage = UIImageView()
     
+    let snowEmitterLayer = CAEmitterLayer()
+    let flakeEmitterCell = CAEmitterCell()
+    
     let dataManager = DataManager.shared
     
     override func viewDidLoad() {
@@ -30,6 +33,32 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         setupConstraints()
         
         setupObservers()
+        
+        //        view.backgroundColor = UIColor.white.withAlphaComponent(0.40)
+
+               
+        flakeEmitterCell.contents = UIImage(named: "snowFlake")?.cgImage
+                flakeEmitterCell.scale = 0.06
+                flakeEmitterCell.scaleRange = 0.3
+                flakeEmitterCell.emissionRange = .pi
+                flakeEmitterCell.lifetime = 20.0
+                flakeEmitterCell.birthRate = 10
+                flakeEmitterCell.velocity = -3
+                flakeEmitterCell.velocityRange = -2
+                flakeEmitterCell.yAcceleration = 6
+        flakeEmitterCell.xAcceleration = 0.5
+                flakeEmitterCell.spin = -0.5
+                flakeEmitterCell.spinRange = 1.0
+
+               
+                snowEmitterLayer.emitterPosition = CGPoint(x: view.bounds.width / 2.0, y: -50)
+                snowEmitterLayer.emitterSize = CGSize(width: view.bounds.width, height: 0)
+                snowEmitterLayer.emitterShape = CAEmitterLayerEmitterShape.line
+                snowEmitterLayer.beginTime = CACurrentMediaTime()
+                snowEmitterLayer.timeOffset = 10
+                snowEmitterLayer.emitterCells = [flakeEmitterCell]
+
+                
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -39,6 +68,8 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         editButtonTapped()
         
         fetchSchedules()
+        
+        tabBarController?.tabBar.backgroundColor = .black
     }
     
     @objc private func fetchSchedules() {
@@ -85,9 +116,13 @@ class MyScheduleViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.translatesAutoresizingMaskIntoConstraints = false
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(tableView)
         view.addSubview(backgroundImage)
-        view.sendSubviewToBack(backgroundImage)
+        view.layer.insertSublayer(snowEmitterLayer, below: tableView.layer)
+        
+        view.addSubview(tableView)
+        
+//        view.sendSubviewToBack(backgroundImage)
+//        view.layer.addSublayer(snowEmitterLayer)
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),

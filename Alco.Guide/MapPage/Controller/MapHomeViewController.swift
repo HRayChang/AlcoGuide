@@ -58,12 +58,31 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         returnToCurrentLocation()
         addBreathingAnimation(to: assembleButton)
         
+        
+        tabBarController?.tabBar.backgroundColor = .clear
     }
     
     // MARK: - Setup UI
     func setupMapHomeViewUI() {
         
         view.backgroundColor = UIColor.black
+        
+        self.title = "Alco.Guide"
+        
+        if let navigationController = self.navigationController {
+                    let font = UIFont.systemFont(ofSize: 35.0) // 设置字体大小，这里是 20
+                    let color = UIColor.steelPink // 设置字体颜色，这里是红色
+                    let shadow = NSShadow()
+                    shadow.shadowColor = UIColor.steelPink // 阴影颜色
+                    shadow.shadowOffset = CGSize(width: 0, height: 0) // 阴影偏移量
+            shadow.shadowBlurRadius = 8.0
+
+                    navigationController.navigationBar.titleTextAttributes = [
+                        NSAttributedString.Key.font: font,
+                        NSAttributedString.Key.foregroundColor: color,
+                        NSAttributedString.Key.shadow: shadow
+                    ]
+                }
         
         // Setup MapView
         mapView.showsUserLocation = true

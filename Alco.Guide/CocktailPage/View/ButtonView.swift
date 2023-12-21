@@ -83,7 +83,7 @@ class ButtonView: UIView {
         ])
     }
     
-    @objc private func classicCocktailsButtonTapped(_ sender: UIButton) {
+    @objc func classicCocktailsButtonTapped(_ sender: UIButton) {
         UIView.animate(withDuration: 0.3) { [self] in
             selectedButtonLine.center.x = sender.center.x
         }
@@ -92,7 +92,7 @@ class ButtonView: UIView {
         modernCocktailsButton.setTitleColor(.eminence, for: .normal)
        }
 
-       @objc private func modernCocktailsButtonTapped(_ sender: UIButton) {
+       @objc func modernCocktailsButtonTapped(_ sender: UIButton) {
            UIView.animate(withDuration: 0.3) { [self] in
                selectedButtonLine.center.x = sender.center.x
            }

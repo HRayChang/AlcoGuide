@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import IQKeyboardManagerSwift
 
-class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SendTextViewDelegate, MessageManagerDelegate {
+class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SendTextViewDelegate, MessageManagerDelegate, UITextFieldDelegate {
 
     let backgroundView = UIView()
     let chatTableView = UITableView()
@@ -21,6 +22,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
 
         sendTextView.delegate = self
         MessageManager.shared.delegate = self
+        sendTextView.textField.delegate = self
+
+        IQKeyboardManager.shared.enable = true
         
         chatTableView.register(ChatMessageCell.self, forCellReuseIdentifier: "id")
 
@@ -33,7 +37,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         MessageManager.shared.messagesObserver()
         chatTableView.reloadData()
         navigationItem.title = DataManager.CurrentSchedule.currentScheduleName ?? "Message"
-
+        tabBarController?.tabBar.backgroundColor = .black
     }
     
     override func viewDidLayoutSubviews() {
@@ -46,6 +50,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
         backgroundView.layer.insertSublayer(gradientLayer, at: 0)
     }
+    
+//    override func viewDidDisappear(_ animated: Bool) {
+//        super.viewDidDisappear(animated)
+//        
+//        tabBarController?.tabBar.backgroundColor = .clear
+//    }
 
     func setupChatViewUI() {
         
@@ -84,6 +94,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             sendTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             sendTextView.heightAnchor.constraint(equalToConstant: 60)
         ])
+        
+//        IQKeyboardManager.shared().isEnableAutoToolbar = false
+        IQKeyboardManager.shared.shouldResignOnTouchOutside = true
+//        IQKeyboardManager.shared().shouldShowToolbarPlaceholder = false
+//        IQKeyboardManager.shared().previousNextDisplayMode = .alwaysHide
+        setNeedsStatusBarAppearanceUpdate()
     }
 
     
@@ -180,6 +196,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func didTapSendButton(withText text: String) {
+        
+//        tabBarController?.tabBar.isHidden = false
+        
         let newMessage: ChatMessage = {
             let userName = LoginManager.shared.userInfo?.name ?? ""
             let userUID = LoginManager.shared.userInfo?.userUID ?? ""
@@ -229,5 +248,19 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         chatTableView.reloadData()
         }
 
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+           // Hide the tab bar when the text field begins editing
+           tabBarController?.tabBar.isHidden = true
+        backgroundView.isHidden = true
+        
+       }
+
+       // Add the textFieldDidEndEditing method if needed
+       func textFieldDidEndEditing(_ textField: UITextField) {
+           // Show the tab bar when the text field ends editing
+           tabBarController?.tabBar.isHidden = false
+           backgroundView.isHidden = false
+       }
+    
 }
 

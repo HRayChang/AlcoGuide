@@ -9,6 +9,7 @@ import UIKit
 import FirebaseCore
 import GooglePlaces
 import GoogleSignIn
+import IQKeyboardManagerSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -38,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                      let lastName = user?.profile?.familyName else { return }
 //            }
 //          }
-        
+        IQKeyboardManager.shared.enable = true
         return true
     }
 
