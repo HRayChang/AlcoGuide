@@ -28,7 +28,7 @@ class TabBarController: UITabBarController {
         chatViewController.tabBarItem.selectedImage = UIImage(named: "drunk01")
         chatViewController.tabBarItem.title = "Message"
 
-        let mapHomeViewController = createNavigationController(with: MapHomeViewController())
+        let mapHomeViewController = createNavigationController(with: MapViewController())
         mapHomeViewController.tabBarItem.image = UIImage(systemName: "map")
         mapHomeViewController.tabBarItem.selectedImage = UIImage(systemName: "ellipsis")
         mapHomeViewController.tabBarItem.title = "Map"

@@ -17,9 +17,8 @@ class MyScheduleDetailActivitiesTableViewCell: UITableViewCell {
         setupMyScheduleDetailActivitiesTableViewCellUI()
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupMyScheduleDetailActivitiesTableViewCellUI()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func setupMyScheduleDetailActivitiesTableViewCellUI() {

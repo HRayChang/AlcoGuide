@@ -36,8 +36,7 @@ class SelectLocationView: UIView {
     }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupSelectLocationView()
+        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: - Update schedule labels

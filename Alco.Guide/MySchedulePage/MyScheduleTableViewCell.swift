@@ -20,10 +20,9 @@ class MyScheduleTableViewCell: UITableViewCell {
         setupMyScheduleTableViewCellUI()
 
     }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupMyScheduleTableViewCellUI()
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func setupMyScheduleTableViewCellUI() {
@@ -83,7 +82,7 @@ class MyScheduleTableViewCell: UITableViewCell {
         ])
     }
 
-    func configureCell(with scheduleData: [ScheduleInfo], at index: Int) {
+    func configureCell(with scheduleData: [Schedule], at index: Int) {
         let scheduleID = scheduleData[index].scheduleID
         let scheduleName = scheduleData[index].scheduleName
 //        idLabel.text = "ID: \(scheduleID)"

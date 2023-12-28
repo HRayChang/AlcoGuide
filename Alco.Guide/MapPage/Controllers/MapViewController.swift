@@ -9,8 +9,9 @@ import UIKit
 import MapKit
 import FirebaseFirestore
 import FirebaseAuth
+import SnapKit
 
-class MapHomeViewController: UIViewController, MKMapViewDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate {
     
     var scheduleReference: DocumentReference?
     
@@ -22,7 +23,6 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     let returnToCurrentLocationButton = UIButton()
     let currentScheduleView = UIView()
     let currentScheduleLabel = UILabel()
-//    let shadowView = UIView()
     
     let shareScheduleView = ShareScheduleView()
     let selectLocationView = SelectLocationView()
@@ -55,7 +55,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        returnToCurrentLocation()
+//        returnToCurrentLocation()
         addBreathingAnimation(to: assembleButton)
         
         
@@ -64,6 +64,17 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
     
     // MARK: - Setup UI
     func setupMapHomeViewUI() {
+        
+        view.addSubview(mapView)
+        view.addSubview(buttonLineView)
+        view.addSubview(assembleButton)
+        view.addSubview(selectScheduleView)
+        view.addSubview(addNewScheduleView)
+        view.addSubview(joinScheduleView)
+        view.addSubview(shareScheduleView)
+        view.addSubview(selectLocationView)
+        view.addSubview(returnToCurrentLocationButton)
+        view.addSubview(currentScheduleView)
         
         view.backgroundColor = UIColor.black
         
@@ -147,17 +158,10 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         assembleButton.layer.shadowRadius = 10.0
         assembleButton.layer.shadowOffset = CGSize(width: 0, height: 0)
         
-//        shadowView.layer.cornerRadius = view.frame.size.width/8
-//        shadowView.layer.bounds = assembleButton.bounds
-//        shadowView.layer.shadowColor = UIColor.green.cgColor
-//        shadowView.layer.shadowOpacity = 1
-//        shadowView.layer.shadowRadius = 10.0
-//        shadowView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        
         // Setup ReturnToCurrentLocationButton
         returnToCurrentLocationButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
         returnToCurrentLocationButton.tintColor = .lilac
-        returnToCurrentLocationButton.addTarget(self, action: #selector(returnToCurrentLocation), for: .touchUpInside)
+//        returnToCurrentLocationButton.addTarget(self, action: #selector(returnToCurrentLocation), for: .touchUpInside)
     }
     
     func addBreathingAnimation(to view: UIView) {
@@ -169,90 +173,86 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         breathingAnimation.repeatCount = .infinity
         view.layer.add(breathingAnimation, forKey: "breathingAnimation")
     }
-    
-    func setupConstraints() {
-        mapView.translatesAutoresizingMaskIntoConstraints = false
-        buttonLineView.translatesAutoresizingMaskIntoConstraints = false
-        assembleButton.translatesAutoresizingMaskIntoConstraints = false
-        selectScheduleView.translatesAutoresizingMaskIntoConstraints = false
-        addNewScheduleView.translatesAutoresizingMaskIntoConstraints = false
-        joinScheduleView.translatesAutoresizingMaskIntoConstraints = false
-        shareScheduleView.translatesAutoresizingMaskIntoConstraints = false
-        selectLocationView.translatesAutoresizingMaskIntoConstraints = false
-        returnToCurrentLocationButton.translatesAutoresizingMaskIntoConstraints = false
-        currentScheduleView.translatesAutoresizingMaskIntoConstraints = false
 
-        view.addSubview(mapView)
-        view.addSubview(buttonLineView)
-        view.addSubview(assembleButton)
-        view.addSubview(selectScheduleView)
-        view.addSubview(addNewScheduleView)
-        view.addSubview(joinScheduleView)
-        view.addSubview(shareScheduleView)
-        view.addSubview(selectLocationView)
-        view.addSubview(returnToCurrentLocationButton)
-        view.addSubview(currentScheduleView)
-//        view.addSubview(shadowView)
+    func setupConstraints() {
         
-        NSLayoutConstraint.activate([
-            mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            mapView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -22),
-            
-            currentScheduleView.topAnchor.constraint(equalTo: mapView.topAnchor, constant: 5),
-            currentScheduleView.heightAnchor.constraint(equalToConstant: 50),
-            currentScheduleView.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: 60),
-            currentScheduleView.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -60),
-            
-            buttonLineView.heightAnchor.constraint(equalToConstant: 2),
-            buttonLineView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            buttonLineView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            buttonLineView.topAnchor.constraint(equalTo: mapView.bottomAnchor),
-            
-            assembleButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1/4),
-            assembleButton.heightAnchor.constraint(equalTo: assembleButton.widthAnchor),
-            assembleButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            assembleButton.centerYAnchor.constraint(equalTo: buttonLineView.centerYAnchor),
-            
-            selectScheduleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            selectScheduleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
-            selectScheduleView.heightAnchor.constraint(equalTo: selectScheduleView.widthAnchor),
-            selectScheduleView.centerYAnchor.constraint(equalTo: mapView.centerYAnchor),
-            
-            addNewScheduleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            addNewScheduleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
-            addNewScheduleView.heightAnchor.constraint(equalTo: addNewScheduleView.widthAnchor, multiplier: 2/3),
-            addNewScheduleView.centerYAnchor.constraint(equalTo: mapView.centerYAnchor),
-            
-            joinScheduleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            joinScheduleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
-            joinScheduleView.heightAnchor.constraint(equalTo: joinScheduleView.widthAnchor, multiplier: 2/3),
-            joinScheduleView.centerYAnchor.constraint(equalTo: mapView.centerYAnchor),
-            
-            shareScheduleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            shareScheduleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
-            shareScheduleView.heightAnchor.constraint(equalTo: mapView.heightAnchor, multiplier: 1/5),
-            shareScheduleView.centerYAnchor.constraint(equalTo: mapView.centerYAnchor),
-            
-            selectLocationView.widthAnchor.constraint(equalTo: mapView.widthAnchor, multiplier: 1/9),
-            selectLocationView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
-            selectLocationView.heightAnchor.constraint(equalTo: mapView.heightAnchor, multiplier: 1/5),
-            selectLocationView.topAnchor.constraint(equalTo: currentScheduleView.bottomAnchor),
-            
-            returnToCurrentLocationButton.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -5),
-            returnToCurrentLocationButton.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: -5),
-            returnToCurrentLocationButton.widthAnchor.constraint(equalToConstant: 40),
-            returnToCurrentLocationButton.heightAnchor.constraint(equalTo: returnToCurrentLocationButton.widthAnchor),
-  
-        ])
+        mapView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.leading.equalTo(view.snp.leading)
+            make.trailing.equalTo(view.snp.trailing)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-22)
+        }
+        
+        currentScheduleView.snp.makeConstraints { make in
+            make.top.equalTo(mapView.snp.top).offset(5)
+            make.height.equalTo(50)
+            make.leading.equalTo(mapView.snp.leading).offset(60)
+            make.trailing.equalTo(mapView.snp.trailing).offset(-60)
+        }
+
+        buttonLineView.snp.makeConstraints { make in
+            make.height.equalTo(2)
+            make.leading.equalTo(view.snp.leading)
+            make.trailing.equalTo(view.snp.trailing)
+            make.top.equalTo(mapView.snp.bottom)
+        }
+
+        assembleButton.snp.makeConstraints { make in
+            make.width.equalTo(view.snp.width).multipliedBy(1.0 / 4.0)
+            make.height.equalTo(assembleButton.snp.width)
+            make.centerX.equalTo(view.snp.centerX)
+            make.centerY.equalTo(buttonLineView.snp.centerY)
+        }
+
+        selectScheduleView.snp.makeConstraints { make in
+            make.leading.equalTo(view.snp.leading).offset(50)
+            make.trailing.equalTo(view.snp.trailing).offset(-50)
+            make.height.equalTo(selectScheduleView.snp.width)
+            make.centerY.equalTo(mapView.snp.centerY)
+        }
+
+        addNewScheduleView.snp.makeConstraints { make in
+            make.leading.equalTo(view.snp.leading).offset(50)
+            make.trailing.equalTo(view.snp.trailing).offset(-50)
+            make.height.equalTo(addNewScheduleView.snp.width).multipliedBy(2.0 / 3.0)
+            make.centerY.equalTo(mapView.snp.centerY)
+        }
+
+        joinScheduleView.snp.makeConstraints { make in
+            make.leading.equalTo(view.snp.leading).offset(50)
+            make.trailing.equalTo(view.snp.trailing).offset(-50)
+            make.height.equalTo(joinScheduleView.snp.width).multipliedBy(2.0 / 3.0)
+            make.centerY.equalTo(mapView.snp.centerY)
+        }
+
+        shareScheduleView.snp.makeConstraints { make in
+            make.leading.equalTo(view.snp.leading).offset(50)
+            make.trailing.equalTo(view.snp.trailing).offset(-50)
+            make.height.equalTo(mapView.snp.height).multipliedBy(1.0 / 5.0)
+            make.centerY.equalTo(mapView.snp.centerY)
+        }
+
+        selectLocationView.snp.makeConstraints { make in
+            make.width.equalTo(mapView.snp.width).multipliedBy(1.0 / 9.0)
+            make.trailing.equalTo(view.snp.trailing).offset(-5)
+            make.height.equalTo(mapView.snp.height).multipliedBy(1.0 / 5.0)
+            make.top.equalTo(currentScheduleView.snp.bottom)
+        }
+
+        returnToCurrentLocationButton.snp.makeConstraints { make in
+            make.trailing.equalTo(mapView.snp.trailing).offset(-5)
+            make.bottom.equalTo(mapView.snp.bottom).offset(-5)
+            make.width.equalTo(40)
+            make.height.equalTo(returnToCurrentLocationButton.snp.width)
+        }
     }
+    
     // MARK: Setup UI -
     
     private func setupObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(updateCurrentScheduleLabel), name: Notification.Name("CurrentSchedule"), object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(showLocaitons), name: Notification.Name("CurrentLocationsCoordinate"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(addLocationAnnotation), name: Notification.Name("CurrentLocationsCoordinate"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(addNewLocationAnnotation), name: Notification.Name("UpdateLocation"), object: nil)
     }
@@ -267,34 +267,30 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         assembleButton.isUserInteractionEnabled = false
     }
     
-    @objc func returnToCurrentLocation() {
-        if let location = coreLocationManager.currentLocation {
-            let coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude,
-                                                    longitude: location.coordinate.longitude)
-            let span = MKCoordinateSpan(latitudeDelta: 0.006, longitudeDelta: 0.006)
-            let region = MKCoordinateRegion(center: coordinate, span: span)
-            mapView.setRegion(region, animated: true)
-        }
-    }
+//    @objc func returnToCurrentLocation() {
+//        if let location = coreLocationManager.currentLocation {
+//            let coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude,
+//                                                    longitude: location.coordinate.longitude)
+//            let span = MKCoordinateSpan(latitudeDelta: 0.006, longitudeDelta: 0.006)
+//            let region = MKCoordinateRegion(center: coordinate, span: span)
+//            mapView.setRegion(region, animated: true)
+//        }
+//    }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         guard let annotation = view.annotation else { return }
         
-        if let detailViewController = presentedViewController as? LocationDetailViewController {
-            detailViewController.fetchLocationInfo(with: annotation)
-        } else {
-            let detailViewController = LocationDetailViewController()
-            detailViewController.fetchLocationInfo(with: annotation)
-            if let sheetPresentationController = detailViewController.sheetPresentationController {
-                sheetPresentationController.largestUndimmedDetentIdentifier = .medium
-                sheetPresentationController.detents = [
-                    .custom(resolver: { context in
-                        context.maximumDetentValue * 0.3
-                    }), .medium()
-                ]
-            }
-            present(detailViewController, animated: true)
+        let detailViewController = LocationDetailViewController()
+        detailViewController.fetchLocationInfo(with: annotation)
+        if let sheetPresentationController = detailViewController.sheetPresentationController {
+            sheetPresentationController.largestUndimmedDetentIdentifier = .medium
+            sheetPresentationController.detents = [
+                .custom(resolver: { context in
+                    context.maximumDetentValue * 0.3
+                }), .medium()
+            ]
         }
+        present(detailViewController, animated: true)
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
@@ -369,14 +365,14 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
         
     }
     
-    @objc private func showLocaitons() {
-//        searchForAndDisplayPlaces(queries: ["bar", "convenience_store"])
-//        currentLocationType = .both
-        
-        addLocationAnnotation()
-    }
+//    @objc private func showLocaitons() {
+////        searchForAndDisplayPlaces(queries: ["bar", "convenience_store"])
+////        currentLocationType = .both
+//        
+//        addLocationAnnotation()
+//    }
 
-    func addLocationAnnotation() {
+    @objc func addLocationAnnotation() {
         var annotations: [CustomAnnotation] = []
         
         mapView.removeAnnotations(annotations)
@@ -487,7 +483,7 @@ class MapHomeViewController: UIViewController, MKMapViewDelegate {
 
 
 // MARK: - Delegate
-extension MapHomeViewController: SelectScheduleViewDelegate,
+extension MapViewController: SelectScheduleViewDelegate,
                                  JoinScheduleViewDelegate,
                                  SelectLocationViewDelegate,
                                  AddNewScheduleViewDelegate,

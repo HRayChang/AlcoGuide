@@ -24,8 +24,8 @@ class DataManager {
     
     private let locationsCollectionPath = "Locations"
     
-    var runningSchedules: [ScheduleInfo] = []
-    var finishedSchedules: [ScheduleInfo] = []
+    var runningSchedules: [Schedule] = []
+    var finishedSchedules: [Schedule] = []
     
     struct CurrentSchedule {
         static var currentIndex: Int? {
@@ -384,7 +384,7 @@ class DataManager {
                                 
                                 self.fetchLocationName(locationsId: locationsId) { updatedLocations in
                                     
-                                    let scheduleInfo = ScheduleInfo(scheduleID: scheduleID,
+                                    let scheduleInfo = Schedule(scheduleID: scheduleID,
                                                                     scheduleName: scheduleName,
                                                                     isRunning: isRunning,
                                                                     locations: updatedLocations,

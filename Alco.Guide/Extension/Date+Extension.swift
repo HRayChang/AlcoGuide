@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Date {  
+extension Date {
     func reduceToMonthDayYear() -> Date {
         let calendar = Calendar.current
         let month = calendar.component(.month, from: self)

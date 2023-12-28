@@ -17,9 +17,8 @@ class MyScheduleDetailLocationNameTableViewCell: UITableViewCell {
         setupMyScheduleDetailLocationNameTableViewCellUI()
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupMyScheduleDetailLocationNameTableViewCellUI()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func setupMyScheduleDetailLocationNameTableViewCellUI() {

@@ -26,9 +26,7 @@ class ShareScheduleView: UIView {
     }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupSelectLocationView()
-        setupObservers()
+        fatalError("init(coder:) has not been implemented")
     }
     
     deinit {

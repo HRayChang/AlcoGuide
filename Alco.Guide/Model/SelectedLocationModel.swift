@@ -1,45 +1,9 @@
 //
-//  ScheduleID.swift
+//  SelectedLocationModel.swift
 //  Alco.Guide
 //
-//  Created by Ray Chang on 2023/11/17.
+//  Created by Ray Chang on 2023/12/25.
 //
-
-import Foundation
-import FirebaseFirestore
-import MapKit
-
-class CustomAnnotation: MKPointAnnotation {
-    var pinTintColor: UIColor?
-}
-
-struct ScheduleInfo: Codable {
-    var scheduleID: String
-    var scheduleName: String
-    var isRunning: Bool
-    var locations: [String]
-    var users: [String]
-    var activities: [String: [String]]
-    var locationsId: [String]?
-}
-
-struct Location: Codable {
-    var places: [LocationItems]
-}
-
-struct LocationItems: Codable {
-    let id: String
-    let displayName: DisplayName
-    let location: LocationCoordinate
-}
-
-struct LocationCoordinate: Codable {
-    let latitude, longitude: Double
-}
-
-struct DisplayName: Codable {
-    let text: String
-}
 
 struct SelectedLocation: Codable {
     let result: LocationInfo
@@ -119,11 +83,4 @@ struct Review: Codable {
         case relativeTimeDescription = "relative_time_description"
         case text, time, translated
     }
-}
-
-
-struct LocationAnnotationInfo {
-    let locationId: String
-    let locationName: String
-    let locationCoordinate: GeoPoint
 }

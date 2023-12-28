@@ -25,10 +25,9 @@ class SelectScheduleView: UIView {
         super.init(frame: frame)
         setupSelectScheduleView()
     }
-
+    
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupSelectScheduleView()
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func layoutSubviews() {

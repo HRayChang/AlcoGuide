@@ -11,6 +11,7 @@ target 'Alco.Guide' do
   pod 'Alamofire'
   pod 'GoogleSignIn'
   pod 'IQKeyboardManagerSwift'
+  pod 'SnapKit'
 
   post_install do |installer|
     installer.generated_projects.each do |project|

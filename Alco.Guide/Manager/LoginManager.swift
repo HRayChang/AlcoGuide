@@ -13,7 +13,7 @@ import FirebaseFirestore
 
 class LoginManager {
     
-    var userInfo: UserInfo?
+    var userInfo: User?
     
     static let shared = LoginManager()
     
@@ -25,7 +25,7 @@ class LoginManager {
         GIDSignIn.sharedInstance.configuration = config
     }
     
-    func signInWithGoogle(presentingViewController: UIViewController, completion: @escaping (UserInfo?, Error?) -> Void) {
+    func signInWithGoogle(presentingViewController: UIViewController, completion: @escaping (User?, Error?) -> Void) {
         GIDSignIn.sharedInstance.signIn(withPresenting: presentingViewController) { [weak self] result, error in
             guard let self = self else { return }
             
@@ -61,7 +61,7 @@ class LoginManager {
                 
                 if let user = authResult?.user {
                     let userUID = user.uid
-                    self.userInfo = UserInfo(userUID: userUID, email: email, familyName: familyName, givenName: givenName, name: name, image: image)
+                    self.userInfo = User(userUID: userUID, email: email, familyName: familyName, givenName: givenName, name: name, image: image)
                     
                     if let isNewUser = authResult?.additionalUserInfo?.isNewUser, isNewUser {
                         print("New user registered")

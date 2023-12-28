@@ -25,8 +25,7 @@ class SendTextView: UIView {
     }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupSendTextView()
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func layoutSubviews() {
